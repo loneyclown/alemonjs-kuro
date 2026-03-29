@@ -13,13 +13,14 @@ export default async (e: EventsEnum) => {
   const format = Format.create();
   const md = Format.createMarkdown();
 
-  // 同时拉活动/公告两种
-  const [actResp, newsResp] = await Promise.all([apiAnnList('1', 5), apiAnnList('3', 5)]);
+  // 同时拉活动/资讯/公告三种
+  const [actResp, infoResp, newsResp] = await Promise.all([apiAnnList('1', 6), apiAnnList('2', 6), apiAnnList('3', 6)]);
 
   const activities = actResp.success && actResp.data ? actResp.data.list : [];
+  const infos = infoResp.success && infoResp.data ? infoResp.data.list : [];
   const notices = newsResp.success && newsResp.data ? newsResp.data.list : [];
 
-  if (activities.length === 0 && notices.length === 0) {
+  if (activities.length === 0 && infos.length === 0 && notices.length === 0) {
     md.addText('[鸣潮] 暂无公告信息');
     format.addMarkdown(md);
     void message.send({ format });
@@ -28,7 +29,7 @@ export default async (e: EventsEnum) => {
   }
 
   const img = await renderComponentIsHtmlToBuffer(AnnCard, {
-    data: { activities, notices }
+    data: { activities, infos, notices }
   });
 
   if (typeof img === 'boolean') {

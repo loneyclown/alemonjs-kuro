@@ -42,7 +42,7 @@ export default function DevelopCard({ data }: DevelopCardProps) {
                   background: 'rgba(0,0,0,0.3)',
                   borderRadius: '8px',
                   padding: '6px 14px',
-                  fontSize: '14px',
+                  fontSize: '20px',
                   color: '#fff',
                   border: `1px solid ${C.panelBorder}`
                 }}
@@ -76,7 +76,7 @@ export default function DevelopCard({ data }: DevelopCardProps) {
                     }}
                   >
                     {cost.iconUrl && <img src={cost.iconUrl} style={{ width: '52px', height: '52px', display: 'block', objectFit: 'contain' }} />}
-                    <div style={{ fontSize: '13px', textAlign: 'center', color: qColor, lineHeight: 1.3 }}>{cost.name}</div>
+                    <div style={{ fontSize: '18px', textAlign: 'center', color: qColor, lineHeight: 1.3 }}>{cost.name}</div>
                     <div style={{ fontSize: '20px', fontWeight: 'bold', color: '#fff' }}>×{cost.num.toLocaleString()}</div>
                   </div>
                 );

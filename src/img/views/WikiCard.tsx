@@ -15,7 +15,7 @@ interface WikiCardProps {
 export default function WikiCard({ data }: WikiCardProps) {
   const { detail, queryType } = data;
   const { role, level, chainList, weaponData, skillList } = detail;
-  const attrColor = WAVES_ECHO_COLORS[role.attributeName] ?? C.gold;
+  const attrColor = WAVES_ECHO_COLORS[role.attributeName ?? ''] ?? C.gold;
   const unlockedChains = chainList?.filter(c => c.unlocked).length ?? 0;
 
   return (
@@ -41,7 +41,7 @@ export default function WikiCard({ data }: WikiCardProps) {
               position: 'absolute',
               top: '20px',
               right: '30px',
-              fontSize: '14px',
+              fontSize: '20px',
               letterSpacing: '4px',
               color: 'rgba(255,255,255,0.1)',
               fontWeight: 'bold'
@@ -66,16 +66,16 @@ export default function WikiCard({ data }: WikiCardProps) {
           <div style={{ flex: 1 }}>
             <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px', marginBottom: '8px' }}>
               <div style={{ fontSize: '42px', fontWeight: 800, color: '#fff', textShadow: '0 4px 10px rgba(0,0,0,0.5)' }}>{role.roleName}</div>
-              <div style={{ fontSize: '16px', color: C.textDim }}>{queryType}</div>
+              <div style={{ fontSize: '22px', color: C.textDim }}>{queryType}</div>
             </div>
-            <div style={{ fontSize: '16px', color: C.textSecondary, marginBottom: '6px' }}>
+            <div style={{ fontSize: '22px', color: C.textSecondary, marginBottom: '6px' }}>
               Lv.{level} · <span style={{ color: C.star5 }}>{'★'.repeat(role.starLevel)}</span> · 共鸣链 {unlockedChains}/{chainList?.length ?? 0}
             </div>
             <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-              <span style={{ color: attrColor, fontSize: '14px' }}>◆ {role.attributeName}</span>
+              <span style={{ color: attrColor, fontSize: '20px' }}>◆ {role.attributeName}</span>
               <div
                 style={{
-                  fontSize: '16px',
+                  fontSize: '22px',
                   color: C.gold,
                   background: 'rgba(0,0,0,0.4)',
                   padding: '4px 12px',
@@ -107,8 +107,8 @@ export default function WikiCard({ data }: WikiCardProps) {
                 >
                   {skill.iconUrl && <img src={skill.iconUrl} style={{ width: '40px', height: '40px', display: 'block', borderRadius: '8px' }} />}
                   <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: '16px', fontWeight: 'bold', color: '#fff' }}>{skill.skillName}</div>
-                    <div style={{ fontSize: '13px', color: C.textDim }}>{skill.type}</div>
+                    <div style={{ fontSize: '22px', fontWeight: 'bold', color: '#fff' }}>{skill.skillName}</div>
+                    <div style={{ fontSize: '18px', color: C.textDim }}>{skill.type}</div>
                   </div>
                   <div style={{ fontSize: '18px', fontWeight: 'bold', color: skill.level >= 10 ? C.gold : '#fff' }}>Lv.{skill.level}</div>
                 </div>
@@ -140,13 +140,13 @@ export default function WikiCard({ data }: WikiCardProps) {
                     />
                   )}
                   <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: '16px', fontWeight: 'bold', color: '#fff' }}>
+                    <div style={{ fontSize: '22px', fontWeight: 'bold', color: '#fff' }}>
                       第{chain.order}链 · {chain.name}
                     </div>
                   </div>
                   <div
                     style={{
-                      fontSize: '13px',
+                      fontSize: '18px',
                       padding: '4px 12px',
                       borderRadius: '6px',
                       background: chain.unlocked ? 'rgba(102,187,106,0.15)' : 'rgba(0,0,0,0.3)',
@@ -170,9 +170,9 @@ export default function WikiCard({ data }: WikiCardProps) {
               <div>
                 <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#fff' }}>
                   {weaponData.weaponName}
-                  <span style={{ color: C.star5, marginLeft: '8px', fontSize: '14px' }}>{'★'.repeat(weaponData.weaponStarLevel)}</span>
+                  <span style={{ color: C.star5, marginLeft: '8px', fontSize: '20px' }}>{'★'.repeat(weaponData.weaponStarLevel)}</span>
                 </div>
-                <div style={{ fontSize: '14px', color: C.textDim, marginTop: '4px' }}>
+                <div style={{ fontSize: '20px', color: C.textDim, marginTop: '4px' }}>
                   Lv.{weaponData.level} · 精炼 {weaponData.resonLevel}
                 </div>
               </div>

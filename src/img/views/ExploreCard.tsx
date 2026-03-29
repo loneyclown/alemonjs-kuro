@@ -51,7 +51,7 @@ export default function ExploreCard({ data }: ExploreCardProps) {
                     <span style={{ fontSize: '18px', fontWeight: 'bold', color: '#fff' }}>{region.country.countryName}</span>
                     <div style={{ display: 'flex', alignItems: 'baseline', gap: '2px' }}>
                       <span style={{ fontSize: '28px', fontWeight: 'bold', color: progressColor(pct), lineHeight: 1 }}>{pct}</span>
-                      <span style={{ fontSize: '16px', color: C.textDim }}>%</span>
+                      <span style={{ fontSize: '22px', color: C.textDim }}>%</span>
                     </div>
                   </div>
                   <div style={{ width: '100%', height: '8px', background: 'rgba(0,0,0,0.3)', borderRadius: '4px', overflow: 'hidden' }}>
@@ -78,7 +78,7 @@ export default function ExploreCard({ data }: ExploreCardProps) {
                         background: 'rgba(102,187,106,0.12)',
                         borderRadius: '8px',
                         padding: '6px 14px',
-                        fontSize: '14px',
+                        fontSize: '20px',
                         display: 'flex',
                         alignItems: 'center',
                         gap: '6px'
@@ -108,12 +108,12 @@ export default function ExploreCard({ data }: ExploreCardProps) {
                     }}
                   >
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-                      <span style={{ fontSize: '16px', fontWeight: 'bold', color: '#fff' }}>{area.areaName}</span>
+                      <span style={{ fontSize: '22px', fontWeight: 'bold', color: '#fff' }}>{area.areaName}</span>
                       <div style={{ display: 'flex', alignItems: 'baseline', gap: '2px' }}>
                         <span style={{ fontSize: '22px', fontWeight: 'bold', color: progressColor(area.areaProgress), lineHeight: 1 }}>
                           {area.areaProgress}
                         </span>
-                        <span style={{ fontSize: '14px', color: C.textDim }}>%</span>
+                        <span style={{ fontSize: '20px', color: C.textDim }}>%</span>
                       </div>
                     </div>
                     {/* 进度条 */}
@@ -146,7 +146,7 @@ export default function ExploreCard({ data }: ExploreCardProps) {
                               background: 'rgba(0,0,0,0.25)',
                               borderRadius: '8px',
                               padding: '6px 12px',
-                              fontSize: '13px',
+                              fontSize: '18px',
                               display: 'flex',
                               alignItems: 'center',
                               gap: '6px'

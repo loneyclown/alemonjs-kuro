@@ -1,7 +1,25 @@
 import CalendarCard from '@src/img/views/CalendarCard';
-import { apiAnnList } from '@src/model/api';
+import { apiWikiHome } from '@src/model/api';
+import type { WikiActivityContent, WikiGachaTab } from '@src/model/types';
 import { createEvent, EventsEnum, Format, useMessage } from 'alemonjs';
 import { renderComponentIsHtmlToBuffer } from 'jsxp';
+
+/** 计算逆境深塔/冥歌海墟周期 */
+function getCycleNode(name: string, startBase: Date) {
+  const cycleDays = 28;
+  const now = Date.now();
+  const elapsed = now - startBase.getTime();
+  const periodIndex = Math.floor(elapsed / (cycleDays * 86400000));
+  const periodStart = new Date(startBase.getTime() + periodIndex * cycleDays * 86400000);
+  const periodEnd = new Date(periodStart.getTime() + cycleDays * 86400000);
+  const fmt = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+
+  return {
+    title: name,
+    contentUrl: '',
+    countDown: { dateRange: [fmt(periodStart), fmt(periodEnd)] as [string, string] }
+  };
+}
 
 export default async (e: EventsEnum) => {
   const event = createEvent({
@@ -13,33 +31,84 @@ export default async (e: EventsEnum) => {
   const format = Format.create();
   const md = Format.createMarkdown();
 
-  // 获取活动公告 (eventType=1)
-  const actResp = await apiAnnList('1', 20);
+  const resp = await apiWikiHome();
 
-  if (!actResp.success || !actResp.data) {
-    md.addText(`[鸣潮] 活动日历获取失败: ${actResp.msg || '未知错误'}`);
+  if (!resp.success || !resp.data) {
+    md.addText(`[鸣潮] 活动日历获取失败: ${resp.msg || '未知错误'}`);
     format.addMarkdown(md);
     void message.send({ format });
 
     return;
   }
 
-  const now = Date.now();
-  const events = (actResp.data.list ?? []).map(ann => {
-    // 简化解析：将公告视为活动进行中
-    const pubTime = new Date(ann.publishTime).getTime();
-    const isActive = pubTime <= now;
-    const isGacha = /调谐|唤取|卡池/.test(ann.title);
-    const isTower = /深塔|海墟|矩阵|战略/.test(ann.title);
+  const contentJson = typeof resp.data.contentJson === 'string' ? JSON.parse(resp.data.contentJson) : resp.data.contentJson;
 
-    return {
-      title: ann.title,
-      startTime: ann.publishTime,
-      endTime: '—',
-      type: isGacha ? 'gacha' : isTower ? 'tower' : 'activity',
-      isActive
-    };
-  });
+  const sideModules = contentJson?.sideModules ?? [];
+  const now = Date.now();
+
+  interface CalEvent {
+    title: string;
+    type: 'gacha' | 'tower' | 'activity';
+    dateRange?: [string, string];
+    status: string;
+    timeLeft: string;
+    isActive: boolean;
+    iconUrl?: string;
+  }
+
+  const events: CalEvent[] = [];
+
+  for (const mod of sideModules) {
+    if (mod.title === '角色活动唤取' || mod.title === '武器活动唤取') {
+      const tabs = (mod.content as { tabs?: WikiGachaTab[] })?.tabs ?? [];
+
+      for (const tab of tabs) {
+        const dr = tab.countDown?.dateRange;
+        const { status, timeLeft, isActive } = getStatus(dr, now);
+
+        events.push({
+          title: `${mod.title}: ${tab.name || '当前卡池'}`,
+          type: 'gacha',
+          dateRange: dr,
+          status,
+          timeLeft,
+          isActive,
+          iconUrl: tab.imgs?.[0]?.img
+        });
+      }
+    } else if (mod.title === '版本活动') {
+      // 插入深塔/海墟周期
+      const towerNode = getCycleNode('逆境深塔', new Date(2025, 1, 3, 4, 0));
+      const abyssNode = getCycleNode('冥歌海墟', new Date(2025, 2, 17, 4, 0));
+      const builtInNodes = [towerNode, abyssNode];
+
+      const activityList = Array.isArray(mod.content) ? (mod.content as WikiActivityContent[]) : [];
+      const allActivities = [...builtInNodes, ...activityList];
+
+      for (const act of allActivities) {
+        const dr = act.countDown?.dateRange;
+        const { status, timeLeft, isActive } = getStatus(dr, now);
+
+        events.push({
+          title: act.title,
+          type: /深塔|海墟/.test(act.title) ? 'tower' : 'activity',
+          dateRange: dr,
+          status,
+          timeLeft,
+          isActive,
+          iconUrl: act.contentUrl?.startsWith('http') ? act.contentUrl : undefined
+        });
+      }
+    }
+  }
+
+  if (events.length === 0) {
+    md.addText('[鸣潮] 当前日历无数据');
+    format.addMarkdown(md);
+    void message.send({ format });
+
+    return;
+  }
 
   const img = await renderComponentIsHtmlToBuffer(CalendarCard, { data: { events } });
 
@@ -54,3 +123,24 @@ export default async (e: EventsEnum) => {
   format.addImage(img);
   void message.send({ format });
 };
+
+function getStatus(dateRange: [string, string] | undefined, now: number) {
+  if (!dateRange || dateRange.length < 2) {
+    return { status: '进行中', timeLeft: '', isActive: true };
+  }
+  const start = new Date(dateRange[0].replace(' ', 'T')).getTime();
+  const end = new Date(dateRange[1].replace(' ', 'T')).getTime();
+
+  if (now < start) {
+    return { status: '未开始', timeLeft: '', isActive: false };
+  }
+  if (now > end) {
+    return { status: '已结束', timeLeft: '', isActive: false };
+  }
+  const diff = end - now;
+  const d = Math.floor(diff / 86400000);
+  const h = Math.floor((diff % 86400000) / 3600000);
+  const timeLeft = d > 0 ? `剩余${d}天${h}小时` : `剩余${h}小时`;
+
+  return { status: '进行中', timeLeft, isActive: true };
+}

@@ -23,7 +23,7 @@ const ATTR_COLORS: Record<string, string> = {
 export default function CharDetailCard({ data }: CharDetailCardProps) {
   const { detail } = data;
   const { role, level, chainList, weaponData, phantomData, skillList } = detail;
-  const attrColor = ATTR_COLORS[role.attributeName] ?? '#d4b163';
+  const attrColor = ATTR_COLORS[role.attributeName ?? ''] ?? '#d4b163';
   const unlockedChains = chainList?.filter(c => c.unlocked).length ?? 0;
 
   return (
@@ -100,17 +100,17 @@ export default function CharDetailCard({ data }: CharDetailCardProps) {
             <div style={{ display: 'flex', gap: '30px' }}>
               <div style={{ display: 'flex', flexDirection: 'column' }}>
                 <div style={{ fontSize: '30px', fontWeight: 700, color: '#fff', lineHeight: 1.1 }}>{level}</div>
-                <div style={{ fontSize: '12px', color: C.textDim, fontWeight: 'bold', letterSpacing: '1px', marginTop: '2px' }}>角色等级</div>
+                <div style={{ fontSize: '18px', color: C.textDim, fontWeight: 'bold', letterSpacing: '1px', marginTop: '2px' }}>角色等级</div>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column' }}>
                 <div style={{ fontSize: '30px', fontWeight: 700, color: attrColor, lineHeight: 1.1 }}>
                   {unlockedChains}/{chainList?.length ?? 0}
                 </div>
-                <div style={{ fontSize: '12px', color: C.textDim, fontWeight: 'bold', letterSpacing: '1px', marginTop: '2px' }}>共鸣链</div>
+                <div style={{ fontSize: '18px', color: C.textDim, fontWeight: 'bold', letterSpacing: '1px', marginTop: '2px' }}>共鸣链</div>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <div style={{ fontSize: '14px', fontWeight: 700, color: attrColor, lineHeight: 1.1 }}>◆ {role.attributeName}</div>
-                <div style={{ fontSize: '12px', color: C.textDim, fontWeight: 'bold', letterSpacing: '1px', marginTop: '2px' }}>
+                <div style={{ fontSize: '20px', fontWeight: 700, color: attrColor, lineHeight: 1.1 }}>◆ {role.attributeName}</div>
+                <div style={{ fontSize: '18px', color: C.textDim, fontWeight: 'bold', letterSpacing: '1px', marginTop: '2px' }}>
                   {'★'.repeat(role.starLevel)}
                 </div>
               </div>
@@ -131,9 +131,9 @@ export default function CharDetailCard({ data }: CharDetailCardProps) {
               <div>
                 <div style={{ fontSize: '20px', fontWeight: 'bold' }}>
                   {weaponData.weaponName}
-                  <span style={{ color: C.gold, marginLeft: '8px', fontSize: '14px' }}>{'★'.repeat(weaponData.weaponStarLevel)}</span>
+                  <span style={{ color: C.gold, marginLeft: '8px', fontSize: '20px' }}>{'★'.repeat(weaponData.weaponStarLevel)}</span>
                 </div>
-                <div style={{ fontSize: '16px', color: C.textSecondary, marginTop: '4px' }}>
+                <div style={{ fontSize: '22px', color: C.textSecondary, marginTop: '4px' }}>
                   Lv.{weaponData.level} | 谐振 R{weaponData.resonLevel}
                 </div>
               </div>
@@ -161,8 +161,8 @@ export default function CharDetailCard({ data }: CharDetailCardProps) {
                 >
                   {skill.iconUrl && <img src={skill.iconUrl} style={{ width: '36px', height: '36px', display: 'block', borderRadius: '6px' }} />}
                   <div>
-                    <div style={{ fontSize: '14px', fontWeight: 'bold' }}>{skill.skillName}</div>
-                    <div style={{ fontSize: '13px', color: C.textDim }}>Lv.{skill.level}</div>
+                    <div style={{ fontSize: '20px', fontWeight: 'bold' }}>{skill.skillName}</div>
+                    <div style={{ fontSize: '18px', color: C.textDim }}>Lv.{skill.level}</div>
                   </div>
                 </div>
               ))}
@@ -194,14 +194,14 @@ export default function CharDetailCard({ data }: CharDetailCardProps) {
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
                         {p.icon && <img src={p.icon} style={{ width: '36px', height: '36px', display: 'block', borderRadius: '6px' }} />}
                         <div>
-                          <div style={{ fontSize: '13px', fontWeight: 'bold', lineHeight: 1.2 }}>{p.name}</div>
-                          <div style={{ fontSize: '12px', color: C.textDim }}>
+                          <div style={{ fontSize: '18px', fontWeight: 'bold', lineHeight: 1.2 }}>{p.name}</div>
+                          <div style={{ fontSize: '18px', color: C.textDim }}>
                             Lv.{p.level} C{p.cost}
                           </div>
                         </div>
                       </div>
                       {p.mainProps && p.mainProps.length > 0 && (
-                        <div style={{ fontSize: '12px', color: C.gold, marginTop: '4px' }}>
+                        <div style={{ fontSize: '18px', color: C.gold, marginTop: '4px' }}>
                           {p.mainProps.map((mp, j) => (
                             <div key={j}>
                               {mp.attributeName}: {mp.attributeValue}
@@ -210,7 +210,7 @@ export default function CharDetailCard({ data }: CharDetailCardProps) {
                         </div>
                       )}
                       {p.phantomProp && p.phantomProp.length > 0 && (
-                        <div style={{ fontSize: '11px', color: C.textSecondary, marginTop: '3px' }}>
+                        <div style={{ fontSize: '18px', color: C.textSecondary, marginTop: '3px' }}>
                           {p.phantomProp.map((sp, j) => (
                             <div key={j}>
                               {sp.attributeName}: {sp.attributeValue}

@@ -35,14 +35,14 @@ export default function RankCard({ data }: RankCardProps) {
               {data.playerName} · UID {data.uid}
             </div>
           </div>
-          <div style={{ fontSize: '14px', letterSpacing: '4px', color: 'rgba(255,255,255,0.1)', fontWeight: 'bold' }}>RANK</div>
+          <div style={{ fontSize: '20px', letterSpacing: '4px', color: 'rgba(255,255,255,0.1)', fontWeight: 'bold' }}>RANK</div>
         </div>
 
         <Section title='排行'>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
             {data.entries.map((entry, i) => {
               const attrColor = WAVES_ECHO_COLORS[entry.attributeName] ?? C.gold;
-              const chainColor = C.chain[entry.chainCount] ?? C.chain[0];
+              const chainColor = C.chain[entry.chainUnlockNum] ?? C.chain[0];
 
               return (
                 <div
@@ -81,7 +81,7 @@ export default function RankCard({ data }: RankCardProps) {
                       <span style={{ fontSize: '18px', fontWeight: 'bold', color: '#fff' }}>{entry.roleName}</span>
                       <span
                         style={{
-                          fontSize: '11px',
+                          fontSize: '18px',
                           padding: '2px 8px',
                           borderRadius: '4px',
                           background: `${chainColor}25`,
@@ -89,11 +89,11 @@ export default function RankCard({ data }: RankCardProps) {
                           fontWeight: 'bold'
                         }}
                       >
-                        {entry.chainCount}链
+                        {entry.chainUnlockNum}链
                       </span>
-                      <span style={{ fontSize: '12px', color: C.textDim }}>Lv.{entry.level}</span>
+                      <span style={{ fontSize: '18px', color: C.textDim }}>Lv.{entry.level}</span>
                     </div>
-                    <div style={{ fontSize: '13px', color: C.textDim, marginTop: '4px' }}>
+                    <div style={{ fontSize: '18px', color: C.textDim, marginTop: '4px' }}>
                       <span style={{ color: attrColor }}>◆ {entry.attributeName}</span>
                       {entry.weaponName !== '-' && (
                         <span style={{ marginLeft: '12px' }}>
@@ -107,7 +107,7 @@ export default function RankCard({ data }: RankCardProps) {
                   {/* 分数 */}
                   <div style={{ textAlign: 'right' }}>
                     <div style={{ fontSize: '24px', fontWeight: 'bold', color: C.gold }}>{entry.score.toFixed(0)}</div>
-                    <div style={{ fontSize: '12px', color: C.textDim }}>练度分</div>
+                    <div style={{ fontSize: '18px', color: C.textDim }}>练度分</div>
                   </div>
                 </div>
               );

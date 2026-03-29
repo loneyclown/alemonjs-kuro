@@ -65,15 +65,15 @@ export default function EchoListCard({ data }: EchoListCardProps) {
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
                     {echo.phantomIconUrl && <img src={echo.phantomIconUrl} style={{ width: '44px', height: '44px', display: 'block', borderRadius: '8px' }} />}
                     <div style={{ flex: 1 }}>
-                      <div style={{ fontSize: '14px', fontWeight: 'bold', color: '#fff', lineHeight: 1.3 }}>{echo.phantomName}</div>
+                      <div style={{ fontSize: '20px', fontWeight: 'bold', color: '#fff', lineHeight: 1.3 }}>{echo.phantomName}</div>
                       <div style={{ display: 'flex', gap: '6px', marginTop: '4px', flexWrap: 'wrap' }}>
-                        <span style={{ fontSize: '11px', padding: '2px 6px', borderRadius: '4px', background: 'rgba(0,0,0,0.4)', color: '#fff' }}>
+                        <span style={{ fontSize: '18px', padding: '2px 6px', borderRadius: '4px', background: 'rgba(0,0,0,0.4)', color: '#fff' }}>
                           Lv.{echo.level}
                         </span>
-                        <span style={{ fontSize: '11px', padding: '2px 6px', borderRadius: '4px', background: `${fetterColor}25`, color: fetterColor }}>
+                        <span style={{ fontSize: '18px', padding: '2px 6px', borderRadius: '4px', background: `${fetterColor}25`, color: fetterColor }}>
                           {echo.fetterName}
                         </span>
-                        <span style={{ fontSize: '11px', color: C.gold }}>{'◆'.repeat(echo.cost)}</span>
+                        <span style={{ fontSize: '18px', color: C.gold }}>{'◆'.repeat(echo.cost)}</span>
                       </div>
                     </div>
                     {echo.roleIconUrl && (
@@ -92,7 +92,7 @@ export default function EchoListCard({ data }: EchoListCardProps) {
 
                   {/* 主词条 */}
                   {echo.mainProps.map((prop, j) => (
-                    <div key={`m${j}`} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', padding: '2px 0', color: C.gold }}>
+                    <div key={`m${j}`} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '18px', padding: '2px 0', color: C.gold }}>
                       <span>{prop.attributeName}</span>
                       <span style={{ fontWeight: 'bold' }}>{prop.attributeValue}</span>
                     </div>
@@ -102,13 +102,13 @@ export default function EchoListCard({ data }: EchoListCardProps) {
 
                   {/* 副词条 */}
                   {echo.subProps.map((prop, j) => (
-                    <div key={`s${j}`} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', padding: '2px 0', color: C.textSecondary }}>
+                    <div key={`s${j}`} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '18px', padding: '2px 0', color: C.textSecondary }}>
                       <span>{prop.attributeName}</span>
                       <span>{prop.attributeValue}</span>
                     </div>
                   ))}
 
-                  <div style={{ fontSize: '11px', color: C.textDim, marginTop: '6px', textAlign: 'right' }}>{echo.roleName}</div>
+                  <div style={{ fontSize: '18px', color: C.textDim, marginTop: '6px', textAlign: 'right' }}>{echo.roleName}</div>
                 </div>
               );
             })}

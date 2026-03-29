@@ -27,9 +27,9 @@ export default function RoleInfoCard({ data }: RoleInfoCardProps) {
         <Section title='角色一览' extra={`共 ${roles.length} 个`}>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
             {sortedRoles.map((role, idx) => {
-              const attrColor = WAVES_ECHO_COLORS[role.attributeName] || '#6b9fff';
+              const attrColor = WAVES_ECHO_COLORS[role.attributeName ?? ''] || '#6b9fff';
               const sColor = STAR_COLORS[role.starLevel] || '#4a9ed6';
-              const chainColor = C.chain[role.chainCount] ?? C.chain[0];
+              const chainColor = C.chain[role.chainUnlockNum ?? 0] ?? C.chain[0];
 
               return (
                 <div
@@ -75,11 +75,11 @@ export default function RoleInfoCard({ data }: RoleInfoCardProps) {
                       </div>
                     )}
                   </div>
-                  <div style={{ fontSize: '14px', fontWeight: 'bold', color: '#fff', marginBottom: '4px', textAlign: 'center' }}>{role.roleName}</div>
-                  <div style={{ fontSize: '12px', color: sColor, marginBottom: '6px' }}>{'★'.repeat(role.starLevel)}</div>
+                  <div style={{ fontSize: '20px', fontWeight: 'bold', color: '#fff', marginBottom: '4px', textAlign: 'center' }}>{role.roleName}</div>
+                  <div style={{ fontSize: '18px', color: sColor, marginBottom: '6px' }}>{'★'.repeat(role.starLevel)}</div>
                   <div
                     style={{
-                      fontSize: '11px',
+                      fontSize: '18px',
                       color: attrColor,
                       background: `${attrColor}20`,
                       borderRadius: '4px',
@@ -89,7 +89,7 @@ export default function RoleInfoCard({ data }: RoleInfoCardProps) {
                   >
                     {role.attributeName}
                   </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', fontSize: '12px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', fontSize: '18px' }}>
                     <span style={{ color: C.textSecondary }}>Lv.{role.level}</span>
                     <span
                       style={{
@@ -97,11 +97,11 @@ export default function RoleInfoCard({ data }: RoleInfoCardProps) {
                         background: `${chainColor}25`,
                         borderRadius: '4px',
                         padding: '1px 6px',
-                        fontSize: '11px',
+                        fontSize: '18px',
                         fontWeight: 'bold'
                       }}
                     >
-                      {role.chainCount}链
+                      {role.chainUnlockNum ?? 0}链
                     </span>
                   </div>
                 </div>

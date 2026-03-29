@@ -33,7 +33,7 @@ export default function CalabashCard({ data }: CalabashCardProps) {
             <div style={{ fontSize: '36px', fontWeight: 800, color: '#fff', textShadow: '0 4px 10px rgba(0,0,0,0.5)' }}>数据坞</div>
             <div style={{ fontSize: '18px', color: C.textSecondary, marginTop: '6px' }}>UID {data.uid}</div>
           </div>
-          <div style={{ fontSize: '14px', letterSpacing: '4px', color: 'rgba(255,255,255,0.1)', fontWeight: 'bold' }}>CALABASH</div>
+          <div style={{ fontSize: '20px', letterSpacing: '4px', color: 'rgba(255,255,255,0.1)', fontWeight: 'bold' }}>CALABASH</div>
         </div>
 
         <Section title='基本信息'>
@@ -46,7 +46,7 @@ export default function CalabashCard({ data }: CalabashCardProps) {
             ].map((stat, i) => (
               <div key={i} style={{ textAlign: 'center' }}>
                 <div style={{ fontSize: '36px', fontWeight: 800, color: stat.color }}>{stat.value}</div>
-                <div style={{ fontSize: '14px', color: C.textDim, marginTop: '4px' }}>{stat.label}</div>
+                <div style={{ fontSize: '20px', color: C.textDim, marginTop: '4px' }}>{stat.label}</div>
               </div>
             ))}
           </div>
@@ -68,10 +68,10 @@ export default function CalabashCard({ data }: CalabashCardProps) {
                   }}
                 >
                   {p.iconUrl && <img src={p.iconUrl} style={{ width: '44px', height: '44px', display: 'block', borderRadius: '6px', margin: '0 auto 6px' }} />}
-                  <div style={{ fontSize: '12px', lineHeight: 1.3, color: '#fff', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  <div style={{ fontSize: '18px', lineHeight: 1.3, color: '#fff', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                     {p.name}
                   </div>
-                  <div style={{ fontSize: '11px', color: C.gold, marginTop: '2px' }}>C{p.cost}</div>
+                  <div style={{ fontSize: '18px', color: C.gold, marginTop: '2px' }}>C{p.cost}</div>
                 </div>
               ))}
             </div>

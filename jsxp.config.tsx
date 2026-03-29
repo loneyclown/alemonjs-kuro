@@ -83,9 +83,9 @@ export default defineConfig({
               bigWorldLevel: 6
             },
             roles: [
-              { roleId: 1001, roleName: '吟霖', roleIconUrl: '', starLevel: 5, level: 90, breach: 6, attributeId: 1, attributeName: '凝夜白霜', weaponTypeId: 1, chain: [], chainCount: 2 },
-              { roleId: 1002, roleName: '安可', roleIconUrl: '', starLevel: 5, level: 80, breach: 5, attributeId: 2, attributeName: '熔山裂谷', weaponTypeId: 2, chain: [], chainCount: 0 },
-              { roleId: 1003, roleName: '鉴心', roleIconUrl: '', starLevel: 4, level: 70, breach: 4, attributeId: 3, attributeName: '彻空冥雷', weaponTypeId: 1, chain: [], chainCount: 4 }
+              { roleId: 1001, roleName: '吟霖', roleIconUrl: '', starLevel: 5, level: 90, breach: 6, attributeId: 1, attributeName: '凝夜白霜', weaponTypeId: 1, chainUnlockNum: 2 },
+              { roleId: 1002, roleName: '安可', roleIconUrl: '', starLevel: 5, level: 80, breach: 5, attributeId: 2, attributeName: '熔山裂谷', weaponTypeId: 2, chainUnlockNum: 0 },
+              { roleId: 1003, roleName: '鉴心', roleIconUrl: '', starLevel: 4, level: 70, breach: 4, attributeId: 3, attributeName: '彻空再雷', weaponTypeId: 1, chainUnlockNum: 4 }
             ]
           }}
         />
@@ -146,15 +146,17 @@ export default defineConfig({
         <SignCard
           data={{
             uid: '100000001',
+            signMsg: '签到成功！',
             sign: {
               sigInNum: 5,
-              hasSignIn: true,
-              sigInDTOList: Array.from({ length: 7 }, (_, i) => ({
-                id: `${i + 1}`,
+              isSigIn: true,
+              signInGoodsConfigs: Array.from({ length: 7 }, (_, i) => ({
+                goodsId: i + 1,
                 goodsName: i < 3 ? '星声' : '贝币',
                 goodsNum: i < 3 ? 20 : 10000,
                 goodsUrl: '',
-                sigInStatus: i < 5 ? 1 : 0
+                serialNum: i,
+                isGain: i < 5
               }))
             }
           }}
@@ -245,11 +247,11 @@ export default defineConfig({
             uid: '100000001',
             base: { name: '漂泊者', id: 100000001, level: 60, worldLevel: 6, roleNum: 5, phantomNum: 300, achievementCount: 150, boxNum: 500, soundLevel: 30, bigWorldLevel: 6 },
             roles: [
-              { roleId: 1001, roleName: '吟霖', roleIconUrl: '', starLevel: 5, level: 90, breach: 6, attributeId: 1, attributeName: '冰', weaponTypeId: 1, chain: [], chainCount: 2 },
-              { roleId: 1002, roleName: '安可', roleIconUrl: '', starLevel: 5, level: 80, breach: 5, attributeId: 2, attributeName: '火', weaponTypeId: 2, chain: [], chainCount: 0 },
-              { roleId: 1003, roleName: '鉴心', roleIconUrl: '', starLevel: 4, level: 70, breach: 4, attributeId: 3, attributeName: '雷', weaponTypeId: 1, chain: [], chainCount: 4 },
-              { roleId: 1004, roleName: '维里奈', roleIconUrl: '', starLevel: 5, level: 90, breach: 6, attributeId: 4, attributeName: '光', weaponTypeId: 3, chain: [], chainCount: 1 },
-              { roleId: 1005, roleName: '散华', roleIconUrl: '', starLevel: 4, level: 60, breach: 3, attributeId: 5, attributeName: '风', weaponTypeId: 2, chain: [], chainCount: 6 }
+              { roleId: 1001, roleName: '吟霖', roleIconUrl: '', starLevel: 5, level: 90, breach: 6, attributeId: 1, attributeName: '冰', weaponTypeId: 1, chainUnlockNum: 2 },
+              { roleId: 1002, roleName: '安可', roleIconUrl: '', starLevel: 5, level: 80, breach: 5, attributeId: 2, attributeName: '火', weaponTypeId: 2, chainUnlockNum: 0 },
+              { roleId: 1003, roleName: '鉴心', roleIconUrl: '', starLevel: 4, level: 70, breach: 4, attributeId: 3, attributeName: '雷', weaponTypeId: 1, chainUnlockNum: 4 },
+              { roleId: 1004, roleName: '维里奈', roleIconUrl: '', starLevel: 5, level: 90, breach: 6, attributeId: 4, attributeName: '光', weaponTypeId: 3, chainUnlockNum: 1 },
+              { roleId: 1005, roleName: '散华', roleIconUrl: '', starLevel: 4, level: 60, breach: 3, attributeId: 5, attributeName: '风', weaponTypeId: 2, chainUnlockNum: 6 }
             ]
           }}
         />
@@ -276,12 +278,15 @@ export default defineConfig({
         <AnnCard
           data={{
             activities: [
-              { id: '1', postId: '1', title: '2.3版本「涌潮纪行」活动公告', coverUrl: '', publishTime: '2026-03-25 10:00', eventType: '1' },
-              { id: '2', postId: '2', title: '限时角色祈愿活动「浮声掠影」开启', coverUrl: '', publishTime: '2026-03-24 10:00', eventType: '1' }
+              { id: 1, postId: '1', postTitle: '2.3版本「涌潮纪行」活动公告', coverUrl: '', publishTime: 1742900400000, eventType: 1 },
+              { id: 2, postId: '2', postTitle: '限时角色祈愿活动「浮声掠影」开启', coverUrl: '', publishTime: 1742814000000, eventType: 1 }
+            ],
+            infos: [
+              { id: 5, postId: '5', postTitle: '《鸣潮》2.3版本前瞻特别节目预告', coverUrl: '', publishTime: 1742727600000, eventType: 2 }
             ],
             notices: [
-              { id: '3', postId: '3', title: '《鸣潮》2.3版本更新公告', coverUrl: '', publishTime: '2026-03-20 06:00', eventType: '3' },
-              { id: '4', postId: '4', title: '3月28日停服维护公告', coverUrl: '', publishTime: '2026-03-27 18:00', eventType: '3' }
+              { id: 3, postId: '3', postTitle: '《鸣潮》2.3版本更新公告', coverUrl: '', publishTime: 1742468400000, eventType: 3 },
+              { id: 4, postId: '4', postTitle: '3月28日停服维护公告', coverUrl: '', publishTime: 1743091200000, eventType: 3 }
             ]
           }}
         />
@@ -306,7 +311,7 @@ export default defineConfig({
           data={{
             uid: '100000001',
             detail: {
-              role: { roleId: 1001, roleName: '吟霖', roleIconUrl: '', starLevel: 5, level: 90, breach: 6, attributeId: 1, attributeName: '冰', weaponTypeId: 1, chain: [], chainCount: 2 },
+              role: { roleId: 1001, roleName: '吟霖', roleIconUrl: '', starLevel: 5, level: 90, breach: 6, attributeId: 1, attributeName: '冰', weaponTypeId: 1, chainUnlockNum: 2 },
               level: 90,
               chainList: [
                 { order: 1, name: '链1', iconUrl: '', unlocked: true },
@@ -343,9 +348,12 @@ export default defineConfig({
         <CalendarCard
           data={{
             events: [
-              { title: '限时角色调谐 — 吟霖', startTime: '2026-03-20', endTime: '2026-04-10', type: 'gacha', isActive: true },
-              { title: '「浮光掠影」活动', startTime: '2026-03-22', endTime: '2026-04-05', type: 'activity', isActive: true },
-              { title: '逆境深塔 S4赛季', startTime: '2026-04-01', endTime: '2026-04-28', type: 'tower', isActive: false }
+              { title: '角色活动唤取: 吟霖', type: 'gacha', dateRange: ['2026-03-20 10:00', '2026-04-10 06:00'], status: '进行中', timeLeft: '剩余11天', isActive: true },
+              { title: '武器活动唤取: 苍鳞千嶂', type: 'gacha', dateRange: ['2026-03-20 10:00', '2026-04-10 06:00'], status: '进行中', timeLeft: '剩余11天', isActive: true },
+              { title: '逆境深塔', type: 'tower', dateRange: ['2026-03-17 04:00', '2026-04-14 04:00'], status: '进行中', timeLeft: '剩余15天', isActive: true },
+              { title: '冥歌海墟', type: 'tower', dateRange: ['2026-03-17 04:00', '2026-04-14 04:00'], status: '进行中', timeLeft: '剩余15天', isActive: true },
+              { title: '「浮光掠影」活动', type: 'activity', dateRange: ['2026-03-22 10:00', '2026-04-05 04:00'], status: '进行中', timeLeft: '剩余6天', isActive: true },
+              { title: '版本前瞻活动', type: 'activity', dateRange: ['2026-04-10 10:00', '2026-04-20 04:00'], status: '未开始', timeLeft: '', isActive: false }
             ]
           }}
         />
@@ -413,9 +421,9 @@ export default defineConfig({
             uid: '100000001',
             playerName: '漂泊者',
             entries: [
-              { uid: '100000001', roleName: '吟霖', roleIconUrl: '', starLevel: 5, level: 90, chainCount: 2, attributeName: '冰', weaponName: '苍鳞千嶂', weaponStarLevel: 5, weaponLevel: 90, resonLevel: 1, score: 175 },
-              { uid: '100000001', roleName: '安可', roleIconUrl: '', starLevel: 5, level: 80, chainCount: 0, attributeName: '火', weaponName: '无妄', weaponStarLevel: 4, weaponLevel: 80, resonLevel: 1, score: 130 },
-              { uid: '100000001', roleName: '鉴心', roleIconUrl: '', starLevel: 4, level: 70, chainCount: 4, attributeName: '雷', weaponName: '千古洑流', weaponStarLevel: 3, weaponLevel: 70, resonLevel: 1, score: 120 }
+              { uid: '100000001', roleName: '吟霖', roleIconUrl: '', starLevel: 5, level: 90, chainUnlockNum: 2, attributeName: '冰', weaponName: '苍鳞千嶂', weaponStarLevel: 5, weaponLevel: 90, resonLevel: 1, score: 175 },
+              { uid: '100000001', roleName: '安可', roleIconUrl: '', starLevel: 5, level: 80, chainUnlockNum: 0, attributeName: '火', weaponName: '无妄', weaponStarLevel: 4, weaponLevel: 80, resonLevel: 1, score: 130 },
+              { uid: '100000001', roleName: '鉴心', roleIconUrl: '', starLevel: 4, level: 70, chainUnlockNum: 4, attributeName: '雷', weaponName: '千古洑流', weaponStarLevel: 3, weaponLevel: 70, resonLevel: 1, score: 120 }
             ]
           }}
         />
@@ -427,7 +435,7 @@ export default defineConfig({
           data={{
             uid: '100000001',
             detail: {
-              role: { roleId: 1001, roleName: '吟霖', roleIconUrl: '', starLevel: 5, level: 90, breach: 6, attributeId: 1, attributeName: '冰', weaponTypeId: 1, chain: [], chainCount: 2 },
+              role: { roleId: 1001, roleName: '吟霖', roleIconUrl: '', starLevel: 5, level: 90, breach: 6, attributeId: 1, attributeName: '冰', weaponTypeId: 1, chainUnlockNum: 2 },
               level: 90,
               chainList: [
                 { order: 1, name: '链1', iconUrl: '', unlocked: true },
@@ -472,9 +480,9 @@ export default defineConfig({
         <PoolCard
           data={{
             pools: [
-              { title: '限定角色调谐 — 吟霖', publishTime: '2026-03-20 10:00' },
-              { title: '限定武器调谐 — 苍鳞千嶂', publishTime: '2026-03-20 10:00' },
-              { title: '角色常驻调谐', publishTime: '2026-03-01 06:00' }
+              { poolName: '吟霖 限定唤取', type: 'char', dateRange: ['2026-03-20 10:00', '2026-04-10 06:00'], status: '进行中', timeLeft: '剩余11天', isActive: true, items: ['吟霖'] },
+              { poolName: '苍鳞千嶂 武器唤取', type: 'weapon', dateRange: ['2026-03-20 10:00', '2026-04-10 06:00'], status: '进行中', timeLeft: '剩余11天', isActive: true, items: ['苍鳞千嶂'] },
+              { poolName: '角色常驻唤取', type: 'char', dateRange: ['2026-03-01 06:00', '2026-12-31 06:00'], status: '进行中', timeLeft: '剩余277天', isActive: true, items: [] }
             ]
           }}
         />

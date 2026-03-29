@@ -7,10 +7,9 @@ import { renderComponentIsHtmlToBuffer } from 'jsxp';
 
 /** 计算简易练度分数 */
 function calcScore(role: RoleData): number {
-  // 基于等级、突破、共鸣链的综合打分
-  const levelScore = role.level * 1.0;
-  const breachScore = role.breach * 10;
-  const chainScore = role.chainCount * 15;
+  const levelScore = (role.level ?? 0) * 1.0;
+  const breachScore = (role.breach ?? 0) * 10;
+  const chainScore = (role.chainUnlockNum ?? 0) * 15;
   const starScore = role.starLevel === 5 ? 20 : 0;
 
   return levelScore + breachScore + chainScore + starScore;
@@ -76,8 +75,8 @@ export default async (e: EventsEnum) => {
       roleIconUrl: role.roleIconUrl,
       starLevel: role.starLevel,
       level: role.level,
-      chainCount: role.chainCount,
-      attributeName: role.attributeName,
+      chainUnlockNum: role.chainUnlockNum ?? 0,
+      attributeName: role.attributeName ?? '',
       score: calcScore(role),
       weaponName: detailResp.success && detailResp.data ? (detailResp.data.weaponData?.weaponName ?? '-') : '-',
       weaponLevel: detailResp.success && detailResp.data ? (detailResp.data.weaponData?.level ?? 0) : 0,

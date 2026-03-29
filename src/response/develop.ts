@@ -58,7 +58,7 @@ export default async (e: EventsEnum) => {
     return;
   }
 
-  const ownedRoles = Array.isArray(ownedResp.data) ? ownedResp.data : [];
+  const ownedRoles = ownedResp.data?.roleInfoList ?? [];
 
   if (ownedRoles.length === 0) {
     md.addText('[鸣潮] 未找到已拥有角色');
@@ -70,24 +70,14 @@ export default async (e: EventsEnum) => {
 
   // 构建批量培养请求 — 所有已拥有角色 升级到90、技能10
   const contentList = ownedRoles.map(role => {
-    const skillMap = new Map<string, number>();
-
-    for (const sk of role.skillLevelList ?? []) {
-      if (sk.type) {
-        skillMap.set(sk.type, sk.level ?? 1);
-      }
-    }
-
-    const skillLevelUpList = SKILL_ORDER.map(type => ({
-      startLevel: skillMap.get(type) ?? 1,
-      endLevel: 10
-    }));
-
     return {
       roleId: role.roleId,
       roleStartLevel: role.level ?? 1,
       roleEndLevel: 90,
-      skillLevelUpList,
+      skillLevelUpList: SKILL_ORDER.map(() => ({
+        startLevel: 1,
+        endLevel: 10
+      })),
       advanceSkillList: SKILL_BREAK_LIST,
       weaponStartLevel: 1,
       weaponEndLevel: 90,

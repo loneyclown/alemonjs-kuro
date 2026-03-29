@@ -40,7 +40,7 @@ export default function PeriodCard({ data }: PeriodCardProps) {
               {periodTitle} · UID {data.uid}
             </div>
           </div>
-          <div style={{ fontSize: '14px', letterSpacing: '4px', color: 'rgba(255,255,255,0.1)', fontWeight: 'bold' }}>LEDGER</div>
+          <div style={{ fontSize: '20px', letterSpacing: '4px', color: 'rgba(255,255,255,0.1)', fontWeight: 'bold' }}>LEDGER</div>
         </div>
 
         {/* 总计 */}
@@ -58,7 +58,7 @@ export default function PeriodCard({ data }: PeriodCardProps) {
                 }}
               >
                 <div style={{ fontSize: '42px', fontWeight: 800, color: C.gold }}>{detail.totalStar}</div>
-                <div style={{ fontSize: '16px', color: C.textDim, marginTop: '6px' }}>星声总计</div>
+                <div style={{ fontSize: '22px', color: C.textDim, marginTop: '6px' }}>星声总计</div>
               </div>
             )}
             {detail.totalCoin !== null && (
@@ -73,7 +73,7 @@ export default function PeriodCard({ data }: PeriodCardProps) {
                 }}
               >
                 <div style={{ fontSize: '42px', fontWeight: 800, color: '#4fc3f7' }}>{detail.totalCoin}</div>
-                <div style={{ fontSize: '16px', color: C.textDim, marginTop: '6px' }}>贝币总计</div>
+                <div style={{ fontSize: '22px', color: C.textDim, marginTop: '6px' }}>贝币总计</div>
               </div>
             )}
           </div>
@@ -95,7 +95,7 @@ export default function PeriodCard({ data }: PeriodCardProps) {
                         background: 'rgba(0,0,0,0.3)',
                         borderRadius: '6px',
                         padding: '6px 12px',
-                        fontSize: '14px',
+                        fontSize: '20px',
                         borderLeft: `2px solid ${color}`
                       }}
                     >
@@ -105,7 +105,7 @@ export default function PeriodCard({ data }: PeriodCardProps) {
                   ))}
                 </div>
               ) : (
-                <div style={{ color: C.textDim, fontSize: '14px' }}>暂无明细</div>
+                <div style={{ color: C.textDim, fontSize: '20px' }}>暂无明细</div>
               )}
             </Section>
           );

@@ -72,7 +72,7 @@ export default async (e: EventsEnum) => {
       allEchoes.push({
         roleId: role.roleId,
         roleName: role.roleName,
-        roleIconUrl: role.roleIconUrl,
+        roleIconUrl: role.roleIconUrl ?? '',
         phantomName: phantom.name ?? '未知',
         phantomIconUrl: phantom.icon ?? '',
         level: phantom.level ?? 0,

@@ -69,8 +69,8 @@ export default function ChallengeCard({ data }: ChallengeCardProps) {
                       }}
                     >
                       <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <span style={{ fontSize: '15px', color: C.textSecondary }}>第{floor.floor}层</span>
-                        <span style={{ fontSize: '15px', color: C.gold }}>{'★'.repeat(floor.star)}</span>
+                        <span style={{ fontSize: '20px', color: C.textSecondary }}>第{floor.floor}层</span>
+                        <span style={{ fontSize: '20px', color: C.gold }}>{'★'.repeat(floor.star)}</span>
                       </div>
                       {floor.roleList && floor.roleList.length > 0 && (
                         <div style={{ display: 'flex', gap: '6px' }}>
@@ -96,7 +96,7 @@ export default function ChallengeCard({ data }: ChallengeCardProps) {
                                     display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'center',
-                                    fontSize: '14px',
+                                    fontSize: '20px',
                                     color: C.gold
                                   }}
                                 >

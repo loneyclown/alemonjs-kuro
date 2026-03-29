@@ -38,28 +38,40 @@ export default async (e: EventsEnum) => {
 
   const { cookie } = ckResult;
 
-  // 如果是签到指令（非日历/记录），先执行签到
+  // 是否执行签到（非日历/记录）
   const isDoSign = /签到$|qd$/i.test(text) && !/日历|记录|jl/i.test(text);
+
+  // 1. 先获取签到初始化数据（日历）
+  const initResp = await apiSignInit(uid, cookie);
+
+  // 2. 如果是签到指令，尝试执行签到
+  let signMsg = '';
 
   if (isDoSign) {
     const signResp = await apiSignIn(uid, cookie);
 
     if (signResp.success) {
-      md.addText('[鸣潮] 签到成功！');
-    } else {
-      md.addText(`[鸣潮] 签到失败: ${signResp.msg || '未知错误'}`);
-    }
-    format.addMarkdown(md);
-    void message.send({ format });
+      signMsg = '签到成功！';
+      // 签到成功后重新获取最新状态
+      const refreshResp = await apiSignInit(uid, cookie);
 
-    return;
+      if (refreshResp.success && refreshResp.data) {
+        // 使用刷新后的数据
+        Object.assign(initResp, refreshResp);
+      }
+    } else {
+      signMsg = `签到失败: ${signResp.msg || '未知错误'}`;
+    }
   }
 
-  // 签到日历/记录
-  const initResp = await apiSignInit(uid, cookie);
-
+  // 3. 渲染签到日历卡片
   if (!initResp.success || !initResp.data) {
-    md.addText(`[鸣潮] 签到信息获取失败: ${initResp.msg || '未知错误'}`);
+    // init 也失败了，只能发文本
+    if (signMsg) {
+      md.addText(`[鸣潮] ${signMsg}`);
+    } else {
+      md.addText(`[鸣潮] 签到信息获取失败: ${initResp.msg || '未知错误'}`);
+    }
     format.addMarkdown(md);
     void message.send({ format });
 
@@ -69,12 +81,17 @@ export default async (e: EventsEnum) => {
   const img = await renderComponentIsHtmlToBuffer(SignCard, {
     data: {
       uid,
-      sign: initResp.data
+      sign: initResp.data,
+      signMsg
     }
   });
 
   if (typeof img === 'boolean') {
-    md.addText('[鸣潮] 签到卡片渲染失败');
+    if (signMsg) {
+      md.addText(`[鸣潮] ${signMsg}`);
+    } else {
+      md.addText('[鸣潮] 签到卡片渲染失败');
+    }
     format.addMarkdown(md);
     void message.send({ format });
 

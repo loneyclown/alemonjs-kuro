@@ -7,12 +7,16 @@ interface SignCardProps {
   data: {
     uid: string;
     sign: SignInitResp;
+    signMsg?: string;
   };
 }
 
 export default function SignCard({ data }: SignCardProps) {
-  const { uid, sign } = data;
-  const items = sign.sigInDTOList || [];
+  const { uid, sign, signMsg } = data;
+  // 兼容两种字段名: signInGoodsConfigs (Python API) 或 sigInDTOList (旧TS)
+  const items = sign.signInGoodsConfigs ?? sign.sigInDTOList ?? [];
+  // 兼容 isSigIn (Python) 和 hasSignIn (旧TS)
+  const hasSignedToday = sign.isSigIn ?? sign.hasSignIn ?? false;
 
   return (
     <HTML style={{ width: '1000px' }}>
@@ -39,22 +43,40 @@ export default function SignCard({ data }: SignCardProps) {
           <div
             style={{
               fontSize: '18px',
-              color: sign.hasSignIn ? '#66bb6a' : C.gold,
+              color: hasSignedToday ? '#66bb6a' : C.gold,
               fontWeight: 'bold',
-              background: sign.hasSignIn ? 'rgba(102,187,106,0.15)' : C.goldDim,
+              background: hasSignedToday ? 'rgba(102,187,106,0.15)' : C.goldDim,
               padding: '8px 20px',
               borderRadius: '24px',
-              border: `1px solid ${sign.hasSignIn ? 'rgba(102,187,106,0.4)' : C.goldBorder}`
+              border: `1px solid ${hasSignedToday ? 'rgba(102,187,106,0.4)' : C.goldBorder}`
             }}
           >
-            {sign.hasSignIn ? '今日已签' : '今日未签'}
+            {hasSignedToday ? '今日已签' : '今日未签'}
           </div>
         </div>
+
+        {signMsg && (
+          <div
+            style={{
+              background: signMsg.includes('成功') ? 'rgba(102,187,106,0.1)' : 'rgba(239,83,80,0.1)',
+              border: `1px solid ${signMsg.includes('成功') ? 'rgba(102,187,106,0.3)' : 'rgba(239,83,80,0.3)'}`,
+              borderRadius: '10px',
+              padding: '14px 20px',
+              fontSize: '22px',
+              fontWeight: 'bold',
+              color: signMsg.includes('成功') ? '#66bb6a' : '#ef5350',
+              textAlign: 'center',
+              margin: '0 20px'
+            }}
+          >
+            {signMsg}
+          </div>
+        )}
 
         <Section title='签到奖励'>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
             {items.map((item, idx) => {
-              const isClaimed = item.sigInStatus === 1;
+              const isClaimed = item.sigInStatus === 1 || item.isGain === true;
 
               return (
                 <div
@@ -74,7 +96,7 @@ export default function SignCard({ data }: SignCardProps) {
                     boxSizing: 'border-box'
                   }}
                 >
-                  <div style={{ fontSize: '13px', color: C.textDim, marginBottom: '6px' }}>第{idx + 1}天</div>
+                  <div style={{ fontSize: '18px', color: C.textDim, marginBottom: '6px' }}>第{idx + 1}天</div>
                   {item.goodsUrl ? (
                     <img
                       src={item.goodsUrl}
@@ -103,9 +125,9 @@ export default function SignCard({ data }: SignCardProps) {
                       ?
                     </div>
                   )}
-                  <div style={{ fontSize: '12px', color: C.textSecondary, lineHeight: 1.2 }}>{item.goodsName}</div>
-                  <div style={{ fontSize: '14px', color: '#fff', fontWeight: 'bold' }}>×{item.goodsNum}</div>
-                  {isClaimed && <div style={{ fontSize: '12px', color: '#66bb6a', marginTop: '2px' }}>✓</div>}
+                  <div style={{ fontSize: '18px', color: C.textSecondary, lineHeight: 1.2 }}>{item.goodsName}</div>
+                  <div style={{ fontSize: '20px', color: '#fff', fontWeight: 'bold' }}>×{item.goodsNum}</div>
+                  {isClaimed && <div style={{ fontSize: '18px', color: '#66bb6a', marginTop: '2px' }}>✓</div>}
                 </div>
               );
             })}

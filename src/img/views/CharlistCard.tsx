@@ -43,8 +43,8 @@ export default function CharlistCard({ data }: CharlistCardProps) {
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
             {sorted.map((role, i) => {
               const starColor = STAR_COLORS[role.starLevel] || '#9ca3af';
-              const attrColor = ATTR_COLORS[role.attributeName] || '#8b95a5';
-              const chainColor = C.chain[role.chainCount] ?? C.chain[0];
+              const attrColor = ATTR_COLORS[role.attributeName ?? ''] || '#8b95a5';
+              const chainColor = C.chain[role.chainUnlockNum ?? 0] ?? C.chain[0];
 
               return (
                 <div
@@ -93,18 +93,18 @@ export default function CharlistCard({ data }: CharlistCardProps) {
                       </div>
                     )}
                   </div>
-                  <div style={{ fontSize: '14px', fontWeight: 'bold', color: '#fff', textAlign: 'center', lineHeight: 1.2, marginBottom: '6px' }}>
+                  <div style={{ fontSize: '20px', fontWeight: 'bold', color: '#fff', textAlign: 'center', lineHeight: 1.2, marginBottom: '6px' }}>
                     {role.roleName}
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
-                    <span style={{ fontSize: '14px', color: '#fff', fontWeight: 'bold' }}>Lv.{role.level}</span>
-                    <span style={{ fontSize: '12px', color: attrColor, background: `${attrColor}20`, borderRadius: '4px', padding: '1px 6px' }}>
+                    <span style={{ fontSize: '20px', color: '#fff', fontWeight: 'bold' }}>Lv.{role.level}</span>
+                    <span style={{ fontSize: '18px', color: attrColor, background: `${attrColor}20`, borderRadius: '4px', padding: '1px 6px' }}>
                       {role.attributeName}
                     </span>
                   </div>
                   <div
                     style={{
-                      fontSize: '12px',
+                      fontSize: '18px',
                       color: chainColor,
                       background: `${chainColor}20`,
                       borderRadius: '4px',
@@ -112,7 +112,7 @@ export default function CharlistCard({ data }: CharlistCardProps) {
                       fontWeight: 'bold'
                     }}
                   >
-                    {role.chainCount}链
+                    {role.chainUnlockNum ?? 0}链
                   </div>
                 </div>
               );

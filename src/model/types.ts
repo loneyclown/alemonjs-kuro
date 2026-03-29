@@ -56,20 +56,26 @@ export interface AccountBaseInfo {
 export interface RoleData {
   roleId: number;
   roleName: string;
-  roleIconUrl: string;
+  roleIconUrl?: string | null;
+  rolePicUrl?: string | null;
   starLevel: number;
   level: number;
-  breach: number;
+  breach?: number | null;
   attributeId: number;
-  attributeName: string;
+  attributeName?: string | null;
   weaponTypeId: number;
-  chain: number[];
-  chainCount: number;
+  weaponTypeName?: string | null;
+  acronym?: string | null;
+  chainUnlockNum?: number | null;
+  isMainRole?: boolean | null;
+  totalSkillLevel?: number | null;
 }
 
 /** 角色列表响应 */
 export interface RoleListResp {
   roleList: RoleData[];
+  showRoleIdList?: number[] | null;
+  showToGuest?: boolean;
 }
 
 /** 探索子项 */
@@ -113,18 +119,34 @@ export interface ExploreResp {
 
 /** 签到日历项 */
 export interface SignItem {
-  id: string;
+  id?: string;
+  goodsId?: number;
   goodsName: string;
   goodsNum: number;
   goodsUrl: string;
-  sigInStatus: number;
+  sigInStatus?: number;
+  serialNum?: number;
+  isGain?: boolean;
 }
 
 /** 签到初始化响应 */
 export interface SignInitResp {
+  /** 当前是否已签(Python: isSigIn) */
+  isSigIn?: boolean;
+  hasSignIn?: boolean;
+  /** 累计签到天数 */
   sigInNum: number;
-  hasSignIn: boolean;
-  sigInDTOList: SignItem[];
+  /** 漏签天数 */
+  omissionNnm?: number;
+  /** 每日奖品列表(Python: signInGoodsConfigs) */
+  signInGoodsConfigs?: SignItem[];
+  /** 额外奖品 */
+  disposableGoodsList?: SignItem[];
+  signLoopGoodsList?: SignItem[];
+  /** 兼容旧字段 */
+  sigInDTOList?: SignItem[];
+  eventStartTimes?: string;
+  eventEndTimes?: string;
 }
 
 /** Kuro 角色列表（登录后） */
@@ -280,12 +302,13 @@ export interface CalabashResp {
 
 /** 公告项 */
 export interface AnnItem {
-  id: string;
+  id: number;
   postId: string;
-  title: string;
+  postTitle: string;
   coverUrl: string;
-  publishTime: string;
-  eventType: string;
+  coverImages?: { url: string }[];
+  publishTime: number;
+  eventType: number;
 }
 
 /** 公告列表响应 */
@@ -310,6 +333,40 @@ export interface RedeemCode {
   rewards: string;
   expireTime?: string;
   isExpired?: boolean;
+}
+
+/** Wiki 主页 — 唤取卡池标签页 */
+export interface WikiGachaTab {
+  name: string;
+  countDown?: { dateRange: [string, string] };
+  imgs?: Array<{
+    img: string;
+    title: string;
+    linkConfig?: { linkUrl: string; linkType: number; entryId: string };
+  }>;
+}
+
+/** Wiki 主页 — 版本活动条目 */
+export interface WikiActivityContent {
+  title: string;
+  contentUrl: string;
+  countDown?: { dateRange: [string, string] };
+}
+
+/** Wiki 主页 — 侧边栏模块 */
+export interface WikiSideModule {
+  title: string;
+  content: unknown;
+}
+
+/** Wiki 主页响应 */
+export interface WikiHomeResp {
+  contentJson:
+    | string
+    | {
+        banner?: Array<{ url: string; describe: string }>;
+        sideModules?: WikiSideModule[];
+      };
 }
 
 /** 角色养成 — 角色列表项 */
@@ -463,8 +520,11 @@ export interface OnlineRole {
 export interface OwnedRoleInfo {
   roleId: number;
   level: number;
-  breach: number;
-  skillLevelList: { skillId: number; level: number; type: string }[];
+}
+
+/** 已拥有角色信息响应 */
+export interface OwnedRoleInfoResp {
+  roleInfoList: OwnedRoleInfo[];
 }
 
 /** 培养成本项 */
@@ -524,10 +584,10 @@ export interface MoreActivityResp {
 export interface RankEntry {
   uid: string;
   roleName: string;
-  roleIconUrl: string;
+  roleIconUrl?: string | null;
   starLevel: number;
   level: number;
-  chainCount: number;
+  chainUnlockNum: number;
   attributeName: string;
   score: number;
   weaponName: string;

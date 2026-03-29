@@ -93,7 +93,7 @@ function StatRow({ label, cur, total, color, subText }: { label: string; cur: nu
           }}
         />
       </div>
-      {subText && <div style={{ fontSize: '16px', color: 'rgba(255,255,255,0.6)', marginTop: '2px' }}>{subText}</div>}
+      {subText && <div style={{ fontSize: '22px', color: 'rgba(255,255,255,0.6)', marginTop: '2px' }}>{subText}</div>}
     </div>
   );
 }

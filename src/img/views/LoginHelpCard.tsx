@@ -52,7 +52,7 @@ export default function LoginHelpCard({ data }: Props) {
           }}
         >
           <div style={{ fontSize: '24px', fontWeight: 'bold', letterSpacing: '2px' }}>鸣潮助手 · 登录指引</div>
-          <div style={{ fontSize: '13px', color: 'rgba(255,255,255,0.5)', marginTop: '4px' }}>请按照以下步骤完成登录</div>
+          <div style={{ fontSize: '18px', color: 'rgba(255,255,255,0.5)', marginTop: '4px' }}>请按照以下步骤完成登录</div>
         </div>
 
         {/* 步骤卡片 */}
@@ -80,7 +80,7 @@ export default function LoginHelpCard({ data }: Props) {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                fontSize: '16px',
+                fontSize: '22px',
                 fontWeight: 'bold',
                 flexShrink: 0,
                 marginTop: '2px'
@@ -90,11 +90,11 @@ export default function LoginHelpCard({ data }: Props) {
             </div>
             {/* 内容 */}
             <div style={{ flex: 1 }}>
-              <div style={{ fontSize: '16px', fontWeight: 'bold' }}>{step.title}</div>
-              <div style={{ fontSize: '13px', color: 'rgba(255,255,255,0.6)', marginTop: '4px' }}>{step.desc}</div>
+              <div style={{ fontSize: '22px', fontWeight: 'bold' }}>{step.title}</div>
+              <div style={{ fontSize: '18px', color: 'rgba(255,255,255,0.6)', marginTop: '4px' }}>{step.desc}</div>
               <div
                 style={{
-                  fontSize: '13px',
+                  fontSize: '18px',
                   color: '#4fc3f7',
                   marginTop: '6px',
                   background: 'rgba(0,0,0,0.3)',
@@ -134,8 +134,8 @@ export default function LoginHelpCard({ data }: Props) {
             <img src={data.qrDataUrl} style={{ width: '108px', height: '108px', display: 'block' }} />
           </div>
           <div style={{ flex: 1 }}>
-            <div style={{ fontSize: '14px', fontWeight: 'bold' }}>扫码打开登录页</div>
-            <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)', marginTop: '6px', lineHeight: '1.6' }}>
+            <div style={{ fontSize: '20px', fontWeight: 'bold' }}>扫码打开登录页</div>
+            <div style={{ fontSize: '18px', color: 'rgba(255,255,255,0.5)', marginTop: '6px', lineHeight: '1.6' }}>
               使用手机浏览器扫描左侧二维码
               <br />
               即可打开库街区登录页面
@@ -148,7 +148,7 @@ export default function LoginHelpCard({ data }: Props) {
           style={{
             marginTop: '16px',
             textAlign: 'center',
-            fontSize: '12px',
+            fontSize: '18px',
             color: 'rgba(255,255,255,0.35)'
           }}
         >

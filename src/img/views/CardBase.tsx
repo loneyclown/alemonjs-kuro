@@ -81,7 +81,7 @@ export function UserHeader({
           position: 'absolute',
           top: '20px',
           right: '30px',
-          fontSize: '14px',
+          fontSize: '20px',
           letterSpacing: '4px',
           color: 'rgba(255,255,255,0.1)',
           fontWeight: 'bold'
@@ -195,7 +195,7 @@ export function UserHeader({
                 >
                   {level}
                 </div>
-                <div style={{ fontSize: '12px', color: C.textDim, fontWeight: 'bold', letterSpacing: '1px', marginTop: '2px' }}>联觉等级</div>
+                <div style={{ fontSize: '18px', color: C.textDim, fontWeight: 'bold', letterSpacing: '1px', marginTop: '2px' }}>联觉等级</div>
               </div>
             )}
             {worldLevel !== undefined && (
@@ -210,7 +210,7 @@ export function UserHeader({
                 >
                   {worldLevel}
                 </div>
-                <div style={{ fontSize: '12px', color: C.textDim, fontWeight: 'bold', letterSpacing: '1px', marginTop: '2px' }}>索拉等级</div>
+                <div style={{ fontSize: '18px', color: C.textDim, fontWeight: 'bold', letterSpacing: '1px', marginTop: '2px' }}>索拉等级</div>
               </div>
             )}
           </div>
@@ -320,7 +320,7 @@ export function LightHeader({ title, subtitle, width }: { title: string; subtitl
       {subtitle && (
         <div
           style={{
-            fontSize: '14px',
+            fontSize: '20px',
             color: 'rgba(255,255,255,0.7)',
             zIndex: 1
           }}
@@ -338,7 +338,7 @@ export function Footer() {
     <div
       style={{
         textAlign: 'center',
-        fontSize: '14px',
+        fontSize: '20px',
         color: 'rgba(255,255,255,0.3)',
         padding: '10px 0 0'
       }}

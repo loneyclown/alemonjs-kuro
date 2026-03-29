@@ -19,7 +19,7 @@ function ProgressBar({ label, current, max, color }: { label: string; current: n
     <div style={{ marginBottom: '10px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
         <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#fff' }}>{label}</div>
-        <div style={{ fontSize: '16px', color: C.textSecondary }}>
+        <div style={{ fontSize: '22px', color: C.textSecondary }}>
           <span style={{ color, fontWeight: 'bold', fontSize: '20px' }}>{current}</span> / {max}
         </div>
       </div>
@@ -96,7 +96,7 @@ export default function PokerCard({ data }: PokerCardProps) {
                       }}
                     />
                   )}
-                  <div style={{ fontSize: '12px', marginTop: '6px', lineHeight: 1.3, color: badge.unlock ? '#fff' : C.textDim }}>{badge.name}</div>
+                  <div style={{ fontSize: '18px', marginTop: '6px', lineHeight: 1.3, color: badge.unlock ? '#fff' : C.textDim }}>{badge.name}</div>
                 </div>
               ))}
             </div>

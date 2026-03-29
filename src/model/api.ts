@@ -28,14 +28,15 @@ import type {
   MineV2Resp,
   MoreActivityResp,
   OnlineRole,
-  OwnedRoleInfo,
+  OwnedRoleInfoResp,
   PeriodDetailResp,
   PeriodListResp,
   RoleDetailResp,
   RoleListResp,
   SignInitResp,
   SlashResp,
-  TowerResp
+  TowerResp,
+  WikiHomeResp
 } from './types';
 
 function randomSource(): 'ios' | 'android' {
@@ -425,6 +426,17 @@ export function apiMineV2(token: string) {
   return kuroPost<MineV2Resp>(KURO_API.MINE_V2, headers, {});
 }
 
+/** Wiki 主页 (日历/卡池数据) */
+export function apiWikiHome() {
+  const headers = getBaseHeaders();
+
+  headers.source = 'h5';
+  headers.version = KURO_VERSION;
+  headers.wiki_type = '9';
+
+  return kuroPost<WikiHomeResp>(KURO_API.WIKI_HOME, headers, {});
+}
+
 /** 公告列表 */
 export function apiAnnList(eventType = '1', pageSize = 10) {
   const headers = getBaseHeaders();
@@ -547,7 +559,7 @@ export async function apiOwnedRoleInfo(uid: string, token: string) {
 
   Object.assign(headers, uh);
 
-  return kuroPost<OwnedRoleInfo[]>(KURO_API.CALC_OWNED_ROLE, headers, {
+  return kuroPost<OwnedRoleInfoResp>(KURO_API.CALC_OWNED_ROLE, headers, {
     serverId: getServerId(uid),
     roleId: uid
   });

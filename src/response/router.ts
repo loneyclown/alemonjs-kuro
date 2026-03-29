@@ -27,6 +27,10 @@ export default defineRouter([
         handler: lazy(() => import('@src/response/stamina'))
       },
       {
+        regular: routeRules.chardetail,
+        handler: lazy(() => import('@src/response/chardetail'))
+      },
+      {
         regular: routeRules.roleinfo,
         handler: lazy(() => import('@src/response/roleinfo'))
       },

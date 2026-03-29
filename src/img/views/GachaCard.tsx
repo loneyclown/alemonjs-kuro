@@ -35,7 +35,7 @@ export default function GachaCard({ data }: GachaCardProps) {
             <div style={{ fontSize: '36px', fontWeight: 800, color: '#fff', textShadow: '0 4px 10px rgba(0,0,0,0.5)' }}>抽卡记录</div>
             <div style={{ fontSize: '18px', color: C.textSecondary, marginTop: '6px' }}>UID {data.uid}</div>
           </div>
-          <div style={{ fontSize: '14px', letterSpacing: '4px', color: 'rgba(255,255,255,0.1)', fontWeight: 'bold' }}>GACHA LOG</div>
+          <div style={{ fontSize: '20px', letterSpacing: '4px', color: 'rgba(255,255,255,0.1)', fontWeight: 'bold' }}>GACHA LOG</div>
         </div>
 
         {data.pools.map((pool, i) => (
@@ -44,7 +44,7 @@ export default function GachaCard({ data }: GachaCardProps) {
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px', flexWrap: 'wrap' }}>
               <div
                 style={{
-                  fontSize: '14px',
+                  fontSize: '20px',
                   padding: '4px 14px',
                   borderRadius: '20px',
                   background: `${LUCK_COLORS[pool.luckLevel] ?? LUCK_COLORS[2]}30`,
@@ -55,16 +55,16 @@ export default function GachaCard({ data }: GachaCardProps) {
               >
                 {LUCK_TAGS[pool.luckLevel] ?? '平稳保底'}
               </div>
-              <div style={{ fontSize: '14px', color: C.textDim }}>
+              <div style={{ fontSize: '20px', color: C.textDim }}>
                 距上次5★: <span style={{ color: C.gold, fontWeight: 'bold' }}>{pool.pity}</span> 抽
               </div>
               {pool.avg !== null && (
-                <div style={{ fontSize: '14px', color: C.textDim }}>
+                <div style={{ fontSize: '20px', color: C.textDim }}>
                   平均: <span style={{ color: '#fff', fontWeight: 'bold' }}>{pool.avg}</span> 抽/5★
                 </div>
               )}
               {pool.avgUp !== null && (
-                <div style={{ fontSize: '14px', color: C.textDim }}>
+                <div style={{ fontSize: '20px', color: C.textDim }}>
                   UP均: <span style={{ color: '#fff', fontWeight: 'bold' }}>{pool.avgUp}</span> 抽
                 </div>
               )}
@@ -81,7 +81,7 @@ export default function GachaCard({ data }: GachaCardProps) {
                       border: `1px solid ${s.isUp ? C.goldBorder : C.panelBorder}`,
                       borderRadius: '8px',
                       padding: '6px 12px',
-                      fontSize: '14px',
+                      fontSize: '20px',
                       display: 'flex',
                       alignItems: 'center',
                       gap: '6px'
@@ -89,15 +89,15 @@ export default function GachaCard({ data }: GachaCardProps) {
                   >
                     <span style={{ color: C.gold, fontWeight: 'bold' }}>★</span>
                     <span style={{ color: '#fff' }}>{s.name}</span>
-                    {s.isUp && <span style={{ color: C.gold, fontSize: '11px', fontWeight: 'bold' }}>UP</span>}
-                    <span style={{ color: s.count <= 70 ? '#4fc3f7' : '#ef5350', fontSize: '13px' }}>({s.count})</span>
+                    {s.isUp && <span style={{ color: C.gold, fontSize: '18px', fontWeight: 'bold' }}>UP</span>}
+                    <span style={{ color: s.count <= 70 ? '#4fc3f7' : '#ef5350', fontSize: '18px' }}>({s.count})</span>
                   </div>
                 ))}
               </div>
             )}
 
             {/* 统计条 */}
-            <div style={{ display: 'flex', gap: '20px', fontSize: '14px' }}>
+            <div style={{ display: 'flex', gap: '20px', fontSize: '20px' }}>
               <span style={{ color: STAR_COLORS[5] }}>★5: {pool.star5Items.length}</span>
               <span style={{ color: STAR_COLORS[4] }}>★4: {pool.star4Count}</span>
               <span style={{ color: STAR_COLORS[3] }}>★3: {pool.star3Count}</span>

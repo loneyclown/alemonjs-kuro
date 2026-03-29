@@ -85,7 +85,7 @@ const HELP_DATA: HelpCategory[] = [
     items: [
       { icon: ICON_STAMINA, name: '体力', desc: '查询当前体力状态', eg: '#mc每日', needCk: true },
       { icon: ICON_CARD, name: '基本信息卡片', desc: '查询账号基本信息', eg: '#mc卡片', needCk: true },
-      { icon: ICON_ROLEINFO, name: '角色面板', desc: '查询角色装备面板', eg: '#mc查询', needCk: true },
+      { icon: ICON_ROLEINFO, name: '角色面板', desc: '查询角色装备面板', eg: '#mc查询 角色名', needCk: true },
       { icon: ICON_EXPLORE, name: '探索度', desc: '查询地图探索进度', eg: '#mc探索度', needCk: true },
       { icon: ICON_REFRESH, name: '刷新面板', desc: '刷新角色面板数据', eg: '#mc刷新面板', needCk: true }
     ]
@@ -144,7 +144,7 @@ export default function WuwaHelp() {
       <div
         style={{
           fontFamily: '"tttgbnumber", system-ui, sans-serif',
-          fontSize: '16px',
+          fontSize: '22px',
           color: '#ffffff',
           backgroundImage: `url(${IMG_BG})`,
           backgroundSize: 'cover',
@@ -192,7 +192,7 @@ export default function WuwaHelp() {
             </div>
             <div
               style={{
-                fontSize: '16px',
+                fontSize: '22px',
                 opacity: 0.8,
                 marginTop: '6px',
                 textShadow: '0 1px 4px rgba(0,0,0,0.7)'
@@ -244,7 +244,7 @@ export default function WuwaHelp() {
                 </span>
                 <span
                   style={{
-                    fontSize: '14px',
+                    fontSize: '20px',
                     color: 'rgba(255,255,255,0.5)',
                     marginLeft: '12px'
                   }}
@@ -356,8 +356,8 @@ export default function WuwaHelp() {
               justifyContent: 'space-between'
             }}
           >
-            <span style={{ fontSize: '14px', color: 'rgba(255,255,255,0.5)' }}>蓝色圆点 = 需要登录 · 指令前缀 # ! / ！＃</span>
-            <span style={{ fontSize: '14px', color: 'rgba(255,255,255,0.35)' }}>Powered by alemonjs</span>
+            <span style={{ fontSize: '20px', color: 'rgba(255,255,255,0.5)' }}>蓝色圆点 = 需要登录 · 指令前缀 # ! / ！＃</span>
+            <span style={{ fontSize: '20px', color: 'rgba(255,255,255,0.35)' }}>Powered by alemonjs</span>
           </div>
         </div>
       </div>
