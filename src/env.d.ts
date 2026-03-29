@@ -1,12 +1,6 @@
 /// <reference types="lvyjs/env" />
 /// <reference types="alemonjs/env" />
 
-// declare module 'alemonjs' {
-//   interface EventsEnum {
-//     mihoyo?: MihoyoContext;
-//   }
-// }
-
 declare module '*.png' {
   const src: string;
   export default src;

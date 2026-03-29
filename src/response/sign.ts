@@ -1,0 +1,86 @@
+import SignCard from '@src/img/views/SignCard';
+import { apiSignIn, apiSignInit, getCookie } from '@src/model/api';
+import { getActiveUid } from '@src/model/db';
+import { createEvent, EventsEnum, Format, useMessage } from 'alemonjs';
+import { renderComponentIsHtmlToBuffer } from 'jsxp';
+
+export default async (e: EventsEnum) => {
+  const event = createEvent({
+    event: e,
+    selects: ['message.create', 'private.message.create']
+  });
+  const [message] = useMessage(event);
+  const userId = event.UserId;
+  const text = e.MessageText;
+
+  const format = Format.create();
+  const md = Format.createMarkdown();
+
+  const uid = await getActiveUid(userId);
+
+  if (!uid) {
+    md.addText('[鸣潮] 请先绑定特征码: #绑定特征码123456789');
+    format.addMarkdown(md);
+    void message.send({ format });
+
+    return;
+  }
+
+  const ckResult = await getCookie(uid, userId);
+
+  if (!ckResult) {
+    md.addText('[鸣潮] 未添加Token或Token已失效\n请使用 #登录 手机号,验证码 重新登录');
+    format.addMarkdown(md);
+    void message.send({ format });
+
+    return;
+  }
+
+  const { cookie } = ckResult;
+
+  // 如果是签到指令（非日历/记录），先执行签到
+  const isDoSign = /签到$|qd$/i.test(text) && !/日历|记录|jl/i.test(text);
+
+  if (isDoSign) {
+    const signResp = await apiSignIn(uid, cookie);
+
+    if (signResp.success) {
+      md.addText('[鸣潮] 签到成功！');
+    } else {
+      md.addText(`[鸣潮] 签到失败: ${signResp.msg || '未知错误'}`);
+    }
+    format.addMarkdown(md);
+    void message.send({ format });
+
+    return;
+  }
+
+  // 签到日历/记录
+  const initResp = await apiSignInit(uid, cookie);
+
+  if (!initResp.success || !initResp.data) {
+    md.addText(`[鸣潮] 签到信息获取失败: ${initResp.msg || '未知错误'}`);
+    format.addMarkdown(md);
+    void message.send({ format });
+
+    return;
+  }
+
+  const img = await renderComponentIsHtmlToBuffer(SignCard, {
+    data: {
+      uid,
+      sign: initResp.data
+    }
+  });
+
+  if (typeof img === 'boolean') {
+    md.addText('[鸣潮] 签到卡片渲染失败');
+    format.addMarkdown(md);
+    void message.send({ format });
+
+    return;
+  }
+
+  format.addImage(img);
+  void message.send({ format });
+};

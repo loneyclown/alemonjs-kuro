@@ -1,8 +1,7 @@
 import { EventsEnum } from 'alemonjs';
 
 export default (e: EventsEnum) => {
-  console.log('mhy', e.name);
+  console.log('[鸣潮]', e.name);
 
-  // 放行
   return true;
 };

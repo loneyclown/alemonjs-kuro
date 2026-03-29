@@ -7,6 +7,6 @@ export default defineChildren({
     };
   },
   onCreated() {
-    logger.info('Mihoyo API Server Done');
+    logger.info('鸣潮助手 Server Done');
   }
 });
