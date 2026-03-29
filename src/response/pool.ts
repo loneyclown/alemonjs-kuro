@@ -2,13 +2,12 @@ import PoolCard from '@src/img/views/PoolCard';
 import { apiWikiHome } from '@src/model/api';
 import type { WikiGachaTab } from '@src/model/types';
 import { createEvent, EventsEnum, Format, useMessage } from 'alemonjs';
+import dayjs from 'dayjs';
 import { renderComponentIsHtmlToBuffer } from 'jsxp';
 
 /** 计算剩余时间文本 */
 function getTimeLeft(endStr: string): string {
-  const end = new Date(endStr.replace(' ', 'T')).getTime();
-  const now = Date.now();
-  const diff = end - now;
+  const diff = dayjs(endStr).valueOf() - Date.now();
 
   if (diff <= 0) {
     return '已结束';
@@ -25,8 +24,8 @@ function getPoolStatus(dateRange?: [string, string]): { status: string; timeLeft
     return { status: '进行中', timeLeft: '', isActive: true };
   }
   const now = Date.now();
-  const start = new Date(dateRange[0].replace(' ', 'T')).getTime();
-  const end = new Date(dateRange[1].replace(' ', 'T')).getTime();
+  const start = dayjs(dateRange[0]).valueOf();
+  const end = dayjs(dateRange[1]).valueOf();
 
   if (now < start) {
     return { status: '未开始', timeLeft: '', isActive: false };

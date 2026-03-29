@@ -1,4 +1,5 @@
 import type { AnnItem } from '@src/model/types';
+import dayjs from 'dayjs';
 import React from 'react';
 import { C, DarkContainer, Footer, Section } from './CardBase';
 import HTML from './HTML';
@@ -21,9 +22,8 @@ function formatDate(ts: number): string {
   if (!ts) {
     return '未知';
   }
-  const d = new Date(ts);
 
-  return `${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  return dayjs(ts).format('MM-DD');
 }
 
 function getCoverUrl(item: AnnItem): string {

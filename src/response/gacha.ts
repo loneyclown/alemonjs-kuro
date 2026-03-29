@@ -4,6 +4,7 @@ import { getActiveUid } from '@src/model/db';
 import type { GachaLogItem, GachaPoolStatEx } from '@src/model/types';
 import { GACHA_POOL_TYPE, LUCK_THRESHOLDS, NORMAL_ROLE_LIST } from '@src/model/types';
 import { createEvent, EventsEnum, Format, useMessage } from 'alemonjs';
+import dayjs from 'dayjs';
 import { renderComponentIsHtmlToBuffer } from 'jsxp';
 
 /** 查询所有卡池的抽卡记录 */
@@ -52,7 +53,7 @@ function analyzeGacha(items: GachaLogItem[]): GachaPoolStatEx[] {
 
   for (const [poolType, poolItems] of poolMap) {
     // 按时间正序排序
-    poolItems.sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime());
+    poolItems.sort((a, b) => dayjs(a.time).valueOf() - dayjs(b.time).valueOf());
 
     const star5Items: GachaPoolStatEx['star5Items'] = [];
     let counter = 0;

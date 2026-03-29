@@ -2,17 +2,18 @@ import CalendarCard from '@src/img/views/CalendarCard';
 import { apiWikiHome } from '@src/model/api';
 import type { WikiActivityContent, WikiGachaTab } from '@src/model/types';
 import { createEvent, EventsEnum, Format, useMessage } from 'alemonjs';
+import dayjs from 'dayjs';
 import { renderComponentIsHtmlToBuffer } from 'jsxp';
 
 /** 计算逆境深塔/冥歌海墟周期 */
-function getCycleNode(name: string, startBase: Date) {
+function getCycleNode(name: string, startBase: dayjs.Dayjs) {
   const cycleDays = 28;
   const now = Date.now();
-  const elapsed = now - startBase.getTime();
+  const elapsed = now - startBase.valueOf();
   const periodIndex = Math.floor(elapsed / (cycleDays * 86400000));
-  const periodStart = new Date(startBase.getTime() + periodIndex * cycleDays * 86400000);
-  const periodEnd = new Date(periodStart.getTime() + cycleDays * 86400000);
-  const fmt = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+  const periodStart = startBase.add(periodIndex * cycleDays, 'day');
+  const periodEnd = periodStart.add(cycleDays, 'day');
+  const fmt = (d: dayjs.Dayjs) => d.format('YYYY-MM-DD HH:mm');
 
   return {
     title: name,
@@ -78,8 +79,8 @@ export default async (e: EventsEnum) => {
       }
     } else if (mod.title === '版本活动') {
       // 插入深塔/海墟周期
-      const towerNode = getCycleNode('逆境深塔', new Date(2025, 1, 3, 4, 0));
-      const abyssNode = getCycleNode('冥歌海墟', new Date(2025, 2, 17, 4, 0));
+      const towerNode = getCycleNode('逆境深塔', dayjs('2025-02-03 04:00'));
+      const abyssNode = getCycleNode('冥歌海墟', dayjs('2025-03-17 04:00'));
       const builtInNodes = [towerNode, abyssNode];
 
       const activityList = Array.isArray(mod.content) ? (mod.content as WikiActivityContent[]) : [];
@@ -128,8 +129,8 @@ function getStatus(dateRange: [string, string] | undefined, now: number) {
   if (!dateRange || dateRange.length < 2) {
     return { status: '进行中', timeLeft: '', isActive: true };
   }
-  const start = new Date(dateRange[0].replace(' ', 'T')).getTime();
-  const end = new Date(dateRange[1].replace(' ', 'T')).getTime();
+  const start = dayjs(dateRange[0]).valueOf();
+  const end = dayjs(dateRange[1]).valueOf();
 
   if (now < start) {
     return { status: '未开始', timeLeft: '', isActive: false };

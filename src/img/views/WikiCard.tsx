@@ -94,25 +94,29 @@ export default function WikiCard({ data }: WikiCardProps) {
         {(queryType === '技能' || queryType === '概览') && skillList && skillList.length > 0 && (
           <Section title='技能'>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-              {skillList.map((skill, i) => (
-                <div
-                  key={i}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '12px',
-                    padding: '10px 0',
-                    borderBottom: i < skillList.length - 1 ? `1px solid ${C.panelBorder}` : 'none'
-                  }}
-                >
-                  {skill.iconUrl && <img src={skill.iconUrl} style={{ width: '40px', height: '40px', display: 'block', borderRadius: '8px' }} />}
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: '22px', fontWeight: 'bold', color: '#fff' }}>{skill.skillName}</div>
-                    <div style={{ fontSize: '18px', color: C.textDim }}>{skill.type}</div>
+              {skillList.map((entry, i) => {
+                const sk = entry.skill;
+
+                return (
+                  <div
+                    key={i}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '12px',
+                      padding: '10px 0',
+                      borderBottom: i < skillList.length - 1 ? `1px solid ${C.panelBorder}` : 'none'
+                    }}
+                  >
+                    {sk?.iconUrl && <img src={sk.iconUrl} style={{ width: '40px', height: '40px', display: 'block', borderRadius: '8px' }} />}
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: '22px', fontWeight: 'bold', color: '#fff' }}>{sk?.name}</div>
+                      <div style={{ fontSize: '18px', color: C.textDim }}>{sk?.type}</div>
+                    </div>
+                    <div style={{ fontSize: '18px', fontWeight: 'bold', color: entry.level >= 10 ? C.gold : '#fff' }}>Lv.{entry.level}</div>
                   </div>
-                  <div style={{ fontSize: '18px', fontWeight: 'bold', color: skill.level >= 10 ? C.gold : '#fff' }}>Lv.{skill.level}</div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </Section>
         )}
@@ -166,11 +170,13 @@ export default function WikiCard({ data }: WikiCardProps) {
         {queryType === '概览' && weaponData && (
           <Section title='装备武器'>
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-              {weaponData.weaponIcon && <img src={weaponData.weaponIcon} style={{ width: '64px', height: '64px', display: 'block', borderRadius: '10px' }} />}
+              {weaponData.weapon?.weaponIcon && (
+                <img src={weaponData.weapon.weaponIcon} style={{ width: '64px', height: '64px', display: 'block', borderRadius: '10px' }} />
+              )}
               <div>
                 <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#fff' }}>
-                  {weaponData.weaponName}
-                  <span style={{ color: C.star5, marginLeft: '8px', fontSize: '20px' }}>{'★'.repeat(weaponData.weaponStarLevel)}</span>
+                  {weaponData.weapon?.weaponName}
+                  <span style={{ color: C.star5, marginLeft: '8px', fontSize: '20px' }}>{'★'.repeat(weaponData.weapon?.weaponStarLevel ?? 0)}</span>
                 </div>
                 <div style={{ fontSize: '20px', color: C.textDim, marginTop: '4px' }}>
                   Lv.{weaponData.level} · 精炼 {weaponData.resonLevel}

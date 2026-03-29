@@ -321,12 +321,12 @@ export default defineConfig({
                 { order: 5, name: '链5', iconUrl: '', unlocked: false },
                 { order: 6, name: '链6', iconUrl: '', unlocked: false }
               ],
-              weaponData: { weaponId: 1, weaponName: '苍鳞千嶂', weaponStarLevel: 5, weaponIcon: '', weaponType: 1, level: 90, breach: 6, resonLevel: 1 },
+              weaponData: { weapon: { weaponId: 1, weaponName: '苍鳞千嶂', weaponStarLevel: 5, weaponIcon: '', weaponType: 1 }, level: 90, breach: 6, resonLevel: 1 },
               phantomData: { cost: 12, equipPhantomList: [] },
               skillList: [
-                { skillId: 1, skillName: '普通攻击', iconUrl: '', level: 10, type: 'Normal' },
-                { skillId: 2, skillName: '共鸣技能', iconUrl: '', level: 10, type: 'Skill' },
-                { skillId: 3, skillName: '共鸣解放', iconUrl: '', level: 10, type: 'Liberation' }
+                { skill: { id: 1, name: '普通攻击', iconUrl: '', type: 'Normal' }, level: 10 },
+                { skill: { id: 2, name: '共鸣技能', iconUrl: '', type: 'Skill' }, level: 10 },
+                { skill: { id: 3, name: '共鸣解放', iconUrl: '', type: 'Liberation' }, level: 10 }
               ]
             }
           }}
@@ -445,12 +445,12 @@ export default defineConfig({
                 { order: 5, name: '链5', iconUrl: '', unlocked: false },
                 { order: 6, name: '链6', iconUrl: '', unlocked: false }
               ],
-              weaponData: { weaponId: 1, weaponName: '苍鳞千嶂', weaponStarLevel: 5, weaponIcon: '', weaponType: 1, level: 90, breach: 6, resonLevel: 1 },
+              weaponData: { weapon: { weaponId: 1, weaponName: '苍鳞千嶂', weaponStarLevel: 5, weaponIcon: '', weaponType: 1 }, level: 90, breach: 6, resonLevel: 1 },
               phantomData: { cost: 12, equipPhantomList: [] },
               skillList: [
-                { skillId: 1, skillName: '普通攻击·冰', iconUrl: '', level: 10, type: 'Normal' },
-                { skillId: 2, skillName: '共鸣技能·凝霜', iconUrl: '', level: 10, type: 'Skill' },
-                { skillId: 3, skillName: '共鸣解放·白霜', iconUrl: '', level: 10, type: 'Liberation' }
+                { skill: { id: 1, name: '普通攻击·冰', iconUrl: '', type: 'Normal' }, level: 10 },
+                { skill: { id: 2, name: '共鸣技能·凝霜', iconUrl: '', type: 'Skill' }, level: 10 },
+                { skill: { id: 3, name: '共鸣解放·白霜', iconUrl: '', type: 'Liberation' }, level: 10 }
               ]
             },
             queryType: 'skills'

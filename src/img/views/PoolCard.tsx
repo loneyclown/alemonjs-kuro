@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import React from 'react';
 import { C, DarkContainer, Footer, Section } from './CardBase';
 import HTML from './HTML.js';
@@ -32,11 +33,7 @@ function formatDateRange(dr?: [string, string]) {
   if (!dr || dr.length < 2) {
     return '';
   }
-  const fmt = (s: string) => {
-    const d = new Date(s.replace(' ', 'T'));
-
-    return `${d.getMonth() + 1}.${String(d.getDate()).padStart(2, '0')} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
-  };
+  const fmt = (s: string) => dayjs(s).format('M.DD HH:mm');
 
   return `${fmt(dr[0])} ~ ${fmt(dr[1])}`;
 }

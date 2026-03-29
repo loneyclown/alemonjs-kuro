@@ -204,55 +204,73 @@ export type SlashResp = TowerResp;
 /** 终焉矩阵响应 */
 export type MatrixResp = TowerResp;
 
-/** 角色详情 — 武器 */
-export interface RoleWeapon {
+/** 角色详情 — 武器内层 */
+export interface WeaponInfo {
   weaponId: number;
   weaponName: string;
   weaponStarLevel: number;
   weaponIcon: string;
   weaponType: number;
+  weaponEffectName?: string;
+}
+
+/** 角色详情 — 武器数据 */
+export interface WeaponData {
+  weapon: WeaponInfo;
   level: number;
-  breach: number;
+  breach?: number;
   resonLevel: number;
 }
 
-/** 角色详情 — 声骸属性 */
+/** 角色详情 — 属性词条 */
 export interface PhantomProp {
-  phantomPropId: number;
   attributeName: string;
   attributeValue: string;
+  iconUrl?: string | null;
 }
 
-/** 角色详情 — 单个声骸 */
-export interface PhantomItem {
+/** 角色详情 — 声骸基础信息 */
+export interface PhantomBase {
+  phantomPropId?: number;
   phantomId: number;
   name: string;
-  icon: string;
-  level: number;
+  iconUrl: string;
+  quality?: number;
   cost: number;
-  mainProps: PhantomProp[];
-  phantomProp: PhantomProp[];
-  fetterDetail?: {
-    name: string;
-    fetterLevel: number;
-    rareLV?: number;
-    groupId?: number;
-  };
+  skillDescription?: string;
 }
 
 /** 角色详情 — 声骸装备槽 */
 export interface EquipPhantom {
-  phantomProp: PhantomItem | null;
+  phantomProp: PhantomBase | null;
   cost: number;
+  quality?: number;
+  level: number;
+  fetterDetail?: {
+    groupId?: number;
+    name: string;
+    iconUrl?: string;
+    num?: number;
+    firstDescription?: string;
+    secondDescription?: string;
+  };
+  mainProps?: PhantomProp[];
+  subProps?: PhantomProp[];
 }
 
-/** 角色详情 — 技能 */
-export interface RoleSkill {
-  skillId: number;
-  skillName: string;
-  iconUrl: string;
-  level: number;
+/** 角色详情 — 技能内层 */
+export interface SkillInfo {
+  id: number;
   type: string;
+  name: string;
+  description?: string;
+  iconUrl: string;
+}
+
+/** 角色详情 — 技能条目 */
+export interface SkillEntry {
+  skill: SkillInfo;
+  level: number;
 }
 
 /** 角色完整详情响应 */
@@ -260,12 +278,12 @@ export interface RoleDetailResp {
   role: RoleData;
   level: number;
   chainList: { order: number; name: string; iconUrl: string; unlocked: boolean }[];
-  weaponData: RoleWeapon;
+  weaponData: WeaponData;
   phantomData: {
     cost: number;
     equipPhantomList: EquipPhantom[];
   };
-  skillList: RoleSkill[];
+  skillList: SkillEntry[];
 }
 
 /** 库洛币 — 用户信息 */
