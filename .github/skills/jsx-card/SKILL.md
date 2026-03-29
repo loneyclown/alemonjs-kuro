@@ -1,6 +1,6 @@
 ---
 name: jsx-card
-description: 'JSX 图片卡片渲染。USE FOR: 创建新的数据展示卡片、修改卡片样式布局、将纯文本响应转为图片卡片、jsxp 渲染配置、Tailwind 样式调整、HTML 包装器修改、游戏特定配色方案。DO NOT USE FOR: 米游社 API 调用逻辑、路由注册、数据处理。'
+description: 'JSX 图片卡片渲染。USE FOR: 创建新的数据展示卡片、修改卡片样式布局、将纯文本响应转为图片卡片、jsxp 渲染配置、Tailwind 样式调整、HTML 包装器修改、游戏特定配色方案。'
 ---
 
 # JSX 图片卡片渲染
@@ -20,18 +20,6 @@ Response Handler → renderComponentIsHtmlToBuffer(Component, props)
 ```
 src/img/views/
 ├── HTML.tsx              # 通用 HTML 包装器 (字体、Tailwind、SCSS)
-├── DailyNoteCard.tsx     # 体力/树脂卡片
-├── PlayerIndexCard.tsx   # 角色面板卡片
-├── SpiralAbyssCard.tsx   # 深渊卡片
-├── WeaponCard.tsx        # 武器卡片
-├── LedgerCard.tsx        # 札记卡片
-├── RoleExploreCard.tsx   # 探索卡片
-├── RoleCombatCard.tsx    # 剧诗卡片
-├── BuddyCard.tsx         # 邦布卡片
-├── MysNewsCard.tsx       # 公告/资讯卡片
-├── QrLoginCard.tsx       # 扫码登录卡片
-├── CkHelpCard.tsx        # Cookie 帮助卡片
-└── MihoyoHelp.tsx        # 米游社帮助网格 (60+ 命令)
 ```
 
 ## 创建新卡片的步骤
@@ -124,30 +112,10 @@ if (img) {
 - **圆角: 12px** — 头部和底部
 - **间距: 12-16px** — 内容区元素间距
 
-### 配色
-
-| 元素           | 色值                    |
-| -------------- | ----------------------- |
-| 头部渐变 (GS)  | `#e8d5b0 → #d3bc8e`     |
-| 头部渐变 (SR)  | `#c5b4e3 → #a894d4`     |
-| 头部渐变 (ZZZ) | `#b4e3c5 → #8dd4a8`     |
-| 头部文字       | `#4a3728`               |
-| 内容背景       | `#ffffff`               |
-| 整体背景渐变   | `#f0ebe3 → #f5f6fb`     |
-| 次要文字       | `#888` / `opacity: 0.7` |
-
 ### 字体
 
 - 数字专用字体: `font-family: 'tttgbnumber'` (由 HTML.tsx 自动加载)
 - 正文字体: 系统默认
-
-### 多游戏适配
-
-使用 `data.game` 字段区分三款游戏，通过 `GAME_COLORS` map 选择配色。字段命名注意游戏差异：
-
-- GS 角色: `name`, `level`, `element`
-- SR 角色: `name`, `level`, `element`
-- ZZZ 角色: `name_mi18n`, `level`, `element_type` (注意 ZZZ API 返回字段不同)
 
 ## HTML 包装器 (HTML.tsx)
 
@@ -174,5 +142,3 @@ defineConfig({
   }
 })
 ```
-
-预览模式: `yarn view` — 在浏览器中查看卡片渲染效果

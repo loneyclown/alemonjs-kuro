@@ -11,24 +11,6 @@ export interface WuwaUser {
   createdAt: number;
 }
 
-/** 获取可用的 Redis 实例，检查连接状态 */
-function getRedis() {
-  const redis = getIoRedis();
-
-  if (!redis) {
-    return null;
-  }
-
-  // ioredis status: 'ready' 表示已连接
-  if (redis.status !== 'ready') {
-    console.warn('[鸣潮][Redis] 连接未就绪, status:', redis.status);
-
-    return null;
-  }
-
-  return redis;
-}
-
 /** Redis 操作超时包装 */
 function withTimeout<T>(promise: Promise<T>, ms = 5000): Promise<T> {
   return Promise.race([promise, new Promise<never>((_, reject) => setTimeout(() => reject(new Error('Redis 操作超时')), ms))]);
@@ -38,7 +20,7 @@ function withTimeout<T>(promise: Promise<T>, ms = 5000): Promise<T> {
 
 /** 获取用户绑定的 UID 列表 */
 export async function getUidList(userId: string): Promise<string[]> {
-  const redis = getRedis();
+  const redis = getIoRedis();
 
   if (!redis) {
     return [];
@@ -55,7 +37,7 @@ export async function getUidList(userId: string): Promise<string[]> {
 
 /** 获取用户当前激活的 UID */
 export async function getActiveUid(userId: string): Promise<string | null> {
-  const redis = getRedis();
+  const redis = getIoRedis();
 
   if (!redis) {
     return null;
@@ -75,7 +57,7 @@ export async function getActiveUid(userId: string): Promise<string | null> {
 
 /** 绑定 UID */
 export async function bindUid(userId: string, uid: string): Promise<string> {
-  const redis = getRedis();
+  const redis = getIoRedis();
 
   if (!redis) {
     return '数据库未连接，请确认 Redis 已启动';
@@ -100,7 +82,7 @@ export async function bindUid(userId: string, uid: string): Promise<string> {
 
 /** 切换激活 UID */
 export async function switchUid(userId: string, uid: string): Promise<string> {
-  const redis = getRedis();
+  const redis = getIoRedis();
 
   if (!redis) {
     return '数据库未连接，请确认 Redis 已启动';
@@ -119,7 +101,7 @@ export async function switchUid(userId: string, uid: string): Promise<string> {
 
 /** 解绑 UID */
 export async function unbindUid(userId: string, uid: string): Promise<string> {
-  const redis = getRedis();
+  const redis = getIoRedis();
 
   if (!redis) {
     return '数据库未连接，请确认 Redis 已启动';
@@ -173,7 +155,7 @@ export async function viewUids(userId: string): Promise<string> {
 
 /** 添加 Token (cookie) */
 export async function addToken(_userId: string, uid: string, cookie: string, did: string, bat = ''): Promise<void> {
-  const redis = getRedis();
+  const redis = getIoRedis();
 
   if (!redis) {
     return;
@@ -193,7 +175,7 @@ export async function addToken(_userId: string, uid: string, cookie: string, did
 
 /** 获取用户信息 */
 export async function getUserByUid(uid: string): Promise<WuwaUser | null> {
-  const redis = getRedis();
+  const redis = getIoRedis();
 
   if (!redis) {
     return null;
@@ -214,7 +196,7 @@ export async function getUserByUid(uid: string): Promise<WuwaUser | null> {
 
 /** 删除 Token */
 export async function deleteToken(uid: string): Promise<void> {
-  const redis = getRedis();
+  const redis = getIoRedis();
 
   if (!redis) {
     return;
