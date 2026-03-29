@@ -5,6 +5,7 @@ interface RoleInfoCardProps {
         uid: string;
         base: AccountBaseInfo;
         roles: RoleData[];
+        headUrl?: string;
     };
 }
 export default function RoleInfoCard({ data }: RoleInfoCardProps): React.JSX.Element;

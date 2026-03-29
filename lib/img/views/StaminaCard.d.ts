@@ -5,6 +5,7 @@ interface StaminaCardProps {
         uid: string;
         daily: DailyData;
         base: AccountBaseInfo;
+        headUrl?: string;
     };
 }
 export default function StaminaCard({ data }: StaminaCardProps): React.JSX.Element;

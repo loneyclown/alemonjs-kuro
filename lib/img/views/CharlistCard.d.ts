@@ -5,6 +5,7 @@ interface CharlistCardProps {
         uid: string;
         base: AccountBaseInfo;
         roles: RoleData[];
+        headUrl?: string;
     };
 }
 export default function CharlistCard({ data }: CharlistCardProps): React.JSX.Element;

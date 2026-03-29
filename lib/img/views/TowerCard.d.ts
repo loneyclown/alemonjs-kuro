@@ -5,6 +5,7 @@ interface TowerCardProps {
         uid: string;
         base: AccountBaseInfo;
         tower: TowerResp;
+        headUrl?: string;
     };
 }
 export default function TowerCard({ data }: TowerCardProps): React.JSX.Element;

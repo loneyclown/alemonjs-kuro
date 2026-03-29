@@ -46,22 +46,34 @@ export interface RoleData {
 export interface RoleListResp {
     roleList: RoleData[];
 }
-export interface ExploreArea {
+export interface ExploreItem {
+    name: string;
+    progress: number;
+    type: number;
+    icon?: string | null;
+}
+export interface AreaInfo {
     areaId: number;
     areaName: string;
     areaProgress: number;
     itemList: ExploreItem[];
 }
-export interface ExploreItem {
-    type: string;
-    name: string;
-    progress: number;
-    total: number;
+export interface ExploreCountry {
+    countryId: number;
+    countryName: string;
+    detailPageFontColor: string;
+    detailPagePic: string;
+    detailPageProgressColor: string;
+    homePageIcon: string;
+}
+export interface ExploreArea {
+    areaInfoList?: AreaInfo[] | null;
+    country: ExploreCountry;
+    countryProgress: string;
 }
 export interface ExploreResp {
     open: boolean;
-    exploreList: ExploreArea[];
-    countryList?: ExploreArea[];
+    exploreList?: ExploreArea[] | null;
 }
 export interface SignItem {
     id: string;
@@ -83,26 +95,31 @@ export interface KuroRole {
     serverName: string;
     roleNum: string;
 }
+export interface AbyssRole {
+    roleId: number;
+    iconUrl?: string;
+}
 export interface TowerFloor {
-    floorName: string;
+    floor: number;
+    picUrl: string;
     star: number;
-    maxStar: number;
-    roleList: RoleData[];
+    roleList?: AbyssRole[] | null;
 }
 export interface TowerArea {
+    areaId: number;
     areaName: string;
-    floorList: TowerFloor[];
-    maxStar: number;
     star: number;
+    maxStar: number;
+    floorList?: TowerFloor[] | null;
 }
 export interface TowerDifficulty {
     difficulty: number;
     difficultyName: string;
-    towerAreaList: TowerArea[];
+    towerAreaList?: TowerArea[] | null;
 }
 export interface TowerResp {
     isUnlock: boolean;
-    difficultyList: TowerDifficulty[];
+    difficultyList?: TowerDifficulty[] | null;
 }
 export type ChallengeResp = TowerResp;
 export type SlashResp = TowerResp;

@@ -5,6 +5,7 @@ interface PokerCardProps {
         uid: string;
         battle: PhantomBattle;
         base: AccountBaseInfo | null;
+        headUrl?: string;
     };
 }
 export default function PokerCard({ data }: PokerCardProps): React.JSX.Element;

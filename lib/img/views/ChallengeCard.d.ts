@@ -7,6 +7,7 @@ interface ChallengeCardProps {
         challenge: TowerResp;
         title: string;
         icon: string;
+        headUrl?: string;
     };
 }
 export default function ChallengeCard({ data }: ChallengeCardProps): React.JSX.Element;

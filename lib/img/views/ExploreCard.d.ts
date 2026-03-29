@@ -5,6 +5,7 @@ interface ExploreCardProps {
         uid: string;
         base: AccountBaseInfo;
         explore: ExploreResp;
+        headUrl?: string;
     };
 }
 export default function ExploreCard({ data }: ExploreCardProps): React.JSX.Element;
