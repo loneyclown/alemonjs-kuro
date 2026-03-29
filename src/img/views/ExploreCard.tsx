@@ -1,5 +1,6 @@
 import type { AccountBaseInfo, ExploreResp } from '@src/model/types';
 import React from 'react';
+import { C, DarkContainer, Footer, Section, UserHeader } from './CardBase';
 import HTML from './HTML';
 
 interface ExploreCardProps {
@@ -7,145 +8,166 @@ interface ExploreCardProps {
     uid: string;
     base: AccountBaseInfo;
     explore: ExploreResp;
+    headUrl?: string;
   };
 }
 
-/** 进度条颜色 */
 function progressColor(pct: number): string {
   if (pct >= 100) {
-    return '#22c55e';
+    return '#66bb6a';
   }
   if (pct >= 80) {
-    return '#6bdfff';
+    return '#4fc3f7';
   }
   if (pct >= 50) {
-    return '#a78bfa';
+    return C.gold;
   }
 
-  return '#fbbf24';
+  return '#ff7043';
 }
 
 export default function ExploreCard({ data }: ExploreCardProps) {
   const { uid, base, explore } = data;
-  const areas = explore.exploreList || [];
+  const regions = explore.exploreList ?? [];
 
   return (
-    <HTML style={{ minWidth: '460px' }}>
-      <div
-        style={{
-          padding: '24px',
-          background: 'linear-gradient(180deg, #1a1b2e 0%, #252642 100%)'
-        }}
-      >
-        {/* 头部 */}
-        <div
-          style={{
-            background: 'linear-gradient(135deg, #3a3d6b, #5a5d9b)',
-            borderRadius: '12px 12px 0 0',
-            padding: '16px 20px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between'
-          }}
-        >
-          <div>
-            <div style={{ fontSize: '20px', fontWeight: 'bold', color: '#e0e4ff' }}>🗺️ 探索度</div>
-            <div style={{ fontSize: '13px', color: '#a0a4cc', marginTop: '4px' }}>
-              {base.name} · Lv.{base.level} · UID {uid}
-            </div>
-          </div>
-        </div>
+    <HTML style={{ width: '1000px' }}>
+      <DarkContainer>
+        <UserHeader name={base.name} uid={uid} level={base.level} worldLevel={base.worldLevel} avatarUrl={data.headUrl} decoText='EXPLORATION DATA' />
 
-        {/* 区域列表 */}
-        <div
-          style={{
-            background: '#2a2b45',
-            borderRadius: '0 0 12px 12px',
-            padding: '16px'
-          }}
-        >
-          {areas.map((area, idx) => (
-            <div
-              key={idx}
-              style={{
-                background: '#32334f',
-                borderRadius: '10px',
-                padding: '14px 16px',
-                marginBottom: idx < areas.length - 1 ? '10px' : '0'
-              }}
-            >
-              {/* 区域头 */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-                <span style={{ fontSize: '15px', fontWeight: 'bold', color: '#e0e4ff' }}>{area.areaName}</span>
-                <span
-                  style={{
-                    fontSize: '16px',
-                    fontWeight: 'bold',
-                    color: progressColor(area.areaProgress)
-                  }}
-                >
-                  {area.areaProgress}%
-                </span>
-              </div>
+        {regions.map((region, ri) => {
+          const pct = Number(region.countryProgress) || 0;
+          const areas = region.areaInfoList ?? [];
+          const completed = areas.filter(a => a.areaProgress >= 100);
+          const incomplete = areas.filter(a => a.areaProgress < 100);
 
-              {/* 总进度条 */}
-              <div style={{ background: '#1e1f36', borderRadius: '5px', height: '8px', overflow: 'hidden', marginBottom: '10px' }}>
-                <div
-                  style={{
-                    width: `${Math.min(100, area.areaProgress)}%`,
-                    height: '100%',
-                    background: `linear-gradient(90deg, ${progressColor(area.areaProgress)}, ${progressColor(area.areaProgress)}88)`,
-                    borderRadius: '5px'
-                  }}
-                />
-              </div>
-
-              {/* 子项 */}
-              {area.itemList && area.itemList.length > 0 && (
-                <div
-                  style={{
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    gap: '6px'
-                  }}
-                >
-                  {area.itemList.map((item, ii) => (
+          return (
+            <Section key={ri} title={region.country.countryName}>
+              {/* 国家总进度 */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '14px' }}>
+                {region.country.homePageIcon && <img src={region.country.homePageIcon} style={{ width: '40px', height: '40px', borderRadius: '8px' }} />}
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '6px' }}>
+                    <span style={{ fontSize: '18px', fontWeight: 'bold', color: '#fff' }}>{region.country.countryName}</span>
+                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '2px' }}>
+                      <span style={{ fontSize: '28px', fontWeight: 'bold', color: progressColor(pct), lineHeight: 1 }}>{pct}</span>
+                      <span style={{ fontSize: '16px', color: C.textDim }}>%</span>
+                    </div>
+                  </div>
+                  <div style={{ width: '100%', height: '8px', background: 'rgba(0,0,0,0.3)', borderRadius: '4px', overflow: 'hidden' }}>
                     <div
-                      key={ii}
                       style={{
-                        background: '#282940',
-                        borderRadius: '6px',
-                        padding: '6px 10px',
-                        fontSize: '12px',
+                        width: `${Math.min(100, pct)}%`,
+                        height: '100%',
+                        borderRadius: '4px',
+                        backgroundColor: progressColor(pct),
+                        boxShadow: `0 0 10px ${progressColor(pct)}`
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* 已完成的子区域 — 紧凑展示 */}
+              {completed.length > 0 && (
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: incomplete.length > 0 ? '12px' : '0' }}>
+                  {completed.map((area, ai) => (
+                    <div
+                      key={ai}
+                      style={{
+                        background: 'rgba(102,187,106,0.12)',
+                        borderRadius: '8px',
+                        padding: '6px 14px',
+                        fontSize: '14px',
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '4px'
+                        gap: '6px'
                       }}
                     >
-                      <span style={{ color: '#8088bb' }}>{item.name}</span>
-                      <span style={{ color: '#e0e4ff', fontWeight: 'bold' }}>
-                        {item.progress}/{item.total}
-                      </span>
+                      <span style={{ color: '#66bb6a' }}>✓</span>
+                      <span style={{ color: 'rgba(255,255,255,0.6)' }}>{area.areaName}</span>
+                      <span style={{ color: '#66bb6a', fontWeight: 'bold' }}>100%</span>
                     </div>
                   ))}
                 </div>
               )}
-            </div>
-          ))}
-        </div>
 
-        {/* 底部 */}
-        <div
-          style={{
-            marginTop: '8px',
-            textAlign: 'center',
-            fontSize: '11px',
-            color: '#5a5d8c'
-          }}
-        >
-          Powered by alemonjs · 鸣潮助手
-        </div>
-      </div>
+              {/* 未完成的子区域 — 详细展示 */}
+              {incomplete.map((area, ai) => {
+                const unfinished = area.itemList.filter(i => i.progress < 100).slice(0, 5);
+
+                return (
+                  <div
+                    key={ai}
+                    style={{
+                      background: 'rgba(0,0,0,0.3)',
+                      borderRadius: '10px',
+                      padding: '14px 16px',
+                      marginBottom: ai < incomplete.length - 1 ? '10px' : '0',
+                      borderLeft: `2px solid ${progressColor(area.areaProgress)}`
+                    }}
+                  >
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                      <span style={{ fontSize: '16px', fontWeight: 'bold', color: '#fff' }}>{area.areaName}</span>
+                      <div style={{ display: 'flex', alignItems: 'baseline', gap: '2px' }}>
+                        <span style={{ fontSize: '22px', fontWeight: 'bold', color: progressColor(area.areaProgress), lineHeight: 1 }}>
+                          {area.areaProgress}
+                        </span>
+                        <span style={{ fontSize: '14px', color: C.textDim }}>%</span>
+                      </div>
+                    </div>
+                    {/* 进度条 */}
+                    <div
+                      style={{
+                        width: '100%',
+                        height: '6px',
+                        background: 'rgba(0,0,0,0.3)',
+                        borderRadius: '3px',
+                        overflow: 'hidden',
+                        marginBottom: unfinished.length > 0 ? '10px' : '0'
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: `${Math.min(100, area.areaProgress)}%`,
+                          height: '100%',
+                          borderRadius: '3px',
+                          backgroundColor: progressColor(area.areaProgress)
+                        }}
+                      />
+                    </div>
+                    {/* 未完成的子项 */}
+                    {unfinished.length > 0 && (
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                        {unfinished.map((item, ii) => (
+                          <div
+                            key={ii}
+                            style={{
+                              background: 'rgba(0,0,0,0.25)',
+                              borderRadius: '8px',
+                              padding: '6px 12px',
+                              fontSize: '13px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '6px'
+                            }}
+                          >
+                            {item.icon && <img src={item.icon} style={{ width: '18px', height: '18px' }} />}
+                            <span style={{ color: C.textDim }}>{item.name}</span>
+                            <span style={{ color: progressColor(item.progress), fontWeight: 'bold' }}>{item.progress}%</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </Section>
+          );
+        })}
+
+        <Footer />
+      </DarkContainer>
     </HTML>
   );
 }

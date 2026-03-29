@@ -1,5 +1,6 @@
 import type { AnnItem } from '@src/model/types';
 import React from 'react';
+import { C, LightContainer, LightHeader } from './CardBase';
 import HTML from './HTML';
 
 interface AnnCardProps {
@@ -9,67 +10,48 @@ interface AnnCardProps {
   };
 }
 
-function AnnSection({ title, icon, items }: { title: string; icon: string; items: AnnItem[] }) {
+function AnnSection({ title, items }: { title: string; items: AnnItem[] }) {
   if (items.length === 0) {
     return null;
   }
 
   return (
-    <div style={{ marginBottom: '12px' }}>
+    <div style={{ marginBottom: '20px' }}>
       <div
         style={{
-          fontSize: '16px',
+          fontSize: '18px',
           fontWeight: 'bold',
-          color: '#a78bfa',
-          marginBottom: '8px',
-          borderLeft: '3px solid #a78bfa',
-          paddingLeft: '10px'
+          color: '#2c3e50',
+          marginBottom: '12px',
+          paddingLeft: '12px',
+          borderLeft: `3px solid ${C.gold}`
         }}
       >
-        {icon} {title}
+        {title}
       </div>
-
       {items.map((item, i) => (
         <div
           key={i}
           style={{
-            background: '#32334f',
-            borderRadius: '10px',
-            padding: '12px',
-            marginBottom: '8px',
+            background: '#fff',
+            borderRadius: '12px',
+            padding: '14px',
+            marginBottom: '10px',
             display: 'flex',
-            gap: '12px',
-            alignItems: 'center'
+            gap: '14px',
+            alignItems: 'center',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+            border: '1px solid rgba(0,0,0,0.04)'
           }}
         >
-          {/* 封面 */}
           {item.coverUrl && (
-            <div
-              style={{
-                width: '100px',
-                height: '56px',
-                borderRadius: '6px',
-                overflow: 'hidden',
-                flexShrink: 0
-              }}
-            >
-              <img src={item.coverUrl} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            <div style={{ width: '120px', height: '68px', borderRadius: '8px', overflow: 'hidden', flexShrink: 0 }}>
+              <img src={item.coverUrl} style={{ width: '100%', height: '100%', display: 'block', objectFit: 'cover' }} />
             </div>
           )}
-          {/* 文本 */}
           <div style={{ flex: 1 }}>
-            <div
-              style={{
-                fontSize: '14px',
-                fontWeight: 'bold',
-                color: '#e0e4ff',
-                lineHeight: '1.3',
-                marginBottom: '4px'
-              }}
-            >
-              {item.title}
-            </div>
-            <div style={{ fontSize: '11px', color: '#8088bb' }}>{item.publishTime}</div>
+            <div style={{ fontSize: '15px', fontWeight: 'bold', color: '#2c3e50', lineHeight: 1.3, marginBottom: '6px' }}>{item.title}</div>
+            <div style={{ fontSize: '13px', color: '#95a5a6' }}>{item.publishTime}</div>
           </div>
         </div>
       ))}
@@ -78,40 +60,16 @@ function AnnSection({ title, icon, items }: { title: string; icon: string; items
 }
 
 export default function AnnCard({ data }: AnnCardProps) {
-  const { activities, notices } = data;
-
   return (
-    <HTML style={{ minWidth: '480px' }}>
-      <div
-        style={{
-          padding: '24px',
-          background: 'linear-gradient(180deg, #1a1b2e 0%, #252642 100%)'
-        }}
-      >
-        {/* 头部 */}
-        <div
-          style={{
-            background: 'linear-gradient(135deg, #3a3d6b, #5a5d9b)',
-            borderRadius: '12px 12px 0 0',
-            padding: '16px 20px'
-          }}
-        >
-          <div style={{ fontSize: '20px', fontWeight: 'bold', color: '#e0e4ff' }}>📰 游戏公告</div>
-          <div style={{ fontSize: '13px', color: '#a0a4cc', marginTop: '4px' }}>鸣潮 · 最新资讯</div>
+    <HTML style={{ width: '750px' }}>
+      <LightContainer width={750}>
+        <LightHeader title='游戏公告' subtitle='鸣潮 · 最新资讯' />
+        <div style={{ width: '100%', padding: '24px', boxSizing: 'border-box' }}>
+          <AnnSection title='当前活动' items={data.activities} />
+          <AnnSection title='游戏公告' items={data.notices} />
         </div>
-
-        {/* 内容 */}
-        <div
-          style={{
-            background: '#2a2b45',
-            borderRadius: '0 0 12px 12px',
-            padding: '16px'
-          }}
-        >
-          <AnnSection title='当前活动' icon='🎉' items={activities} />
-          <AnnSection title='游戏公告' icon='📋' items={notices} />
-        </div>
-      </div>
+        <div style={{ textAlign: 'center', fontSize: '12px', color: '#bdc3c7', padding: '0 0 16px' }}>Powered by AlemonJS · 鸣潮助手</div>
+      </LightContainer>
     </HTML>
   );
 }

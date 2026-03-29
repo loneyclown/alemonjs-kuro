@@ -112,21 +112,27 @@ export default defineConfig({
               open: true,
               exploreList: [
                 {
-                  areaId: 1,
-                  areaName: '中曲台地',
-                  areaProgress: 85,
-                  itemList: [
-                    { type: 'chest', name: '宝箱', progress: 42, total: 50 },
-                    { type: 'viewpoint', name: '景点', progress: 8, total: 10 }
-                  ]
-                },
-                {
-                  areaId: 2,
-                  areaName: '荒石高地',
-                  areaProgress: 62,
-                  itemList: [
-                    { type: 'chest', name: '宝箱', progress: 30, total: 48 },
-                    { type: 'viewpoint', name: '景点', progress: 5, total: 8 }
+                  country: { countryId: 1, countryName: '瑝珑', detailPageFontColor: '', detailPagePic: '', detailPageProgressColor: '', homePageIcon: '' },
+                  countryProgress: '85',
+                  areaInfoList: [
+                    {
+                      areaId: 1,
+                      areaName: '中曲台地',
+                      areaProgress: 100,
+                      itemList: [
+                        { name: '宝箱', progress: 100, type: 1 },
+                        { name: '景点', progress: 100, type: 2 }
+                      ]
+                    },
+                    {
+                      areaId: 2,
+                      areaName: '荒石高地',
+                      areaProgress: 62,
+                      itemList: [
+                        { name: '宝箱', progress: 63, type: 1 },
+                        { name: '景点', progress: 62, type: 2 }
+                      ]
+                    }
                   ]
                 }
               ]
@@ -180,13 +186,14 @@ export default defineConfig({
                   difficultyName: '稳定区',
                   towerAreaList: [
                     {
+                      areaId: 1,
                       areaName: '第一区',
                       maxStar: 9,
                       star: 9,
                       floorList: [
-                        { floorName: '第1层', star: 3, maxStar: 3, roleList: [] },
-                        { floorName: '第2层', star: 3, maxStar: 3, roleList: [] },
-                        { floorName: '第3层', star: 3, maxStar: 3, roleList: [] }
+                        { floor: 1, picUrl: '', star: 3, roleList: [] },
+                        { floor: 2, picUrl: '', star: 3, roleList: [] },
+                        { floor: 3, picUrl: '', star: 3, roleList: [] }
                       ]
                     }
                   ]
@@ -211,13 +218,14 @@ export default defineConfig({
                   difficultyName: '常规挑战',
                   towerAreaList: [
                     {
+                      areaId: 1,
                       areaName: '挑战一',
                       maxStar: 9,
                       star: 7,
                       floorList: [
-                        { floorName: '第1关', star: 3, maxStar: 3, roleList: [] },
-                        { floorName: '第2关', star: 3, maxStar: 3, roleList: [] },
-                        { floorName: '第3关', star: 1, maxStar: 3, roleList: [] }
+                        { floor: 1, picUrl: '', star: 3, roleList: [] },
+                        { floor: 2, picUrl: '', star: 3, roleList: [] },
+                        { floor: 3, picUrl: '', star: 1, roleList: [] }
                       ]
                     }
                   ]

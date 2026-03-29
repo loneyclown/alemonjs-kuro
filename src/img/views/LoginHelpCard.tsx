@@ -131,7 +131,7 @@ export default function LoginHelpCard({ data }: Props) {
               flexShrink: 0
             }}
           >
-            <img src={data.qrDataUrl} style={{ width: '108px', height: '108px' }} />
+            <img src={data.qrDataUrl} style={{ width: '108px', height: '108px', display: 'block' }} />
           </div>
           <div style={{ flex: 1 }}>
             <div style={{ fontSize: '14px', fontWeight: 'bold' }}>扫码打开登录页</div>

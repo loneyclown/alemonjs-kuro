@@ -282,9 +282,9 @@ export default function WuwaHelp() {
                       style={{
                         width: '60px',
                         height: '60px',
+                        display: 'block',
                         objectFit: 'contain',
-                        flexShrink: 0,
-                        marginRight: '10px'
+                        flexShrink: 0
                       }}
                     />
                     {/* 文字 */}
@@ -299,7 +299,7 @@ export default function WuwaHelp() {
                     >
                       <div
                         style={{
-                          fontSize: '16px',
+                          fontSize: '20px',
                           fontWeight: 'bold',
                           color: '#ffffff',
                           lineHeight: '1.3',
@@ -312,7 +312,7 @@ export default function WuwaHelp() {
                       </div>
                       <div
                         style={{
-                          fontSize: '13px',
+                          fontSize: '18px',
                           color: 'rgba(255,255,255,0.55)',
                           lineHeight: '1.3',
                           marginTop: '2px',

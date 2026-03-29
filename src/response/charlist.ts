@@ -1,5 +1,5 @@
 import CharlistCard from '@src/img/views/CharlistCard';
-import { apiBaseInfo, apiRoleData, getCookie } from '@src/model/api';
+import { apiBaseInfo, apiMineV2, apiRoleData, getCookie } from '@src/model/api';
 import { getActiveUid } from '@src/model/db';
 import { createEvent, EventsEnum, Format, useMessage } from 'alemonjs';
 import { renderComponentIsHtmlToBuffer } from 'jsxp';
@@ -37,7 +37,7 @@ export default async (e: EventsEnum) => {
 
   const { cookie } = ckResult;
 
-  const [roleResp, baseResp] = await Promise.all([apiRoleData(uid, cookie), apiBaseInfo(uid, cookie)]);
+  const [roleResp, baseResp, mineResp] = await Promise.all([apiRoleData(uid, cookie), apiBaseInfo(uid, cookie), apiMineV2(cookie)]);
 
   if (!roleResp.success || !roleResp.data) {
     md.addText(`[鸣潮] 角色列表查询失败: ${roleResp.msg || '未知错误'}`);
@@ -59,7 +59,8 @@ export default async (e: EventsEnum) => {
     data: {
       uid,
       base: baseResp.data,
-      roles: roleResp.data.roleList
+      roles: roleResp.data.roleList,
+      headUrl: mineResp.data?.mine?.headUrl
     }
   });
 

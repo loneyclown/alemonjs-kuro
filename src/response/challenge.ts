@@ -1,5 +1,5 @@
 import ChallengeCard from '@src/img/views/ChallengeCard';
-import { apiBaseInfo, apiChallengeDetail, getCookie } from '@src/model/api';
+import { apiBaseInfo, apiChallengeDetail, apiMineV2, getCookie } from '@src/model/api';
 import { getActiveUid } from '@src/model/db';
 import { createEvent, EventsEnum, Format, useMessage } from 'alemonjs';
 import { renderComponentIsHtmlToBuffer } from 'jsxp';
@@ -37,7 +37,7 @@ export default async (e: EventsEnum) => {
 
   const { cookie } = ckResult;
 
-  const [resp, baseResp] = await Promise.all([apiChallengeDetail(uid, cookie), apiBaseInfo(uid, cookie)]);
+  const [resp, baseResp, mineResp] = await Promise.all([apiChallengeDetail(uid, cookie), apiBaseInfo(uid, cookie), apiMineV2(cookie)]);
 
   if (!resp.success || !resp.data) {
     md.addText(`[鸣潮] 全息战略查询失败: ${resp.msg || '未知错误'}`);
@@ -56,7 +56,7 @@ export default async (e: EventsEnum) => {
   }
 
   const img = await renderComponentIsHtmlToBuffer(ChallengeCard, {
-    data: { uid, base: baseResp.data, challenge: resp.data, title: '全息战略', icon: '🔮' }
+    data: { uid, base: baseResp.data, challenge: resp.data, title: '全息战略', icon: '🔮', headUrl: mineResp.data?.mine?.headUrl }
   });
 
   if (typeof img === 'boolean') {

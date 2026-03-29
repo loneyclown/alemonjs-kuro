@@ -72,27 +72,43 @@ export interface RoleListResp {
   roleList: RoleData[];
 }
 
-/** 探索区域 */
-export interface ExploreArea {
+/** 探索子项 */
+export interface ExploreItem {
+  name: string;
+  progress: number;
+  type: number;
+  icon?: string | null;
+}
+
+/** 探索子区域 */
+export interface AreaInfo {
   areaId: number;
   areaName: string;
   areaProgress: number;
   itemList: ExploreItem[];
 }
 
-/** 探索子项 */
-export interface ExploreItem {
-  type: string;
-  name: string;
-  progress: number;
-  total: number;
+/** 探索国家 */
+export interface ExploreCountry {
+  countryId: number;
+  countryName: string;
+  detailPageFontColor: string;
+  detailPagePic: string;
+  detailPageProgressColor: string;
+  homePageIcon: string;
+}
+
+/** 探索区域 */
+export interface ExploreArea {
+  areaInfoList?: AreaInfo[] | null;
+  country: ExploreCountry;
+  countryProgress: string;
 }
 
 /** 探索数据响应 */
 export interface ExploreResp {
   open: boolean;
-  exploreList: ExploreArea[];
-  countryList?: ExploreArea[];
+  exploreList?: ExploreArea[] | null;
 }
 
 /** 签到日历项 */
@@ -121,33 +137,40 @@ export interface KuroRole {
   roleNum: string;
 }
 
+/** 深塔楼层角色 */
+export interface AbyssRole {
+  roleId: number;
+  iconUrl?: string;
+}
+
 /** 深塔楼层 */
 export interface TowerFloor {
-  floorName: string;
+  floor: number;
+  picUrl: string;
   star: number;
-  maxStar: number;
-  roleList: RoleData[];
+  roleList?: AbyssRole[] | null;
 }
 
 /** 深塔区域 */
 export interface TowerArea {
+  areaId: number;
   areaName: string;
-  floorList: TowerFloor[];
-  maxStar: number;
   star: number;
+  maxStar: number;
+  floorList?: TowerFloor[] | null;
 }
 
 /** 深塔难度 */
 export interface TowerDifficulty {
   difficulty: number;
   difficultyName: string;
-  towerAreaList: TowerArea[];
+  towerAreaList?: TowerArea[] | null;
 }
 
 /** 深塔数据响应 */
 export interface TowerResp {
   isUnlock: boolean;
-  difficultyList: TowerDifficulty[];
+  difficultyList?: TowerDifficulty[] | null;
 }
 
 /** 全息战略响应 (与深塔结构相同) */

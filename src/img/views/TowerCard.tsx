@@ -1,5 +1,6 @@
 import type { AccountBaseInfo, TowerResp } from '@src/model/types';
 import React from 'react';
+import { C, DarkContainer, Footer, Section, UserHeader } from './CardBase';
 import HTML from './HTML';
 
 interface TowerCardProps {
@@ -7,6 +8,7 @@ interface TowerCardProps {
     uid: string;
     base: AccountBaseInfo;
     tower: TowerResp;
+    headUrl?: string;
   };
 }
 
@@ -15,150 +17,107 @@ export default function TowerCard({ data }: TowerCardProps) {
 
   if (!tower.isUnlock) {
     return (
-      <HTML style={{ minWidth: '420px' }}>
-        <div
-          style={{
-            padding: '24px',
-            background: 'linear-gradient(180deg, #1a1b2e 0%, #252642 100%)'
-          }}
-        >
-          <div
-            style={{
-              background: 'linear-gradient(135deg, #3a3d6b, #5a5d9b)',
-              borderRadius: '12px',
-              padding: '16px 20px'
-            }}
-          >
-            <div style={{ fontSize: '20px', fontWeight: 'bold', color: '#e0e4ff' }}>🗼 逆境深塔</div>
-            <div style={{ fontSize: '13px', color: '#a0a4cc', marginTop: '4px' }}>
-              {base.name} · UID {uid}
-            </div>
-            <div style={{ fontSize: '14px', color: '#fbbf24', marginTop: '12px' }}>⚠️ 逆境深塔尚未解锁</div>
-          </div>
-        </div>
+      <HTML style={{ width: '1000px' }}>
+        <DarkContainer>
+          <UserHeader name={base.name} uid={uid} avatarUrl={data.headUrl} decoText='TOWER' />
+          <Section title='逆境深塔'>
+            <div style={{ fontSize: '18px', color: C.gold, textAlign: 'center', padding: '20px' }}>逆境深塔尚未解锁</div>
+          </Section>
+        </DarkContainer>
       </HTML>
     );
   }
 
-  const difficulties = tower.difficultyList || [];
+  const difficulties = tower.difficultyList ?? [];
 
   return (
-    <HTML style={{ minWidth: '480px' }}>
-      <div
-        style={{
-          padding: '24px',
-          background: 'linear-gradient(180deg, #1a1b2e 0%, #252642 100%)'
-        }}
-      >
-        {/* 头部 */}
-        <div
-          style={{
-            background: 'linear-gradient(135deg, #3a3d6b, #5a5d9b)',
-            borderRadius: '12px 12px 0 0',
-            padding: '16px 20px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between'
-          }}
-        >
-          <div>
-            <div style={{ fontSize: '20px', fontWeight: 'bold', color: '#e0e4ff' }}>🗼 逆境深塔</div>
-            <div style={{ fontSize: '13px', color: '#a0a4cc', marginTop: '4px' }}>
-              {base.name} · Lv.{base.level} · UID {uid}
-            </div>
-          </div>
-        </div>
+    <HTML style={{ width: '1000px' }}>
+      <DarkContainer>
+        <UserHeader name={base.name} uid={uid} level={base.level} worldLevel={base.worldLevel} avatarUrl={data.headUrl} decoText='ABYSS TOWER' />
 
-        {/* 难度列表 */}
-        <div
-          style={{
-            background: '#2a2b45',
-            borderRadius: '0 0 12px 12px',
-            padding: '16px'
-          }}
-        >
-          {difficulties.map((diff, di) => (
-            <div key={di} style={{ marginBottom: di < difficulties.length - 1 ? '14px' : '0' }}>
-              {/* 难度标题 */}
-              <div
-                style={{
-                  fontSize: '16px',
-                  fontWeight: 'bold',
-                  color: '#a78bfa',
-                  marginBottom: '10px',
-                  borderLeft: '3px solid #a78bfa',
-                  paddingLeft: '10px'
-                }}
-              >
-                {diff.difficultyName}
-              </div>
-
-              {/* 区域 */}
-              {diff.towerAreaList.map((area, ai) => (
+        {difficulties.map((diff, di) => (
+          <Section key={di} title={diff.difficultyName}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {(diff.towerAreaList ?? []).map((area, ai) => (
                 <div
                   key={ai}
                   style={{
-                    background: '#32334f',
+                    background: 'rgba(0,0,0,0.3)',
                     borderRadius: '10px',
-                    padding: '12px',
-                    marginBottom: ai < diff.towerAreaList.length - 1 ? '8px' : '0'
+                    padding: '14px 16px',
+                    borderLeft: `2px solid ${area.star >= area.maxStar ? C.gold : 'rgba(255,255,255,0.15)'}`
                   }}
                 >
-                  <div
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      marginBottom: '8px'
-                    }}
-                  >
-                    <span style={{ fontSize: '14px', fontWeight: 'bold', color: '#e0e4ff' }}>{area.areaName}</span>
-                    <span style={{ fontSize: '13px', color: '#fbbf24' }}>
-                      ⭐ {area.star}/{area.maxStar}
-                    </span>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                    <span style={{ fontSize: '18px', fontWeight: 'bold', color: '#fff' }}>{area.areaName}</span>
+                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
+                      <span style={{ fontSize: '28px', fontWeight: 'bold', color: C.gold, lineHeight: 1 }}>{area.star}</span>
+                      <span style={{ fontSize: '18px', color: C.textDim }}>/{area.maxStar}</span>
+                    </div>
                   </div>
-
-                  {/* 楼层 */}
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-                    {area.floorList.map((floor, fi) => (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                    {(area.floorList ?? []).map((floor, fi) => (
                       <div
                         key={fi}
                         style={{
-                          background: '#282940',
-                          borderRadius: '6px',
-                          padding: '6px 10px',
-                          fontSize: '12px',
+                          background: 'rgba(0,0,0,0.25)',
+                          borderRadius: '8px',
+                          padding: '10px 14px',
                           display: 'flex',
                           alignItems: 'center',
-                          gap: '4px'
+                          justifyContent: 'space-between'
                         }}
                       >
-                        <span style={{ color: '#8088bb' }}>{floor.floorName}</span>
-                        <span style={{ color: '#fbbf24' }}>
-                          {'★'.repeat(floor.star)}
-                          {'☆'.repeat(floor.maxStar - floor.star)}
-                        </span>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                          <span style={{ fontSize: '15px', color: C.textSecondary }}>第{floor.floor}层</span>
+                          <span style={{ fontSize: '15px', color: C.gold }}>{'★'.repeat(floor.star)}</span>
+                        </div>
+                        {floor.roleList && floor.roleList.length > 0 && (
+                          <div style={{ display: 'flex', gap: '6px' }}>
+                            {floor.roleList.map((role, ri) => (
+                              <div
+                                key={ri}
+                                style={{
+                                  width: '40px',
+                                  height: '40px',
+                                  borderRadius: '20px',
+                                  overflow: 'hidden',
+                                  border: `2px solid ${C.gold}`
+                                }}
+                              >
+                                {role.iconUrl ? (
+                                  <img src={role.iconUrl} style={{ width: '100%', height: '100%', display: 'block', objectFit: 'cover' }} />
+                                ) : (
+                                  <div
+                                    style={{
+                                      width: '100%',
+                                      height: '100%',
+                                      background: C.bg,
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      justifyContent: 'center',
+                                      fontSize: '14px',
+                                      color: C.gold
+                                    }}
+                                  >
+                                    ?
+                                  </div>
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>
                 </div>
               ))}
             </div>
-          ))}
-        </div>
+          </Section>
+        ))}
 
-        {/* 底部 */}
-        <div
-          style={{
-            marginTop: '8px',
-            textAlign: 'center',
-            fontSize: '11px',
-            color: '#5a5d8c'
-          }}
-        >
-          Powered by alemonjs · 鸣潮助手
-        </div>
-      </div>
+        <Footer />
+      </DarkContainer>
     </HTML>
   );
 }

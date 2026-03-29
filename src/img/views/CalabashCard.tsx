@@ -1,5 +1,6 @@
 import type { CalabashResp } from '@src/model/types';
 import React from 'react';
+import { C, DarkContainer, Footer, Section } from './CardBase';
 import HTML from './HTML.js';
 
 interface CalabashCardProps {
@@ -13,112 +14,72 @@ export default function CalabashCard({ data }: CalabashCardProps) {
   const { calabash } = data;
 
   return (
-    <HTML style={{ minWidth: '480px' }}>
-      <div
-        style={{
-          padding: '24px',
-          fontFamily: '"tttgbnumber", system-ui, sans-serif',
-          background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)',
-          color: '#ffffff'
-        }}
-      >
+    <HTML style={{ width: '1000px' }}>
+      <DarkContainer>
         {/* 头部 */}
         <div
           style={{
-            background: 'linear-gradient(135deg, #e8d5b0, #d3bc8e)',
-            borderRadius: '12px',
-            padding: '16px 20px',
-            marginBottom: '16px',
-            color: '#2d2d2d'
-          }}
-        >
-          <div style={{ fontSize: '20px', fontWeight: 'bold' }}>数据坞</div>
-          <div style={{ fontSize: '13px', opacity: 0.7, marginTop: '4px' }}>UID: {data.uid}</div>
-        </div>
-
-        {/* 基本信息 */}
-        <div
-          style={{
-            background: 'rgba(255,255,255,0.08)',
-            borderRadius: '10px',
-            padding: '14px 16px',
-            marginBottom: '12px',
+            background: `radial-gradient(circle at 100% 0%, ${C.goldDim} 0%, transparent 40%),
+                         linear-gradient(180deg, rgba(30,34,42,0.9) 0%, rgba(15,17,21,0.95) 100%)`,
+            borderRadius: '16px',
+            padding: '25px 40px',
             display: 'flex',
-            justifyContent: 'space-around'
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            border: `1px solid ${C.panelBorder}`
           }}
         >
-          <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#e8d5b0' }}>{calabash.level}</div>
-            <div style={{ fontSize: '12px', opacity: 0.6, marginTop: '2px' }}>数据坞等级</div>
+          <div>
+            <div style={{ fontSize: '36px', fontWeight: 800, color: '#fff', textShadow: '0 4px 10px rgba(0,0,0,0.5)' }}>数据坞</div>
+            <div style={{ fontSize: '18px', color: C.textSecondary, marginTop: '6px' }}>UID {data.uid}</div>
           </div>
-          <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#4fc3f7' }}>{calabash.baseCatch}</div>
-            <div style={{ fontSize: '12px', opacity: 0.6, marginTop: '2px' }}>基础吸收率</div>
-          </div>
-          <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#81c784' }}>{calabash.strengthenCatch}</div>
-            <div style={{ fontSize: '12px', opacity: 0.6, marginTop: '2px' }}>强化吸收率</div>
-          </div>
-          <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#ffb74d' }}>
-              {calabash.cost}/{calabash.maxCost}
-            </div>
-            <div style={{ fontSize: '12px', opacity: 0.6, marginTop: '2px' }}>Cost</div>
-          </div>
+          <div style={{ fontSize: '14px', letterSpacing: '4px', color: 'rgba(255,255,255,0.1)', fontWeight: 'bold' }}>CALABASH</div>
         </div>
 
-        {/* 声骸列表 */}
+        <Section title='基本信息'>
+          <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+            {[
+              { value: calabash.level, label: '数据坞等级', color: C.gold },
+              { value: calabash.baseCatch, label: '基础吸收率', color: '#4fc3f7' },
+              { value: calabash.strengthenCatch, label: '强化吸收率', color: '#66bb6a' },
+              { value: `${calabash.cost}/${calabash.maxCost}`, label: 'Cost', color: '#ffb74d' }
+            ].map((stat, i) => (
+              <div key={i} style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: '36px', fontWeight: 800, color: stat.color }}>{stat.value}</div>
+                <div style={{ fontSize: '14px', color: C.textDim, marginTop: '4px' }}>{stat.label}</div>
+              </div>
+            ))}
+          </div>
+        </Section>
+
         {calabash.phantomList && calabash.phantomList.length > 0 && (
-          <div
-            style={{
-              background: 'rgba(255,255,255,0.08)',
-              borderRadius: '10px',
-              padding: '14px 16px'
-            }}
-          >
-            <div style={{ fontSize: '14px', fontWeight: 'bold', marginBottom: '10px', color: '#e8d5b0' }}>已收集声骸 ({calabash.phantomList.length})</div>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+          <Section title='已收集声骸' extra={`${calabash.phantomList.length}`}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
               {calabash.phantomList.map((p, i) => (
                 <div
                   key={i}
                   style={{
-                    background: 'rgba(255,255,255,0.06)',
+                    background: 'rgba(0,0,0,0.3)',
                     borderRadius: '8px',
-                    padding: '8px',
-                    width: '85px',
+                    padding: '10px',
+                    width: '95px',
                     textAlign: 'center',
                     boxSizing: 'border-box'
                   }}
                 >
-                  {p.iconUrl && (
-                    <img
-                      src={p.iconUrl}
-                      style={{
-                        width: '40px',
-                        height: '40px',
-                        borderRadius: '6px',
-                        marginBottom: '4px'
-                      }}
-                    />
-                  )}
-                  <div
-                    style={{
-                      fontSize: '10px',
-                      lineHeight: '1.2',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      whiteSpace: 'nowrap'
-                    }}
-                  >
+                  {p.iconUrl && <img src={p.iconUrl} style={{ width: '44px', height: '44px', display: 'block', borderRadius: '6px', margin: '0 auto 6px' }} />}
+                  <div style={{ fontSize: '12px', lineHeight: 1.3, color: '#fff', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                     {p.name}
                   </div>
-                  <div style={{ fontSize: '10px', opacity: 0.5 }}>C{p.cost}</div>
+                  <div style={{ fontSize: '11px', color: C.gold, marginTop: '2px' }}>C{p.cost}</div>
                 </div>
               ))}
             </div>
-          </div>
+          </Section>
         )}
-      </div>
+
+        <Footer />
+      </DarkContainer>
     </HTML>
   );
 }

@@ -1,5 +1,5 @@
 import TowerCard from '@src/img/views/TowerCard';
-import { apiBaseInfo, apiTowerDetail, getCookie } from '@src/model/api';
+import { apiBaseInfo, apiMineV2, apiTowerDetail, getCookie } from '@src/model/api';
 import { getActiveUid } from '@src/model/db';
 import { createEvent, EventsEnum, Format, useMessage } from 'alemonjs';
 import { renderComponentIsHtmlToBuffer } from 'jsxp';
@@ -37,7 +37,7 @@ export default async (e: EventsEnum) => {
 
   const { cookie } = ckResult;
 
-  const [towerResp, baseResp] = await Promise.all([apiTowerDetail(uid, cookie), apiBaseInfo(uid, cookie)]);
+  const [towerResp, baseResp, mineResp] = await Promise.all([apiTowerDetail(uid, cookie), apiBaseInfo(uid, cookie), apiMineV2(cookie)]);
 
   if (!towerResp.success || !towerResp.data) {
     md.addText(`[鸣潮] 深塔查询失败: ${towerResp.msg || '未知错误'}`);
@@ -59,7 +59,8 @@ export default async (e: EventsEnum) => {
     data: {
       uid,
       base: baseResp.data,
-      tower: towerResp.data
+      tower: towerResp.data,
+      headUrl: mineResp.data?.mine?.headUrl
     }
   });
 

@@ -1,5 +1,5 @@
 import StaminaCard from '@src/img/views/StaminaCard';
-import { apiBaseInfo, apiDailyInfo, getCookie } from '@src/model/api';
+import { apiBaseInfo, apiDailyInfo, apiMineV2, getCookie } from '@src/model/api';
 import { getActiveUid } from '@src/model/db';
 import { createEvent, EventsEnum, Format, useMessage } from 'alemonjs';
 import { renderComponentIsHtmlToBuffer } from 'jsxp';
@@ -38,7 +38,7 @@ export default async (e: EventsEnum) => {
   const { cookie } = ckResult;
 
   // 并行请求
-  const [dailyResp, baseResp] = await Promise.all([apiDailyInfo(uid, cookie), apiBaseInfo(uid, cookie)]);
+  const [dailyResp, baseResp, mineResp] = await Promise.all([apiDailyInfo(uid, cookie), apiBaseInfo(uid, cookie), apiMineV2(cookie)]);
 
   if (!dailyResp.success || !dailyResp.data) {
     md.addText(`[鸣潮] 体力查询失败: ${dailyResp.msg || '未知错误'}`);
@@ -60,7 +60,8 @@ export default async (e: EventsEnum) => {
     data: {
       uid,
       daily: dailyResp.data,
-      base: baseResp.data
+      base: baseResp.data,
+      headUrl: mineResp.data?.mine?.headUrl
     }
   });
 

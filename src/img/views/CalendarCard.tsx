@@ -1,4 +1,5 @@
 import React from 'react';
+import { C, DarkContainer, Footer, Section } from './CardBase';
 import HTML from './HTML.js';
 
 interface CalendarEvent {
@@ -15,11 +16,11 @@ interface CalendarCardProps {
   };
 }
 
-const TYPE_COLORS: Record<string, { bg: string; border: string }> = {
-  gacha: { bg: 'rgba(232,166,64,0.2)', border: 'rgba(232,166,64,0.5)' },
-  activity: { bg: 'rgba(79,195,247,0.2)', border: 'rgba(79,195,247,0.5)' },
-  tower: { bg: 'rgba(156,108,219,0.2)', border: 'rgba(156,108,219,0.5)' },
-  other: { bg: 'rgba(255,255,255,0.08)', border: 'rgba(255,255,255,0.2)' }
+const TYPE_COLORS: Record<string, string> = {
+  gacha: C.gold,
+  activity: '#4fc3f7',
+  tower: '#9c6cdb',
+  other: '#9e9e9e'
 };
 
 const TYPE_LABELS: Record<string, string> = {
@@ -34,113 +35,112 @@ export default function CalendarCard({ data }: CalendarCardProps) {
   const upcomingEvents = data.events.filter(e => !e.isActive);
 
   return (
-    <HTML style={{ minWidth: '480px' }}>
-      <div
-        style={{
-          padding: '24px',
-          fontFamily: '"tttgbnumber", system-ui, sans-serif',
-          background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)',
-          color: '#ffffff'
-        }}
-      >
+    <HTML style={{ width: '1000px' }}>
+      <DarkContainer>
+        {/* 头部 */}
         <div
           style={{
-            background: 'linear-gradient(135deg, #e8d5b0, #d3bc8e)',
-            borderRadius: '12px',
-            padding: '16px 20px',
-            marginBottom: '16px',
-            color: '#2d2d2d'
+            background: `radial-gradient(circle at 100% 0%, ${C.goldDim} 0%, transparent 40%),
+                         linear-gradient(180deg, rgba(30,34,42,0.9) 0%, rgba(15,17,21,0.95) 100%)`,
+            borderRadius: '16px',
+            padding: '25px 40px',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            border: `1px solid ${C.panelBorder}`
           }}
         >
-          <div style={{ fontSize: '20px', fontWeight: 'bold' }}>活动日历</div>
-          <div style={{ fontSize: '13px', opacity: 0.7, marginTop: '4px' }}>鸣潮活动与卡池信息</div>
+          <div>
+            <div style={{ fontSize: '36px', fontWeight: 800, color: '#fff', textShadow: '0 4px 10px rgba(0,0,0,0.5)' }}>活动日历</div>
+            <div style={{ fontSize: '18px', color: C.textSecondary, marginTop: '6px' }}>鸣潮活动与卡池信息</div>
+          </div>
+          <div style={{ fontSize: '14px', letterSpacing: '4px', color: 'rgba(255,255,255,0.1)', fontWeight: 'bold' }}>CALENDAR</div>
         </div>
 
-        {/* 进行中 */}
         {activeEvents.length > 0 && (
-          <div style={{ marginBottom: '16px' }}>
-            <div style={{ fontSize: '15px', fontWeight: 'bold', marginBottom: '8px', color: '#81c784' }}>进行中 ({activeEvents.length})</div>
-            {activeEvents.map((evt, i) => {
-              const colors = TYPE_COLORS[evt.type] ?? TYPE_COLORS.other;
+          <Section title='进行中' extra={`${activeEvents.length}`}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              {activeEvents.map((evt, i) => {
+                const color = TYPE_COLORS[evt.type] ?? TYPE_COLORS.other;
 
-              return (
-                <div
-                  key={i}
-                  style={{
-                    background: colors.bg,
-                    border: `1px solid ${colors.border}`,
-                    borderRadius: '8px',
-                    padding: '10px 14px',
-                    marginBottom: '8px'
-                  }}
-                >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <div style={{ fontSize: '13px', fontWeight: 'bold' }}>{evt.title}</div>
-                    <div
-                      style={{
-                        fontSize: '10px',
-                        background: colors.border,
-                        borderRadius: '4px',
-                        padding: '2px 6px',
-                        color: '#fff'
-                      }}
-                    >
-                      {TYPE_LABELS[evt.type] ?? '其他'}
+                return (
+                  <div
+                    key={i}
+                    style={{
+                      background: 'rgba(0,0,0,0.3)',
+                      border: `1px solid ${C.panelBorder}`,
+                      borderLeft: `3px solid ${color}`,
+                      borderRadius: '8px',
+                      padding: '14px 18px'
+                    }}
+                  >
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <div style={{ fontSize: '16px', fontWeight: 'bold', color: '#fff' }}>{evt.title}</div>
+                      <div
+                        style={{
+                          fontSize: '12px',
+                          background: `${color}30`,
+                          borderRadius: '4px',
+                          padding: '3px 10px',
+                          color,
+                          fontWeight: 'bold'
+                        }}
+                      >
+                        {TYPE_LABELS[evt.type] ?? '其他'}
+                      </div>
+                    </div>
+                    <div style={{ fontSize: '13px', color: C.textDim, marginTop: '6px' }}>
+                      {evt.startTime} ~ {evt.endTime}
                     </div>
                   </div>
-                  <div style={{ fontSize: '11px', opacity: 0.6, marginTop: '4px' }}>
-                    {evt.startTime} ~ {evt.endTime}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
+          </Section>
         )}
 
-        {/* 即将开始 */}
         {upcomingEvents.length > 0 && (
-          <div>
-            <div style={{ fontSize: '15px', fontWeight: 'bold', marginBottom: '8px', color: '#ffb74d' }}>即将开始 ({upcomingEvents.length})</div>
-            {upcomingEvents.map((evt, i) => {
-              const colors = TYPE_COLORS[evt.type] ?? TYPE_COLORS.other;
+          <Section title='即将开始' extra={`${upcomingEvents.length}`}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              {upcomingEvents.map((evt, i) => {
+                const color = TYPE_COLORS[evt.type] ?? TYPE_COLORS.other;
 
-              return (
-                <div
-                  key={i}
-                  style={{
-                    background: colors.bg,
-                    border: `1px solid ${colors.border}`,
-                    borderRadius: '8px',
-                    padding: '10px 14px',
-                    marginBottom: '8px',
-                    opacity: 0.7
-                  }}
-                >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <div style={{ fontSize: '13px', fontWeight: 'bold' }}>{evt.title}</div>
-                    <div
-                      style={{
-                        fontSize: '10px',
-                        background: colors.border,
-                        borderRadius: '4px',
-                        padding: '2px 6px',
-                        color: '#fff'
-                      }}
-                    >
-                      {TYPE_LABELS[evt.type] ?? '其他'}
+                return (
+                  <div
+                    key={i}
+                    style={{
+                      background: 'rgba(0,0,0,0.3)',
+                      border: `1px solid ${C.panelBorder}`,
+                      borderLeft: `3px solid ${color}`,
+                      borderRadius: '8px',
+                      padding: '14px 18px',
+                      opacity: 0.7
+                    }}
+                  >
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <div style={{ fontSize: '16px', fontWeight: 'bold', color: '#fff' }}>{evt.title}</div>
+                      <div style={{ fontSize: '12px', background: `${color}30`, borderRadius: '4px', padding: '3px 10px', color, fontWeight: 'bold' }}>
+                        {TYPE_LABELS[evt.type] ?? '其他'}
+                      </div>
+                    </div>
+                    <div style={{ fontSize: '13px', color: C.textDim, marginTop: '6px' }}>
+                      {evt.startTime} ~ {evt.endTime}
                     </div>
                   </div>
-                  <div style={{ fontSize: '11px', opacity: 0.6, marginTop: '4px' }}>
-                    {evt.startTime} ~ {evt.endTime}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
+          </Section>
         )}
 
-        {data.events.length === 0 && <div style={{ textAlign: 'center', padding: '40px', opacity: 0.5 }}>暂无活动信息</div>}
-      </div>
+        {data.events.length === 0 && (
+          <Section title='暂无活动'>
+            <div style={{ textAlign: 'center', padding: '40px', color: C.textDim, fontSize: '18px' }}>暂无活动信息</div>
+          </Section>
+        )}
+
+        <Footer />
+      </DarkContainer>
     </HTML>
   );
 }

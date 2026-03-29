@@ -1,4 +1,5 @@
 import React from 'react';
+import { C, DarkContainer, Footer, Section } from './CardBase';
 import HTML from './HTML.js';
 
 interface PoolItem {
@@ -14,67 +15,58 @@ interface PoolCardProps {
 
 export default function PoolCard({ data }: PoolCardProps) {
   return (
-    <HTML style={{ minWidth: '480px' }}>
-      <div
-        style={{
-          padding: '24px',
-          fontFamily: '"tttgbnumber", system-ui, sans-serif',
-          background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)',
-          color: '#ffffff'
-        }}
-      >
+    <HTML style={{ width: '1000px' }}>
+      <DarkContainer>
         {/* 头部 */}
         <div
           style={{
-            background: 'linear-gradient(135deg, #e8d5b0, #d3bc8e)',
-            borderRadius: '12px',
-            padding: '16px 20px',
-            marginBottom: '16px',
-            color: '#2d2d2d'
+            background: `radial-gradient(circle at 100% 0%, ${C.goldDim} 0%, transparent 40%),
+                         linear-gradient(180deg, rgba(30,34,42,0.9) 0%, rgba(15,17,21,0.95) 100%)`,
+            borderRadius: '16px',
+            padding: '25px 40px',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            border: `1px solid ${C.panelBorder}`
           }}
         >
-          <div style={{ fontSize: '20px', fontWeight: 'bold' }}>当前卡池</div>
-          <div style={{ fontSize: '13px', opacity: 0.7, marginTop: '4px' }}>共 {data.pools.length} 个进行中</div>
+          <div>
+            <div style={{ fontSize: '36px', fontWeight: 800, color: '#fff', textShadow: '0 4px 10px rgba(0,0,0,0.5)' }}>当前卡池</div>
+            <div style={{ fontSize: '18px', color: C.textSecondary, marginTop: '6px' }}>共 {data.pools.length} 个进行中</div>
+          </div>
+          <div style={{ fontSize: '14px', letterSpacing: '4px', color: 'rgba(255,255,255,0.1)', fontWeight: 'bold' }}>POOL</div>
         </div>
 
-        {/* 卡池列表 */}
-        {data.pools.map((pool, i) => (
-          <div
-            key={i}
-            style={{
-              background: 'rgba(255,255,255,0.08)',
-              borderRadius: '10px',
-              padding: '14px 16px',
-              marginBottom: '10px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px'
-            }}
-          >
-            <div
-              style={{
-                width: '32px',
-                height: '32px',
-                borderRadius: '8px',
-                background: 'linear-gradient(135deg, #e8a640, #d3bc8e)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: '16px',
-                flexShrink: 0
-              }}
-            >
-              📌
+        <Section title='卡池列表'>
+          {data.pools.length > 0 ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              {data.pools.map((pool, i) => (
+                <div
+                  key={i}
+                  style={{
+                    background: 'rgba(0,0,0,0.3)',
+                    borderRadius: '10px',
+                    padding: '16px 20px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '16px',
+                    borderLeft: `3px solid ${C.gold}`
+                  }}
+                >
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#fff' }}>{pool.title}</div>
+                    <div style={{ fontSize: '13px', color: C.textDim, marginTop: '6px' }}>{pool.publishTime}</div>
+                  </div>
+                </div>
+              ))}
             </div>
-            <div style={{ flex: 1 }}>
-              <div style={{ fontSize: '14px', fontWeight: 'bold' }}>{pool.title}</div>
-              <div style={{ fontSize: '11px', opacity: 0.6, marginTop: '4px' }}>{pool.publishTime}</div>
-            </div>
-          </div>
-        ))}
+          ) : (
+            <div style={{ textAlign: 'center', padding: '40px', color: C.textDim, fontSize: '18px' }}>当前无进行中的卡池</div>
+          )}
+        </Section>
 
-        {data.pools.length === 0 && <div style={{ textAlign: 'center', padding: '40px', opacity: 0.5 }}>当前无进行中的卡池</div>}
-      </div>
+        <Footer />
+      </DarkContainer>
     </HTML>
   );
 }

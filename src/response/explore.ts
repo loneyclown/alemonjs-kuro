@@ -1,5 +1,5 @@
 import ExploreCard from '@src/img/views/ExploreCard';
-import { apiBaseInfo, apiExploreData, getCookie } from '@src/model/api';
+import { apiBaseInfo, apiExploreData, apiMineV2, getCookie } from '@src/model/api';
 import { getActiveUid } from '@src/model/db';
 import { createEvent, EventsEnum, Format, useMessage } from 'alemonjs';
 import { renderComponentIsHtmlToBuffer } from 'jsxp';
@@ -37,7 +37,7 @@ export default async (e: EventsEnum) => {
 
   const { cookie } = ckResult;
 
-  const [exploreResp, baseResp] = await Promise.all([apiExploreData(uid, cookie), apiBaseInfo(uid, cookie)]);
+  const [exploreResp, baseResp, mineResp] = await Promise.all([apiExploreData(uid, cookie), apiBaseInfo(uid, cookie), apiMineV2(cookie)]);
 
   if (!exploreResp.success || !exploreResp.data) {
     md.addText(`[鸣潮] 探索度查询失败: ${exploreResp.msg || '未知错误'}`);
@@ -59,7 +59,8 @@ export default async (e: EventsEnum) => {
     data: {
       uid,
       base: baseResp.data,
-      explore: exploreResp.data
+      explore: exploreResp.data,
+      headUrl: mineResp.data?.mine?.headUrl
     }
   });
 

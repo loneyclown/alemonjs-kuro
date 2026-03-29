@@ -1,5 +1,5 @@
 import PokerCard from '@src/img/views/PokerCard';
-import { apiBaseInfo, apiMoreActivity, getCookie } from '@src/model/api';
+import { apiBaseInfo, apiMineV2, apiMoreActivity, getCookie } from '@src/model/api';
 import { getActiveUid } from '@src/model/db';
 import { createEvent, EventsEnum, Format, useMessage } from 'alemonjs';
 import { renderComponentIsHtmlToBuffer } from 'jsxp';
@@ -37,7 +37,7 @@ export default async (e: EventsEnum) => {
 
   const { cookie } = ckResult;
 
-  const [moreResp, baseResp] = await Promise.all([apiMoreActivity(uid, cookie), apiBaseInfo(uid, cookie)]);
+  const [moreResp, baseResp, mineResp] = await Promise.all([apiMoreActivity(uid, cookie), apiBaseInfo(uid, cookie), apiMineV2(cookie)]);
 
   if (!moreResp.success || !moreResp.data?.phantomBattle) {
     md.addText('[鸣潮] 激斗数据获取失败或未解锁');
@@ -51,7 +51,8 @@ export default async (e: EventsEnum) => {
     data: {
       uid,
       battle: moreResp.data.phantomBattle,
-      base: baseResp.success ? baseResp.data : null
+      base: baseResp.success ? baseResp.data : null,
+      headUrl: mineResp.data?.mine?.headUrl
     }
   });
 

@@ -1,6 +1,7 @@
 import { WAVES_ECHO_COLORS } from '@src/constants/kuro.js';
 import type { EchoRankItem } from '@src/model/types';
 import React from 'react';
+import { C, DarkContainer, Footer, Section } from './CardBase';
 import HTML from './HTML.js';
 
 interface EchoListCardProps {
@@ -15,148 +16,109 @@ interface EchoListCardProps {
 
 export default function EchoListCard({ data }: EchoListCardProps) {
   return (
-    <HTML style={{ minWidth: '600px' }}>
-      <div
-        style={{
-          padding: '24px',
-          fontFamily: '"tttgbnumber", system-ui, sans-serif',
-          background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)',
-          color: '#ffffff'
-        }}
-      >
+    <HTML style={{ width: '1000px' }}>
+      <DarkContainer>
         {/* 头部 */}
         <div
           style={{
-            background: 'linear-gradient(135deg, #e8d5b0, #d3bc8e)',
-            borderRadius: '12px',
-            padding: '16px 20px',
-            marginBottom: '16px',
-            color: '#2d2d2d',
+            background: `radial-gradient(circle at 100% 0%, ${C.goldDim} 0%, transparent 40%),
+                         linear-gradient(180deg, rgba(30,34,42,0.9) 0%, rgba(15,17,21,0.95) 100%)`,
+            borderRadius: '16px',
+            padding: '25px 40px',
             display: 'flex',
             justifyContent: 'space-between',
-            alignItems: 'center'
+            alignItems: 'center',
+            border: `1px solid ${C.panelBorder}`
           }}
         >
           <div>
-            <div style={{ fontSize: '20px', fontWeight: 'bold' }}>声骸列表</div>
-            <div style={{ fontSize: '13px', opacity: 0.7, marginTop: '4px' }}>
-              {data.playerName} | UID: {data.uid}
+            <div style={{ fontSize: '36px', fontWeight: 800, color: '#fff', textShadow: '0 4px 10px rgba(0,0,0,0.5)' }}>声骸列表</div>
+            <div style={{ fontSize: '18px', color: C.textSecondary, marginTop: '6px' }}>
+              {data.playerName} · UID {data.uid}
             </div>
           </div>
           {data.totalPages > 1 && (
-            <div style={{ fontSize: '13px', opacity: 0.7 }}>
-              第 {data.page}/{data.totalPages} 页
+            <div style={{ fontSize: '18px', color: C.textDim, fontWeight: 'bold' }}>
+              {data.page} / {data.totalPages}
             </div>
           )}
         </div>
 
-        {/* 声骸网格 */}
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
-          {data.echoes.map((echo, i) => {
-            const fetterColor = WAVES_ECHO_COLORS[echo.fetterName] ?? '#e8d5b0';
+        <Section title='声骸'>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
+            {data.echoes.map((echo, i) => {
+              const fetterColor = WAVES_ECHO_COLORS[echo.fetterName] ?? C.gold;
 
-            return (
-              <div
-                key={i}
-                style={{
-                  background: 'rgba(255,255,255,0.06)',
-                  borderRadius: '10px',
-                  padding: '12px',
-                  width: '270px',
-                  borderLeft: `3px solid ${fetterColor}`
-                }}
-              >
-                {/* 声骸头部 */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-                  {echo.phantomIconUrl && <img src={echo.phantomIconUrl} style={{ width: '40px', height: '40px', borderRadius: '6px' }} />}
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: '12px', fontWeight: 'bold', lineHeight: '1.3' }}>{echo.phantomName}</div>
-                    <div style={{ display: 'flex', gap: '4px', marginTop: '3px' }}>
-                      <span
-                        style={{
-                          fontSize: '10px',
-                          padding: '1px 5px',
-                          borderRadius: '3px',
-                          background: 'rgba(0,0,0,0.4)',
-                          color: '#fff'
-                        }}
-                      >
-                        Lv.{echo.level}
-                      </span>
-                      <span
-                        style={{
-                          fontSize: '10px',
-                          padding: '1px 5px',
-                          borderRadius: '3px',
-                          background: `${fetterColor}33`,
-                          color: fetterColor
-                        }}
-                      >
-                        {echo.fetterName}
-                      </span>
-                      <span style={{ fontSize: '10px', color: '#e8d5b0' }}>{'◆'.repeat(echo.cost)}</span>
+              return (
+                <div
+                  key={i}
+                  style={{
+                    background: 'rgba(0,0,0,0.3)',
+                    borderRadius: '10px',
+                    padding: '14px',
+                    width: 'calc(50% - 6px)',
+                    borderLeft: `3px solid ${fetterColor}`,
+                    boxSizing: 'border-box'
+                  }}
+                >
+                  {/* 声骸头部 */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
+                    {echo.phantomIconUrl && <img src={echo.phantomIconUrl} style={{ width: '44px', height: '44px', display: 'block', borderRadius: '8px' }} />}
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: '14px', fontWeight: 'bold', color: '#fff', lineHeight: 1.3 }}>{echo.phantomName}</div>
+                      <div style={{ display: 'flex', gap: '6px', marginTop: '4px', flexWrap: 'wrap' }}>
+                        <span style={{ fontSize: '11px', padding: '2px 6px', borderRadius: '4px', background: 'rgba(0,0,0,0.4)', color: '#fff' }}>
+                          Lv.{echo.level}
+                        </span>
+                        <span style={{ fontSize: '11px', padding: '2px 6px', borderRadius: '4px', background: `${fetterColor}25`, color: fetterColor }}>
+                          {echo.fetterName}
+                        </span>
+                        <span style={{ fontSize: '11px', color: C.gold }}>{'◆'.repeat(echo.cost)}</span>
+                      </div>
                     </div>
+                    {echo.roleIconUrl && (
+                      <img
+                        src={echo.roleIconUrl}
+                        style={{
+                          width: '36px',
+                          height: '36px',
+                          display: 'block',
+                          borderRadius: '50%',
+                          border: `2px solid ${C.panelBorderTop}`
+                        }}
+                      />
+                    )}
                   </div>
-                  {/* 角色头像 */}
-                  {echo.roleIconUrl && (
-                    <img
-                      src={echo.roleIconUrl}
-                      style={{
-                        width: '32px',
-                        height: '32px',
-                        borderRadius: '50%',
-                        border: '1px solid rgba(255,255,255,0.2)'
-                      }}
-                    />
-                  )}
+
+                  {/* 主词条 */}
+                  {echo.mainProps.map((prop, j) => (
+                    <div key={`m${j}`} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', padding: '2px 0', color: C.gold }}>
+                      <span>{prop.attributeName}</span>
+                      <span style={{ fontWeight: 'bold' }}>{prop.attributeValue}</span>
+                    </div>
+                  ))}
+
+                  {echo.subProps.length > 0 && <div style={{ borderTop: `1px solid ${C.panelBorder}`, margin: '6px 0' }} />}
+
+                  {/* 副词条 */}
+                  {echo.subProps.map((prop, j) => (
+                    <div key={`s${j}`} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', padding: '2px 0', color: C.textSecondary }}>
+                      <span>{prop.attributeName}</span>
+                      <span>{prop.attributeValue}</span>
+                    </div>
+                  ))}
+
+                  <div style={{ fontSize: '11px', color: C.textDim, marginTop: '6px', textAlign: 'right' }}>{echo.roleName}</div>
                 </div>
+              );
+            })}
+          </div>
 
-                {/* 主词条 */}
-                {echo.mainProps.map((prop, j) => (
-                  <div
-                    key={`m${j}`}
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      fontSize: '11px',
-                      padding: '2px 0',
-                      color: '#e8d5b0'
-                    }}
-                  >
-                    <span>{prop.attributeName}</span>
-                    <span style={{ fontWeight: 'bold' }}>{prop.attributeValue}</span>
-                  </div>
-                ))}
+          {data.echoes.length === 0 && <div style={{ textAlign: 'center', padding: '40px', color: C.textDim, fontSize: '18px' }}>暂无声骸数据</div>}
+        </Section>
 
-                {/* 分割线 */}
-                {echo.subProps.length > 0 && <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)', margin: '4px 0' }} />}
-
-                {/* 副词条 */}
-                {echo.subProps.map((prop, j) => (
-                  <div
-                    key={`s${j}`}
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      fontSize: '11px',
-                      padding: '2px 0',
-                      opacity: 0.8
-                    }}
-                  >
-                    <span>{prop.attributeName}</span>
-                    <span>{prop.attributeValue}</span>
-                  </div>
-                ))}
-
-                {/* 角色名 */}
-                <div style={{ fontSize: '10px', opacity: 0.5, marginTop: '4px', textAlign: 'right' }}>{echo.roleName}</div>
-              </div>
-            );
-          })}
-        </div>
-
-        {data.echoes.length === 0 && <div style={{ textAlign: 'center', padding: '40px', opacity: 0.5 }}>暂无声骸数据</div>}
-      </div>
+        <Footer />
+      </DarkContainer>
     </HTML>
   );
 }
