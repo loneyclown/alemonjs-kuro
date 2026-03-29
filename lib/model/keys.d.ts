@@ -1,4 +1,4 @@
-export declare const wuwaKeys: {
+export declare const kuroKeys: {
     base: (data?: string) => string;
     userByUid: (uid: string | number) => string;
     uidByUser: (userId: string | number) => string;

@@ -1,4 +1,4 @@
-export declare const wuwaRouteRules: {
+export declare const routeRules: {
     readonly help: RegExp;
     readonly login: RegExp;
     readonly bind: RegExp;
