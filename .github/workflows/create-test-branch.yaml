@@ -1,0 +1,49 @@
+name: 创建测试分支
+
+on:
+  workflow_dispatch:
+    inputs:
+      runner-type:
+        description: '选择运行器类型'
+        required: false
+        default: 'self-hosted'
+        type: choice
+        options:
+          - self-hosted
+          - macos-latest
+          - ubuntu-latest
+
+permissions:
+  contents: write
+
+jobs:
+  create-dev-branch:
+    runs-on: ${{ github.event.inputs.runner-type || 'self-hosted' }}
+
+    steps:
+      - name: 检出代码库
+        uses: actions/checkout@v4
+
+      - name: 检查分支
+        run: |
+          CURRENT_BRANCH=$(git branch --show-current)
+          if [[ ! $CURRENT_BRANCH =~ ^dev- ]]; then
+            echo "错误: 该工作流只能在 dev 分支上运行。当前分支: $CURRENT_BRANCH"
+            exit 1
+          fi
+
+      - name: 根据当前分支生成QA分支名称
+        id: generate-branch
+        run: |
+          CURRENT_BRANCH=$(git branch --show-current)
+          # 去掉 dev- 前缀，添加 test- 前缀
+          BRANCH_NAME="test-${CURRENT_BRANCH#dev-}"
+          echo "Generated branch name: $BRANCH_NAME"
+          echo "branch_name=$BRANCH_NAME" >> $GITHUB_OUTPUT
+
+      - name: 创建新分支
+        run: |
+          NEW_BRANCH=${{ steps.generate-branch.outputs.branch_name }}
+          echo "Creating branch: $NEW_BRANCH"
+          git checkout -b $NEW_BRANCH
+          git push origin $NEW_BRANCH
