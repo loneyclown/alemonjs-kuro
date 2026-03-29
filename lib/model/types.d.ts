@@ -140,46 +140,60 @@ export interface TowerResp {
 export type ChallengeResp = TowerResp;
 export type SlashResp = TowerResp;
 export type MatrixResp = TowerResp;
-export interface RoleWeapon {
+export interface WeaponInfo {
     weaponId: number;
     weaponName: string;
     weaponStarLevel: number;
     weaponIcon: string;
     weaponType: number;
+    weaponEffectName?: string;
+}
+export interface WeaponData {
+    weapon: WeaponInfo;
     level: number;
-    breach: number;
+    breach?: number;
     resonLevel: number;
 }
 export interface PhantomProp {
-    phantomPropId: number;
     attributeName: string;
     attributeValue: string;
+    iconUrl?: string | null;
 }
-export interface PhantomItem {
+export interface PhantomBase {
+    phantomPropId?: number;
     phantomId: number;
     name: string;
-    icon: string;
-    level: number;
+    iconUrl: string;
+    quality?: number;
     cost: number;
-    mainProps: PhantomProp[];
-    phantomProp: PhantomProp[];
-    fetterDetail?: {
-        name: string;
-        fetterLevel: number;
-        rareLV?: number;
-        groupId?: number;
-    };
+    skillDescription?: string;
 }
 export interface EquipPhantom {
-    phantomProp: PhantomItem | null;
+    phantomProp: PhantomBase | null;
     cost: number;
-}
-export interface RoleSkill {
-    skillId: number;
-    skillName: string;
-    iconUrl: string;
+    quality?: number;
     level: number;
+    fetterDetail?: {
+        groupId?: number;
+        name: string;
+        iconUrl?: string;
+        num?: number;
+        firstDescription?: string;
+        secondDescription?: string;
+    };
+    mainProps?: PhantomProp[];
+    subProps?: PhantomProp[];
+}
+export interface SkillInfo {
+    id: number;
     type: string;
+    name: string;
+    description?: string;
+    iconUrl: string;
+}
+export interface SkillEntry {
+    skill: SkillInfo;
+    level: number;
 }
 export interface RoleDetailResp {
     role: RoleData;
@@ -190,12 +204,12 @@ export interface RoleDetailResp {
         iconUrl: string;
         unlocked: boolean;
     }[];
-    weaponData: RoleWeapon;
+    weaponData: WeaponData;
     phantomData: {
         cost: number;
         equipPhantomList: EquipPhantom[];
     };
-    skillList: RoleSkill[];
+    skillList: SkillEntry[];
 }
 export interface MineInfo {
     goldNum: number;
