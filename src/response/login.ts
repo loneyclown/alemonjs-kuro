@@ -43,7 +43,7 @@ export default async (e: EventsEnum) => {
   const normalized = text.replace('，', ',');
 
   if (!normalized.includes(',')) {
-    md.addText('[鸣潮] 格式错误，请使用:\n#登录 手机号,验证码');
+    md.addText('[鸣潮] 格式错误，请使用:\n#mc登录 手机号,验证码');
     format.addMarkdown(md);
     void message.send({ format });
 

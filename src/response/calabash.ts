@@ -18,7 +18,7 @@ export default async (e: EventsEnum) => {
   const uid = await getActiveUid(userId);
 
   if (!uid) {
-    md.addText('[鸣潮] 请先绑定特征码: #绑定特征码123456789');
+    md.addText('[鸣潮] 请先绑定特征码: #mc绑定123456789');
     format.addMarkdown(md);
     void message.send({ format });
 
@@ -28,7 +28,7 @@ export default async (e: EventsEnum) => {
   const ckResult = await getCookie(uid, userId);
 
   if (!ckResult) {
-    md.addText('[鸣潮] 未添加Token或Token已失效\n请使用 #登录 手机号,验证码 重新登录');
+    md.addText('[鸣潮] 未添加Token或Token已失效\n请使用 #mc登录 手机号,验证码 重新登录');
     format.addMarkdown(md);
     void message.send({ format });
 

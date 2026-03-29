@@ -18,9 +18,13 @@ import ICON_DELETE from '@src/assets/img/help/icons/删除.png';
 import ICON_DEL_TOKEN from '@src/assets/img/help/icons/删除token.png';
 import ICON_POOL from '@src/assets/img/help/icons/卡池.png';
 import ICON_CARD from '@src/assets/img/help/icons/基本信息卡片.png';
+import ICON_CALABASH from '@src/assets/img/help/icons/声骸介绍.png';
 import ICON_COIN from '@src/assets/img/help/icons/库洛币.png';
+import ICON_POKER from '@src/assets/img/help/icons/打牌.png';
 import ICON_GACHA from '@src/assets/img/help/icons/抽卡记录.png';
+import ICON_WIKI from '@src/assets/img/help/icons/攻略.png';
 import ICON_CALENDAR from '@src/assets/img/help/icons/日历.png';
+import ICON_PERIOD from '@src/assets/img/help/icons/星声.png';
 import ICON_VIEW from '@src/assets/img/help/icons/查看或刷新特征码列表.png';
 import ICON_ECHO from '@src/assets/img/help/icons/查询声骸列表.png';
 import ICON_EXPLORE from '@src/assets/img/help/icons/查询探索度.png';
@@ -32,8 +36,10 @@ import ICON_MATRIX from '@src/assets/img/help/icons/矩阵.png';
 import ICON_SIGN from '@src/assets/img/help/icons/签到.png';
 import ICON_SIGN_CAL from '@src/assets/img/help/icons/签到日历.png';
 import ICON_CHARLIST from '@src/assets/img/help/icons/练度.png';
+import ICON_RANK from '@src/assets/img/help/icons/练度排行.png';
 import ICON_BIND from '@src/assets/img/help/icons/绑定.png';
 import ICON_GET_TOKEN from '@src/assets/img/help/icons/获取绑定的token.png';
+import ICON_DEVELOP from '@src/assets/img/help/icons/角色.png';
 import ICON_GENERAL from '@src/assets/img/help/icons/通用.png';
 import ICON_REFRESH from '@src/assets/img/help/icons/面板更新.png';
 
@@ -101,7 +107,11 @@ const HELP_DATA: HelpCategory[] = [
       { icon: ICON_CHARLIST, name: '练度统计', desc: '查看角色练度列表', eg: 'mc练度', needCk: true },
       { icon: ICON_COIN, name: '库洛币', desc: '查询库洛币余额', eg: 'mc库洛币', needCk: true },
       { icon: ICON_ECHO, name: '声骸列表', desc: '查询声骸数据', eg: 'mc声骸列表', needCk: true },
-      { icon: ICON_GACHA, name: '抽卡记录', desc: '查询抽卡记录', eg: 'mc抽卡记录', needCk: true }
+      { icon: ICON_CALABASH, name: '数据坞', desc: '查看声骸数据坞', eg: 'mc数据坞', needCk: true },
+      { icon: ICON_GACHA, name: '抽卡记录', desc: '查询抽卡记录', eg: 'mc抽卡记录', needCk: true },
+      { icon: ICON_PERIOD, name: '星声统计', desc: '查看资源收支统计', eg: 'mc星声', needCk: true },
+      { icon: ICON_RANK, name: '练度排行', desc: '查看群练度排行', eg: 'mc练度排行', needCk: true },
+      { icon: ICON_DEVELOP, name: '角色培养', desc: '角色养成材料计算', eg: 'mc养成', needCk: true }
     ]
   },
   {
@@ -114,6 +124,8 @@ const HELP_DATA: HelpCategory[] = [
       { icon: ICON_CODE, name: '兑换码', desc: '查看可用兑换码', eg: 'mc兑换码' },
       { icon: ICON_CALENDAR, name: '日历', desc: '查看活动日历', eg: 'mc日历' },
       { icon: ICON_POOL, name: '卡池', desc: '查看当前卡池信息', eg: 'mc卡池' },
+      { icon: ICON_POKER, name: '激斗牌局', desc: '查看激斗活动数据', eg: 'mc牌局', needCk: true },
+      { icon: ICON_WIKI, name: 'Wiki攻略', desc: '角色技能/共鸣链/攻略', eg: 'mc安可攻略', needCk: true },
       { icon: ICON_GENERAL, name: '帮助', desc: '查看帮助列表', eg: 'mc帮助' }
     ]
   }

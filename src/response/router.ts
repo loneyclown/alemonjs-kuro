@@ -15,12 +15,12 @@ export default defineRouter([
         handler: lazy(() => import('@src/response/login'))
       },
       {
-        regular: routeRules.bind,
-        handler: lazy(() => import('@src/response/user'))
-      },
-      {
         regular: routeRules.token,
         handler: lazy(() => import('@src/response/token'))
+      },
+      {
+        regular: routeRules.bind,
+        handler: lazy(() => import('@src/response/user'))
       },
       {
         regular: routeRules.stamina,
