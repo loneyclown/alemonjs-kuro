@@ -3,6 +3,7 @@ import { apiRoleData, getCookie } from '@src/model/api';
 import { getActiveUid } from '@src/model/db';
 import { createEvent, EventsEnum, Format, useMessage } from 'alemonjs';
 import { renderComponentIsHtmlToBuffer } from 'jsxp';
+import { withHandler } from '@src/model/handler';
 
 /** 从消息文本中提取角色名和查询类型 */
 function parseWikiQuery(text: string): { charName: string; queryType: string } {
@@ -35,16 +36,16 @@ function parseWikiQuery(text: string): { charName: string; queryType: string } {
     }
   }
 
-  // 去除前缀命令符
-  charName = charName.replace(/^[!！/#＃]/, '').trim();
+  // 去除前缀命令符和模块前缀
+  charName = charName.replace(/^[!！/#＃](?:库洛|kuro|mc|鸣潮)/, '').trim();
 
   return { charName, queryType };
 }
 
-export default async (e: EventsEnum) => {
+export default withHandler(async (e: EventsEnum) => {
   const event = createEvent({
     event: e,
-    selects: ['message.create', 'private.message.create']
+    selects: ['private.message.create', 'message.create', 'interaction.create', 'private.interaction.create']
   });
   const [message] = useMessage(event);
   const userId = event.UserId;
@@ -56,7 +57,7 @@ export default async (e: EventsEnum) => {
   const { charName, queryType } = parseWikiQuery(text);
 
   if (!charName) {
-    md.addText('[鸣潮] 请输入角色名，例如: #吟霖技能  #安可共鸣链  #鉴心攻略');
+    md.addText('[鸣潮] 请输入角色名，例如: #mc吟霖技能  #mc安可共鸣链  #mc鉴心攻略');
     format.addMarkdown(md);
     void message.send({ format });
 
@@ -66,7 +67,7 @@ export default async (e: EventsEnum) => {
   const uid = await getActiveUid(userId);
 
   if (!uid) {
-    md.addText('[鸣潮] 请先绑定特征码: #绑定特征码123456789');
+    md.addText('[鸣潮] 请先绑定特征码: #mc绑定123456789');
     format.addMarkdown(md);
     void message.send({ format });
 
@@ -136,4 +137,4 @@ export default async (e: EventsEnum) => {
 
   format.addImage(img);
   void message.send({ format });
-};
+});

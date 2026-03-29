@@ -1,4 +1,4 @@
-import { WAVES_ECHO_COLORS } from '@src/constants/wuwa';
+import { WAVES_ECHO_COLORS } from '@src/constants/kuro.js';
 import type { RankEntry } from '@src/model/types';
 import React from 'react';
 import HTML from './HTML.js';

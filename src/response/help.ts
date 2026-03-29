@@ -1,18 +1,17 @@
-import WuwaHelp from '@src/img/views/Help';
+import kuroHelp from '@src/img/views/Help';
+import { withHandler } from '@src/model/handler';
 import { createEvent, EventsEnum, Format, useMessage } from 'alemonjs';
 import { renderComponentIsHtmlToBuffer } from 'jsxp';
 
-export default async (e: EventsEnum) => {
+export default withHandler(async (e: EventsEnum) => {
   const event = createEvent({
     event: e,
-    selects: ['message.create', 'private.message.create']
+    selects: ['private.message.create', 'message.create', 'interaction.create', 'private.interaction.create']
   });
 
   const [message] = useMessage(event);
 
-  const img = await renderComponentIsHtmlToBuffer(WuwaHelp, {
-    data: {}
-  });
+  const img = await renderComponentIsHtmlToBuffer(kuroHelp, {});
 
   if (typeof img === 'boolean') {
     const format = Format.create();
@@ -29,4 +28,4 @@ export default async (e: EventsEnum) => {
 
   format.addImage(img);
   void message.send({ format });
-};
+});

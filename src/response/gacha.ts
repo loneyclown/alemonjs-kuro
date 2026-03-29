@@ -1,6 +1,7 @@
 import GachaCard from '@src/img/views/GachaCard';
 import { apiGachaLog } from '@src/model/api';
 import { getActiveUid } from '@src/model/db';
+import { withHandler } from '@src/model/handler';
 import type { GachaLogItem, GachaPoolStatEx } from '@src/model/types';
 import { GACHA_POOL_TYPE, LUCK_THRESHOLDS, NORMAL_ROLE_LIST } from '@src/model/types';
 import { createEvent, EventsEnum, Format, useMessage } from 'alemonjs';
@@ -94,7 +95,9 @@ function analyzeGacha(items: GachaLogItem[]): GachaPoolStatEx[] {
     if (avg !== null && thresholds) {
       luckLevel = thresholds.findIndex(t => avg <= t);
 
-      if (luckLevel === -1) { luckLevel = 0; } // 超出最大阈值 = 非到极致
+      if (luckLevel === -1) {
+        luckLevel = 0;
+      } // 超出最大阈值 = 非到极致
     }
 
     stats.push({
@@ -118,10 +121,10 @@ function analyzeGacha(items: GachaLogItem[]): GachaPoolStatEx[] {
   return stats;
 }
 
-export default async (e: EventsEnum) => {
+export default withHandler(async (e: EventsEnum) => {
   const event = createEvent({
     event: e,
-    selects: ['message.create', 'private.message.create']
+    selects: ['private.message.create', 'message.create', 'interaction.create', 'private.interaction.create']
   });
   const [message] = useMessage(event);
   const userId = event.UserId;
@@ -132,7 +135,7 @@ export default async (e: EventsEnum) => {
   const uid = await getActiveUid(userId);
 
   if (!uid) {
-    md.addText('[鸣潮] 请先绑定特征码: #绑定特征码123456789');
+    md.addText('[鸣潮] 请先绑定特征码: #mc绑定123456789');
     format.addMarkdown(md);
     void message.send({ format });
 
@@ -160,8 +163,19 @@ export default async (e: EventsEnum) => {
 
   const img = await renderComponentIsHtmlToBuffer(GachaCard, { data: { uid, pools } });
 
+  if (typeof img === 'boolean') {
+    const fmt2 = Format.create();
+    const md2 = Format.createMarkdown();
+
+    md2.addText('[鸣潮] 抽卡统计卡片渲染失败');
+    fmt2.addMarkdown(md2);
+    void message.send({ format: fmt2 });
+
+    return;
+  }
+
   const fmt2 = Format.create();
 
   fmt2.addImage(img);
   void message.send({ format: fmt2 });
-};
+});

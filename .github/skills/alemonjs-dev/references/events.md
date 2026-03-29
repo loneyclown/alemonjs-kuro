@@ -111,7 +111,7 @@ type AutoFields = {
 
 ```typescript
 // 所有消息类型（公域 + 私域）
-selects: ['message.create', 'private.message.create'];
+selects: ['private.message.create', 'message.create', 'interaction.create', 'private.interaction.create'];
 
 // 仅公域消息
 selects: ['message.create'];

@@ -1,4 +1,4 @@
-import { wuwaRouteRules } from '@src/constants/wuwa';
+import { routeRules } from '@src/constants/kuro';
 import { defineRouter, lazy } from 'alemonjs';
 
 export default defineRouter([
@@ -7,111 +7,111 @@ export default defineRouter([
     handler: lazy(() => import('@src/response/mw')),
     children: [
       {
-        regular: wuwaRouteRules.help,
+        regular: routeRules.help,
         handler: lazy(() => import('@src/response/help'))
       },
       {
-        regular: wuwaRouteRules.login,
+        regular: routeRules.login,
         handler: lazy(() => import('@src/response/login'))
       },
       {
-        regular: wuwaRouteRules.bind,
+        regular: routeRules.bind,
         handler: lazy(() => import('@src/response/user'))
       },
       {
-        regular: wuwaRouteRules.token,
+        regular: routeRules.token,
         handler: lazy(() => import('@src/response/token'))
       },
       {
-        regular: wuwaRouteRules.stamina,
+        regular: routeRules.stamina,
         handler: lazy(() => import('@src/response/stamina'))
       },
       {
-        regular: wuwaRouteRules.roleinfo,
+        regular: routeRules.roleinfo,
         handler: lazy(() => import('@src/response/roleinfo'))
       },
       {
-        regular: wuwaRouteRules.explore,
+        regular: routeRules.explore,
         handler: lazy(() => import('@src/response/explore'))
       },
       {
-        regular: wuwaRouteRules.sign,
+        regular: routeRules.sign,
         handler: lazy(() => import('@src/response/sign'))
       },
       {
-        regular: wuwaRouteRules.tower,
+        regular: routeRules.tower,
         handler: lazy(() => import('@src/response/tower'))
       },
       {
-        regular: wuwaRouteRules.challenge,
+        regular: routeRules.challenge,
         handler: lazy(() => import('@src/response/challenge'))
       },
       {
-        regular: wuwaRouteRules.slash,
+        regular: routeRules.slash,
         handler: lazy(() => import('@src/response/slash'))
       },
       {
-        regular: wuwaRouteRules.matrix,
+        regular: routeRules.matrix,
         handler: lazy(() => import('@src/response/matrix'))
       },
       {
-        regular: wuwaRouteRules.charlist,
+        regular: routeRules.charlist,
         handler: lazy(() => import('@src/response/charlist'))
       },
       {
-        regular: wuwaRouteRules.coin,
+        regular: routeRules.coin,
         handler: lazy(() => import('@src/response/coin'))
       },
       {
-        regular: wuwaRouteRules.announce,
+        regular: routeRules.announce,
         handler: lazy(() => import('@src/response/announce'))
       },
       {
-        regular: wuwaRouteRules.code,
+        regular: routeRules.code,
         handler: lazy(() => import('@src/response/code'))
       },
       {
-        regular: wuwaRouteRules.gacha,
+        regular: routeRules.gacha,
         handler: lazy(() => import('@src/response/gacha'))
       },
       {
-        regular: wuwaRouteRules.echoList,
+        regular: routeRules.echoList,
         handler: lazy(() => import('@src/response/echoList'))
       },
       {
-        regular: wuwaRouteRules.calabash,
+        regular: routeRules.calabash,
         handler: lazy(() => import('@src/response/calabash'))
       },
       {
-        regular: wuwaRouteRules.period,
+        regular: routeRules.period,
         handler: lazy(() => import('@src/response/period'))
       },
       {
-        regular: wuwaRouteRules.calendar,
+        regular: routeRules.calendar,
         handler: lazy(() => import('@src/response/calendar'))
       },
       {
-        regular: wuwaRouteRules.pool,
+        regular: routeRules.pool,
         handler: lazy(() => import('@src/response/pool'))
       },
       {
-        regular: wuwaRouteRules.refresh,
+        regular: routeRules.refresh,
         handler: lazy(() => import('@src/response/refresh'))
       },
       {
-        regular: wuwaRouteRules.develop,
+        regular: routeRules.develop,
         handler: lazy(() => import('@src/response/develop'))
       },
       {
-        regular: wuwaRouteRules.poker,
+        regular: routeRules.poker,
         handler: lazy(() => import('@src/response/poker'))
       },
       {
-        regular: wuwaRouteRules.rank,
+        regular: routeRules.rank,
         handler: lazy(() => import('@src/response/rank'))
       },
       {
-        regular: wuwaRouteRules.wiki,
+        regular: routeRules.wiki,
         handler: lazy(() => import('@src/response/wiki'))
       }
     ]

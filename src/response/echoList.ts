@@ -4,13 +4,14 @@ import { getActiveUid } from '@src/model/db';
 import type { EchoRankItem } from '@src/model/types';
 import { createEvent, EventsEnum, Format, useMessage } from 'alemonjs';
 import { renderComponentIsHtmlToBuffer } from 'jsxp';
+import { withHandler } from '@src/model/handler';
 
 const ECHOES_PER_PAGE = 20;
 
-export default async (e: EventsEnum) => {
+export default withHandler(async (e: EventsEnum) => {
   const event = createEvent({
     event: e,
-    selects: ['message.create', 'private.message.create']
+    selects: ['private.message.create', 'message.create', 'interaction.create', 'private.interaction.create']
   });
   const [message] = useMessage(event);
   const userId = event.UserId;
@@ -21,7 +22,7 @@ export default async (e: EventsEnum) => {
   const uid = await getActiveUid(userId);
 
   if (!uid) {
-    md.addText('[鸣潮] 请先绑定特征码: #绑定特征码123456789');
+    md.addText('[鸣潮] 请先绑定特征码: #mc绑定123456789');
     format.addMarkdown(md);
     void message.send({ format });
 
@@ -111,4 +112,4 @@ export default async (e: EventsEnum) => {
 
   format.addImage(img);
   void message.send({ format });
-};
+});

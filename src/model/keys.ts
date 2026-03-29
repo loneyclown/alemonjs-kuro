@@ -1,9 +1,9 @@
 /**
  * 存储在 Redis 里的 Key 相关
  */
-const prefix = 'data:alemonjs-wuwa';
+const prefix = 'data:alemonjs-kuro';
 
-export const wuwaKeys = {
+export const kuroKeys = {
   base: (data?: string) => `${prefix}${data ?? ''}`,
   /** 用户 cookie/did/bat 信息 (按 uid 存储) */
   userByUid: (uid: string | number) => `${prefix}:user:uid:${uid}`,

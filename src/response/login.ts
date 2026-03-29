@@ -1,7 +1,8 @@
-import { WAVES_GAME_ID } from '@src/constants/wuwa';
+import { WAVES_GAME_ID } from '@src/constants/kuro';
 import { apiLogin, apiRequestToken, apiRoleList } from '@src/model/api';
 import { addToken, bindUid } from '@src/model/db';
 import { createEvent, EventsEnum, Format, useMessage } from 'alemonjs';
+import { withHandler } from '@src/model/handler';
 
 function generateUUID(): string {
   const chars = 'abcdef0123456789';
@@ -18,21 +19,21 @@ function generateUUID(): string {
   return result.toUpperCase();
 }
 
-export default async (e: EventsEnum) => {
+export default withHandler(async (e: EventsEnum) => {
   const event = createEvent({
     event: e,
-    selects: ['message.create', 'private.message.create']
+    selects: ['private.message.create', 'message.create', 'interaction.create', 'private.interaction.create']
   });
   const [message] = useMessage(event);
   const userId = event.UserId;
-  const text = e.MessageText.replace(/^(?:!|！|\/|#|＃)(?:登录|登陆|登入|login|dl)\s*/, '').trim();
+  const text = e.MessageText.replace(/^(?:!|！|\/|#|＃)(?:库洛|kuro|mc|鸣潮)(?:登录|登陆|登入|login|dl)\s*/, '').trim();
 
   const format = Format.create();
   const md = Format.createMarkdown();
 
   // 无参数 → 提示
   if (!text) {
-    md.addText('[鸣潮] 登录方式:\n#登录 手机号,验证码\n\n请先在库街区APP获取短信验证码后使用此命令');
+    md.addText('[鸣潮] 登录方式:\n#mc登录 手机号,验证码\n\n请先在库街区APP获取短信验证码后使用此命令');
     format.addMarkdown(md);
     void message.send({ format });
 
@@ -114,4 +115,4 @@ export default async (e: EventsEnum) => {
   md.addText(`[鸣潮] 登录成功!\n特征码: ${uid}\n服务器: ${role.serverName || '未知'}\nToken 已保存`);
   format.addMarkdown(md);
   void message.send({ format });
-};
+});

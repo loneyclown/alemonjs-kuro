@@ -1,10 +1,11 @@
 import { bindUid, switchUid, unbindUid, viewUids } from '@src/model/db';
 import { createEvent, EventsEnum, Format, useMessage } from 'alemonjs';
+import { withHandler } from '@src/model/handler';
 
-export default async (e: EventsEnum) => {
+export default withHandler(async (e: EventsEnum) => {
   const event = createEvent({
     event: e,
-    selects: ['message.create', 'private.message.create']
+    selects: ['private.message.create', 'message.create', 'interaction.create', 'private.interaction.create']
   });
   const [message] = useMessage(event);
   const userId = event.UserId;
@@ -68,7 +69,7 @@ export default async (e: EventsEnum) => {
     }
 
     // 默认提示
-    md.addText('[鸣潮] 绑定指令用法:\n#mc绑定123456789\n#mc切换123456789\n#mc解绑123456789\n#mc查看特征码');
+    md.addText('[鸣潮] 绑定指令用法:\n#mc绑定123456789\n#mc切换123456789\n#mc解绑123456789\n#mc查看');
     format.addMarkdown(md);
     void message.send({ format });
   } catch (err) {
@@ -77,4 +78,4 @@ export default async (e: EventsEnum) => {
     format.addMarkdown(md);
     void message.send({ format });
   }
-};
+});

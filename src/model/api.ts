@@ -9,8 +9,8 @@ import {
   SERVER_ID,
   SERVER_ID_NET,
   WAVES_GAME_ID
-} from '@src/constants/wuwa';
-import { wuwaKeys } from './keys';
+} from '@src/constants/kuro';
+import { kuroKeys } from './keys';
 import type {
   AccountBaseInfo,
   AnnDetailResp,
@@ -106,7 +106,7 @@ async function getUserHeaders(token: string, uid: string, needToken = false): Pr
     return headers;
   }
 
-  const userJson = await redis.get(wuwaKeys.userByUid(uid));
+  const userJson = await redis.get(kuroKeys.userByUid(uid));
 
   if (userJson) {
     try {
@@ -562,7 +562,7 @@ export async function getSelfCookie(uid: string, _userId: string): Promise<strin
     return null;
   }
 
-  const userJson = await redis.get(wuwaKeys.userByUid(uid));
+  const userJson = await redis.get(kuroKeys.userByUid(uid));
 
   if (!userJson) {
     return null;
@@ -592,7 +592,7 @@ export async function getSelfCookie(uid: string, _userId: string): Promise<strin
 
         if (tokenResp.success && tokenResp.data?.accessToken) {
           user.bat = tokenResp.data.accessToken;
-          await redis.set(wuwaKeys.userByUid(uid), JSON.stringify(user), 'EX', 86400 * 90);
+          await redis.set(kuroKeys.userByUid(uid), JSON.stringify(user), 'EX', 86400 * 90);
 
           return user.cookie;
         }

@@ -48,7 +48,7 @@ import { useMessage, createEvent, Format } from 'alemonjs';
 export default async (e, next) => {
   const event = createEvent({
     event: e,
-    selects: ['message.create', 'private.message.create']
+    selects: ['private.message.create', 'message.create', 'interaction.create', 'private.interaction.create']
   });
   if (!event.selects) {
     next();
@@ -133,7 +133,7 @@ const responseRouter = defineRouter([
     exact: '/ping', // 精确匹配（最快，O(1)）
     // prefix: '/echo',               // 前缀匹配（O(n)）
     // regular: /^\/help/,            // 正则匹配（缓存编译）
-    selects: ['message.create', 'private.message.create'],
+    selects: ['private.message.create', 'message.create', 'interaction.create', 'private.interaction.create'],
     handler: lazy(() => import('./response/ping'))
   },
   {
@@ -402,7 +402,6 @@ src/
 ├── index.ts              # 入口：defineChildren + defineRouter
 ├── env.d.ts              # 类型声明（/// <reference types="alemonjs/env" />）
 ├── response/             # 响应处理器（每个文件 export default 一个函数）
-│   ├── hello.ts
 │   ├── help.ts
 │   └── sign.ts
 ├── middleware/            # 中间件处理器

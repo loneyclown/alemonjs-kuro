@@ -1,8 +1,8 @@
 import { getIoRedis } from '@alemonjs/db';
-import { wuwaKeys } from './keys';
+import { kuroKeys } from './keys';
 
 /** 用户数据结构 (存储在 Redis) */
-export interface WuwaUser {
+export interface kuroUser {
   uid: string;
   cookie: string;
   did: string;
@@ -26,7 +26,7 @@ export async function getUidList(userId: string): Promise<string[]> {
     return [];
   }
 
-  const raw = await withTimeout(redis.get(wuwaKeys.uidByUser(userId)));
+  const raw = await withTimeout(redis.get(kuroKeys.uidByUser(userId)));
 
   if (!raw) {
     return [];
@@ -43,7 +43,7 @@ export async function getActiveUid(userId: string): Promise<string | null> {
     return null;
   }
 
-  const active = await withTimeout(redis.get(wuwaKeys.activeUid(userId)));
+  const active = await withTimeout(redis.get(kuroKeys.activeUid(userId)));
 
   if (active) {
     return active;
@@ -74,8 +74,8 @@ export async function bindUid(userId: string, uid: string): Promise<string> {
   }
 
   list.push(uid);
-  await withTimeout(redis.set(wuwaKeys.uidByUser(userId), list.join('_'), 'EX', 86400 * 90));
-  await withTimeout(redis.set(wuwaKeys.activeUid(userId), uid, 'EX', 86400 * 90));
+  await withTimeout(redis.set(kuroKeys.uidByUser(userId), list.join('_'), 'EX', 86400 * 90));
+  await withTimeout(redis.set(kuroKeys.activeUid(userId), uid, 'EX', 86400 * 90));
 
   return `特征码 ${uid} 绑定成功`;
 }
@@ -94,7 +94,7 @@ export async function switchUid(userId: string, uid: string): Promise<string> {
     return `未绑定特征码 ${uid}`;
   }
 
-  await withTimeout(redis.set(wuwaKeys.activeUid(userId), uid, 'EX', 86400 * 90));
+  await withTimeout(redis.set(kuroKeys.activeUid(userId), uid, 'EX', 86400 * 90));
 
   return `已切换到特征码 ${uid}`;
 }
@@ -115,24 +115,24 @@ export async function unbindUid(userId: string, uid: string): Promise<string> {
   }
 
   if (newList.length > 0) {
-    await withTimeout(redis.set(wuwaKeys.uidByUser(userId), newList.join('_'), 'EX', 86400 * 90));
+    await withTimeout(redis.set(kuroKeys.uidByUser(userId), newList.join('_'), 'EX', 86400 * 90));
   } else {
-    await withTimeout(redis.del(wuwaKeys.uidByUser(userId)));
+    await withTimeout(redis.del(kuroKeys.uidByUser(userId)));
   }
 
   // 如果解绑的是激活 uid，则切到第一个
-  const active = await withTimeout(redis.get(wuwaKeys.activeUid(userId)));
+  const active = await withTimeout(redis.get(kuroKeys.activeUid(userId)));
 
   if (active === uid) {
     if (newList.length > 0) {
-      await withTimeout(redis.set(wuwaKeys.activeUid(userId), newList[0], 'EX', 86400 * 90));
+      await withTimeout(redis.set(kuroKeys.activeUid(userId), newList[0], 'EX', 86400 * 90));
     } else {
-      await withTimeout(redis.del(wuwaKeys.activeUid(userId)));
+      await withTimeout(redis.del(kuroKeys.activeUid(userId)));
     }
   }
 
   // 清理用户数据
-  await withTimeout(redis.del(wuwaKeys.userByUid(uid)));
+  await withTimeout(redis.del(kuroKeys.userByUid(uid)));
 
   return `特征码 ${uid} 已解绑`;
 }
@@ -161,7 +161,7 @@ export async function addToken(_userId: string, uid: string, cookie: string, did
     return;
   }
 
-  const user: WuwaUser = {
+  const user: kuroUser = {
     uid,
     cookie,
     did,
@@ -170,25 +170,25 @@ export async function addToken(_userId: string, uid: string, cookie: string, did
     createdAt: Date.now()
   };
 
-  await withTimeout(redis.set(wuwaKeys.userByUid(uid), JSON.stringify(user), 'EX', 86400 * 90));
+  await withTimeout(redis.set(kuroKeys.userByUid(uid), JSON.stringify(user), 'EX', 86400 * 90));
 }
 
 /** 获取用户信息 */
-export async function getUserByUid(uid: string): Promise<WuwaUser | null> {
+export async function getUserByUid(uid: string): Promise<kuroUser | null> {
   const redis = getIoRedis();
 
   if (!redis) {
     return null;
   }
 
-  const raw = await withTimeout(redis.get(wuwaKeys.userByUid(uid)));
+  const raw = await withTimeout(redis.get(kuroKeys.userByUid(uid)));
 
   if (!raw) {
     return null;
   }
 
   try {
-    return JSON.parse(raw) as WuwaUser;
+    return JSON.parse(raw) as kuroUser;
   } catch {
     return null;
   }
@@ -202,5 +202,5 @@ export async function deleteToken(uid: string): Promise<void> {
     return;
   }
 
-  await withTimeout(redis.del(wuwaKeys.userByUid(uid)));
+  await withTimeout(redis.del(kuroKeys.userByUid(uid)));
 }

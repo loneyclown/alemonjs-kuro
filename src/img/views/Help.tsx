@@ -57,64 +57,64 @@ const HELP_DATA: HelpCategory[] = [
     title: '绑定账号',
     desc: '在执行查询之前请绑定账号',
     items: [
-      { icon: ICON_BIND, name: '绑定特征码', desc: '绑定特征码', eg: '绑定123456' },
-      { icon: ICON_SWITCH, name: '切换特征码', desc: '切换绑定的账户', eg: '切换123456', needCk: true },
-      { icon: ICON_DELETE, name: '删除特征码', desc: '删除特征码', eg: '删除123456' },
-      { icon: ICON_VIEW, name: '查看特征码列表', desc: '查看或刷新特征码列表', eg: '查看 or 刷新绑定' }
+      { icon: ICON_BIND, name: '绑定特征码', desc: '绑定特征码', eg: 'mc绑定123456' },
+      { icon: ICON_SWITCH, name: '切换特征码', desc: '切换绑定的账户', eg: 'mc切换123456', needCk: true },
+      { icon: ICON_DELETE, name: '删除特征码', desc: '删除特征码', eg: 'mc删除123456' },
+      { icon: ICON_VIEW, name: '查看特征码列表', desc: '查看或刷新特征码列表', eg: 'mc查看' }
     ]
   },
   {
     title: '库街区登录',
     desc: '在执行查询之前请库街区登录',
     items: [
-      { icon: ICON_LOGIN, name: '登录页登录', desc: '推荐登录方式', eg: '登录' },
-      { icon: ICON_ADD_TOKEN, name: '添加token', desc: '绑定库街区token', eg: '添加token tk,did' },
-      { icon: ICON_DEL_TOKEN, name: '删除token', desc: '删除当前库街区CK', eg: '删除token 123456' },
-      { icon: ICON_GET_TOKEN, name: '获取绑定的token', desc: '获取绑定的token', eg: '获取token', needCk: true }
+      { icon: ICON_LOGIN, name: '登录页登录', desc: '推荐登录方式', eg: 'mc登录' },
+      { icon: ICON_ADD_TOKEN, name: '添加token', desc: '绑定库街区token', eg: 'mc添加token tk,did' },
+      { icon: ICON_DEL_TOKEN, name: '删除token', desc: '删除当前库街区CK', eg: 'mc删除token 123456' },
+      { icon: ICON_GET_TOKEN, name: '获取绑定的token', desc: '获取绑定的token', eg: 'mc获取token', needCk: true }
     ]
   },
   {
     title: '信息查询',
     desc: '在执行查询之前请绑定账号',
     items: [
-      { icon: ICON_STAMINA, name: '体力', desc: '获取每日体力状态', eg: 'mr/每日', needCk: true },
-      { icon: ICON_CARD, name: '基本信息卡片', desc: '查询基本信息', eg: '卡片', needCk: true },
-      { icon: ICON_ROLEINFO, name: '查询角色面板', desc: '查询角色面板', eg: '查询', needCk: true },
-      { icon: ICON_EXPLORE, name: '查询探索度', desc: '查询探索度', eg: '探索度', needCk: true },
-      { icon: ICON_REFRESH, name: '刷新面板', desc: '刷新面板数据', eg: '刷新面板', needCk: true }
+      { icon: ICON_STAMINA, name: '体力', desc: '获取每日体力状态', eg: 'mc每日', needCk: true },
+      { icon: ICON_CARD, name: '基本信息卡片', desc: '查询基本信息', eg: 'mc卡片', needCk: true },
+      { icon: ICON_ROLEINFO, name: '查询角色面板', desc: '查询角色面板', eg: 'mc查询', needCk: true },
+      { icon: ICON_EXPLORE, name: '查询探索度', desc: '查询探索度', eg: 'mc探索度', needCk: true },
+      { icon: ICON_REFRESH, name: '刷新面板', desc: '刷新面板数据', eg: 'mc刷新面板', needCk: true }
     ]
   },
   {
     title: '深塔查询',
     desc: '深塔数据查询',
     items: [
-      { icon: ICON_TOWER, name: '深塔', desc: '查询逆境深塔', eg: 'st/深塔', needCk: true },
-      { icon: ICON_CHALLENGE, name: '全息战略', desc: '查询全息战略', eg: '全息战略', needCk: true },
-      { icon: ICON_SLASH, name: '冥歌海墟', desc: '查询冥歌海墟', eg: '冥歌海墟/海墟', needCk: true },
-      { icon: ICON_MATRIX, name: '终焉矩阵', desc: '查询终焉矩阵', eg: '终焉矩阵/矩阵', needCk: true }
+      { icon: ICON_TOWER, name: '深塔', desc: '查询逆境深塔', eg: 'mc深塔', needCk: true },
+      { icon: ICON_CHALLENGE, name: '全息战略', desc: '查询全息战略', eg: 'mc全息战略', needCk: true },
+      { icon: ICON_SLASH, name: '冥歌海墟', desc: '查询冥歌海墟', eg: 'mc冥海', needCk: true },
+      { icon: ICON_MATRIX, name: '终焉矩阵', desc: '查询终焉矩阵', eg: 'mc矩阵', needCk: true }
     ]
   },
   {
     title: '数据统计',
     desc: '角色与资源数据',
     items: [
-      { icon: ICON_CHARLIST, name: '练度统计', desc: '查看角色练度列表', eg: '练度', needCk: true },
-      { icon: ICON_COIN, name: '库洛币', desc: '查询库洛币余额', eg: '库洛币', needCk: true },
-      { icon: ICON_ECHO, name: '声骸列表', desc: '查询声骸数据', eg: '声骸列表', needCk: true },
-      { icon: ICON_GACHA, name: '抽卡记录', desc: '查询抽卡记录', eg: '抽卡记录', needCk: true }
+      { icon: ICON_CHARLIST, name: '练度统计', desc: '查看角色练度列表', eg: 'mc练度', needCk: true },
+      { icon: ICON_COIN, name: '库洛币', desc: '查询库洛币余额', eg: 'mc库洛币', needCk: true },
+      { icon: ICON_ECHO, name: '声骸列表', desc: '查询声骸数据', eg: 'mc声骸列表', needCk: true },
+      { icon: ICON_GACHA, name: '抽卡记录', desc: '查询抽卡记录', eg: 'mc抽卡记录', needCk: true }
     ]
   },
   {
     title: '社区功能',
     desc: '签到与活动',
     items: [
-      { icon: ICON_SIGN, name: '签到', desc: '执行库街区每日签到', eg: '签到', needCk: true },
-      { icon: ICON_SIGN_CAL, name: '签到日历', desc: '查看签到日历和奖励', eg: '签到日历', needCk: true },
-      { icon: ICON_ANN, name: '公告', desc: '查看游戏公告', eg: '公告' },
-      { icon: ICON_CODE, name: '兑换码', desc: '查看可用兑换码', eg: '兑换码' },
-      { icon: ICON_CALENDAR, name: '日历', desc: '查看活动日历', eg: '日历' },
-      { icon: ICON_POOL, name: '卡池', desc: '查看当前卡池信息', eg: '卡池' },
-      { icon: ICON_GENERAL, name: '帮助', desc: '查看帮助列表', eg: '帮助' }
+      { icon: ICON_SIGN, name: '签到', desc: '执行库街区每日签到', eg: 'mc签到', needCk: true },
+      { icon: ICON_SIGN_CAL, name: '签到日历', desc: '查看签到日历和奖励', eg: 'mc签到日历', needCk: true },
+      { icon: ICON_ANN, name: '公告', desc: '查看游戏公告', eg: 'mc公告' },
+      { icon: ICON_CODE, name: '兑换码', desc: '查看可用兑换码', eg: 'mc兑换码' },
+      { icon: ICON_CALENDAR, name: '日历', desc: '查看活动日历', eg: 'mc日历' },
+      { icon: ICON_POOL, name: '卡池', desc: '查看当前卡池信息', eg: 'mc卡池' },
+      { icon: ICON_GENERAL, name: '帮助', desc: '查看帮助列表', eg: 'mc帮助' }
     ]
   }
 ];
@@ -126,11 +126,7 @@ const ITEM_GAP = 8;
 const CONTENT_PAD = 20;
 const TOTAL_W = COLUMNS * ITEM_W + (COLUMNS - 1) * ITEM_GAP + CONTENT_PAD * 2;
 
-interface WuwaHelpProps {
-  data?: Record<string, unknown>;
-}
-
-export default function WuwaHelp(_props: WuwaHelpProps) {
+export default function WuwaHelp() {
   return (
     <HTML>
       <div

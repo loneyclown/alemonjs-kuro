@@ -1,10 +1,11 @@
 import { addToken, deleteToken, getActiveUid, getUserByUid } from '@src/model/db';
 import { createEvent, EventsEnum, Format, useMessage } from 'alemonjs';
+import { withHandler } from '@src/model/handler';
 
-export default async (e: EventsEnum) => {
+export default withHandler(async (e: EventsEnum) => {
   const event = createEvent({
     event: e,
-    selects: ['message.create', 'private.message.create']
+    selects: ['private.message.create', 'message.create', 'interaction.create', 'private.interaction.create']
   });
   const [message] = useMessage(event);
   const userId = event.UserId;
@@ -15,10 +16,10 @@ export default async (e: EventsEnum) => {
 
   // 添加 token
   if (/添加/i.test(text)) {
-    const tokenText = text.replace(/^(?:!|！|\/|#|＃)(?:添加)(?:token|Token|TOKEN|ck|CK)\s*/i, '').trim();
+    const tokenText = text.replace(/^(?:!|！|\/|#|＃)(?:库洛|kuro|mc|鸣潮)(?:添加)(?:token|Token|TOKEN|ck|CK)\s*/i, '').trim();
 
     if (!tokenText) {
-      md.addText('[鸣潮] 请输入Token\n格式: #添加token <token> 或 #添加token <token>,<did>');
+      md.addText('[鸣潮] 请输入Token\n格式: #mc添加token <token> 或 #mc添加token <token>,<did>');
       format.addMarkdown(md);
       void message.send({ format });
 
@@ -48,7 +49,7 @@ export default async (e: EventsEnum) => {
     const uid = await getActiveUid(userId);
 
     if (!uid) {
-      md.addText('[鸣潮] 请先绑定特征码: #绑定特征码123456789');
+      md.addText('[鸣潮] 请先绑定特征码: #mc绑定123456789');
       format.addMarkdown(md);
       void message.send({ format });
 
@@ -68,7 +69,7 @@ export default async (e: EventsEnum) => {
     const uidMatch = text.match(/(\d{9})/);
 
     if (!uidMatch) {
-      md.addText('[鸣潮] 请指定特征码: #删除token123456789');
+      md.addText('[鸣潮] 请指定特征码: #mc删除token123456789');
       format.addMarkdown(md);
       void message.send({ format });
 
@@ -112,7 +113,7 @@ export default async (e: EventsEnum) => {
     return;
   }
 
-  md.addText('[鸣潮] Token指令:\n#添加token <token>\n#删除token <uid>\n#获取token');
+  md.addText('[鸣潮] Token指令:\n#mc添加token <token>\n#mc删除token <uid>\n#mc获取token');
   format.addMarkdown(md);
   void message.send({ format });
-};
+});

@@ -4,6 +4,7 @@ import { getActiveUid } from '@src/model/db';
 import type { CultivateCostItem } from '@src/model/types';
 import { createEvent, EventsEnum, Format, useMessage } from 'alemonjs';
 import { renderComponentIsHtmlToBuffer } from 'jsxp';
+import { withHandler } from '@src/model/handler';
 
 /** 技能类型顺序 */
 const SKILL_ORDER = ['常态攻击', '共鸣技能', '共鸣解放', '变奏技能', '共鸣回路'];
@@ -11,10 +12,10 @@ const SKILL_ORDER = ['常态攻击', '共鸣技能', '共鸣解放', '变奏技�
 /** 技能突破列表 */
 const SKILL_BREAK_LIST = ['2-1', '2-2', '2-3', '2-4', '2-5', '3-1', '3-2', '3-3', '3-4', '3-5'];
 
-export default async (e: EventsEnum) => {
+export default withHandler(async (e: EventsEnum) => {
   const event = createEvent({
     event: e,
-    selects: ['message.create', 'private.message.create']
+    selects: ['private.message.create', 'message.create', 'interaction.create', 'private.interaction.create']
   });
   const [message] = useMessage(event);
   const userId = event.UserId;
@@ -25,7 +26,7 @@ export default async (e: EventsEnum) => {
   const uid = await getActiveUid(userId);
 
   if (!uid) {
-    md.addText('[鸣潮] 请先绑定特征码: #绑定特征码123456789');
+    md.addText('[鸣潮] 请先绑定特征码: #mc绑定123456789');
     format.addMarkdown(md);
     void message.send({ format });
 
@@ -144,4 +145,4 @@ export default async (e: EventsEnum) => {
 
   format.addImage(img);
   void message.send({ format });
-};
+});
