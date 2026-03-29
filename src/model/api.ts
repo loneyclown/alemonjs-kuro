@@ -5,6 +5,7 @@ import {
   GACHA_API_NET,
   IOS_USER_AGENT,
   KURO_API,
+  KURO_VERSION,
   NET_SERVER_ID_MAP,
   SERVER_ID,
   SERVER_ID_NET,
@@ -41,6 +42,42 @@ function randomSource(): 'ios' | 'android' {
   return Math.random() > 0.5 ? 'ios' : 'android';
 }
 
+/** 缓存的公网 IP (匹配 Python 的 get_public_ip) */
+let _publicIp = '';
+
+/** 获取公网 IP, 带缓存 */
+async function ensurePublicIp(): Promise<string> {
+  if (_publicIp) {
+    return _publicIp;
+  }
+
+  try {
+    const resp = await fetch('https://event.kurobbs.com/event/ip', { signal: AbortSignal.timeout(4000) });
+    const ip = (await resp.text()).trim();
+
+    if (/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(ip)) {
+      _publicIp = ip;
+
+      return _publicIp;
+    }
+  } catch {}
+
+  try {
+    const resp = await fetch('https://api.ipify.org/?format=json', { signal: AbortSignal.timeout(4000) });
+    const data = (await resp.json()) as { ip: string };
+
+    if (data.ip) {
+      _publicIp = data.ip;
+
+      return _publicIp;
+    }
+  } catch {}
+
+  _publicIp = '127.127.127.127';
+
+  return _publicIp;
+}
+
 function getBaseHeaders(): Record<string, string> {
   const source = randomSource();
   const ua = source === 'ios' ? IOS_USER_AGENT : ANDROID_USER_AGENT;
@@ -49,7 +86,7 @@ function getBaseHeaders(): Record<string, string> {
     source,
     'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
     'User-Agent': ua,
-    devCode: `127.0.0.1, ${ua}`
+    devCode: `${_publicIp || '127.127.127.127'}, ${ua}`
   };
 }
 
@@ -76,18 +113,38 @@ function formBody(data: Record<string, string | number>): string {
 
 async function kuroPost<T>(url: string, headers: Record<string, string>, data: Record<string, string | number>): Promise<KuroApiResp<T>> {
   try {
+    const body = formBody(data);
+
+    console.log(`[kuroPost] >>> ${url}`);
+    console.log('[kuroPost] headers:', JSON.stringify(headers));
+    console.log(`[kuroPost] body: ${body}`);
+
     const resp = await fetch(url, {
       method: 'POST',
       headers,
-      body: formBody(data)
+      body
     });
     const json = (await resp.json()) as KuroApiResp<T>;
+
+    // API 有时将 data 以 JSON 字符串返回，需要解析 (匹配 Python 的 _waves_request)
+    if (typeof json.data === 'string') {
+      try {
+        json.data = JSON.parse(json.data);
+      } catch {}
+    }
+
+    console.log(`[kuroPost] <<< ${url} code=${json.code} msg=${json.msg}`);
+    if (url.includes('requestToken')) {
+      console.log('[kuroPost] <<< requestToken data:', JSON.stringify(json.data));
+    }
 
     return {
       ...json,
       success: json.code === 0 || json.code === 200
     };
   } catch (err) {
+    console.log(`[kuroPost] !!! ${url} error: ${err}`);
+
     return { code: -999, msg: String(err), data: null, success: false };
   }
 }
@@ -143,6 +200,7 @@ export async function apiLoginLog(uid: string, token: string) {
 
   headers['token'] = token;
   headers['devCode'] = uh['did'] || '';
+  headers['version'] = KURO_VERSION;
 
   return kuroPost(KURO_API.LOGIN_LOG, headers, {});
 }
@@ -556,27 +614,57 @@ export function apiWikiEntryDetail(entryId: string) {
 
 /** 获取用户自己的 cookie. 如果无效返回 null */
 export async function getSelfCookie(uid: string, _userId: string): Promise<string | null> {
+  // 确保公网 IP 已缓存 (首次调用时获取)
+  await ensurePublicIp();
+  console.log(`[getSelfCookie] publicIp=${_publicIp}, uid=${uid}`);
+
   const redis = getIoRedis();
 
   if (!redis) {
+    console.log('[getSelfCookie] redis 未连接');
+
     return null;
   }
 
   const userJson = await redis.get(kuroKeys.userByUid(uid));
 
   if (!userJson) {
+    console.log(`[getSelfCookie] redis 中未找到 uid=${uid} 的数据`);
+
     return null;
   }
 
   try {
     const user = JSON.parse(userJson);
 
+    console.log(
+      `[getSelfCookie] user: cookie=${user.cookie ? '***' + user.cookie.slice(-10) : 'null'}, did=${user.did}, bat=${user.bat ? '***' + user.bat.slice(-10) : 'null'}`
+    );
+
     if (!user.cookie) {
       return null;
     }
 
+    // bat 为空时主动获取
+    if (!user.bat && user.did) {
+      console.log('[getSelfCookie] bat 为空, 主动获取...');
+      const tokenResp = await apiRequestToken(uid, user.cookie, user.did);
+
+      console.log(
+        `[getSelfCookie] requestToken: code=${tokenResp.code}, msg=${tokenResp.msg}, success=${tokenResp.success}, data=${JSON.stringify(tokenResp.data)}`
+      );
+
+      if (tokenResp.success && tokenResp.data?.accessToken) {
+        user.bat = tokenResp.data.accessToken;
+        await redis.set(kuroKeys.userByUid(uid), JSON.stringify(user), 'EX', 86400 * 90);
+        console.log(`[getSelfCookie] bat 已更新: ***${user.bat.slice(-10)}`);
+      }
+    }
+
     // 校验登录状态
     const logResp = await apiLoginLog(uid, user.cookie);
+
+    console.log(`[getSelfCookie] loginLog: code=${logResp.code}, msg=${logResp.msg}, success=${logResp.success}`);
 
     if (!logResp.success) {
       // code 220 = Token 真正过期
@@ -595,19 +683,31 @@ export async function getSelfCookie(uid: string, _userId: string): Promise<strin
     // 刷新数据
     const refreshResp = await apiRefresh(uid, user.cookie);
 
+    console.log(`[getSelfCookie] refresh: code=${refreshResp.code}, msg=${refreshResp.msg}, success=${refreshResp.success}`);
+
     if (!refreshResp.success) {
       // 服务器维护，跳过刷新
       if (refreshResp.code === 999 || refreshResp.msg?.includes('维护')) {
         return user.cookie;
       }
 
-      // bat 失效 => 尝试刷新
-      if (refreshResp.code === 10903 && user.did) {
+      // bat 失效 => 尝试刷新 (10903=数据令牌已失效, 10900=角色查询失败也可能是bat问题)
+      if ((refreshResp.code === 10903 || refreshResp.code === 10900) && user.did) {
+        console.log('[getSelfCookie] bat 失效, 尝试刷新 bat...');
         const tokenResp = await apiRequestToken(uid, user.cookie, user.did);
+
+        console.log(
+          `[getSelfCookie] requestToken: code=${tokenResp.code}, msg=${tokenResp.msg}, success=${tokenResp.success}, data=${JSON.stringify(tokenResp.data)}`
+        );
 
         if (tokenResp.success && tokenResp.data?.accessToken) {
           user.bat = tokenResp.data.accessToken;
           await redis.set(kuroKeys.userByUid(uid), JSON.stringify(user), 'EX', 86400 * 90);
+
+          // 用新 bat 重试 refresh
+          const retryResp = await apiRefresh(uid, user.cookie);
+
+          console.log(`[getSelfCookie] refresh retry: code=${retryResp.code}, msg=${retryResp.msg}, success=${retryResp.success}`);
 
           return user.cookie;
         }
@@ -615,14 +715,20 @@ export async function getSelfCookie(uid: string, _userId: string): Promise<strin
 
       // 非 Token 过期的刷新失败，乐观返回 cookie，让实际查询决定是否可用
       if (refreshResp.code !== 220) {
+        console.log('[getSelfCookie] 刷新失败但非220, 乐观返回 cookie');
+
         return user.cookie;
       }
 
       return null;
     }
 
+    console.log('[getSelfCookie] 一切正常, 返回 cookie');
+
     return user.cookie;
-  } catch {
+  } catch (e) {
+    console.log(`[getSelfCookie] 异常: ${e}`);
+
     return null;
   }
 }
