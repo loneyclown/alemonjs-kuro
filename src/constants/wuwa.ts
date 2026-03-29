@@ -1,61 +1,58 @@
-/** 鸣潮 指令前缀 */
-const P = '(?:!|！|\\/|#|＃)';
-
 export const wuwaRouteRules = {
   /** 帮助 */
-  help: new RegExp(`^${P}(鸣潮|wuwa|mc)(帮助|help)$`),
+  help: /^(?:!|！|\/|#|＃)(鸣潮|wuwa|mc)(帮助|help)$/,
   /** 登录 */
-  login: new RegExp(`^${P}(登录|登陆|登入|login|dl)(.*)$`),
+  login: /^(?:!|！|\/|#|＃)(登录|登陆|登入|login|dl)(.*)$/,
   /** 绑定特征码 */
-  bind: new RegExp(`^${P}(绑定|切换|解绑|删除|查看|我的)(特征码|uid)(.*)$`),
+  bind: /^(?:!|！|\/|#|＃)(?:鸣潮|wuwa|mc)?(绑定|切换|解绑|删除|查看|我的)(?:特征码|uid)?(.*)$/,
   /** 添加/删除/获取 token */
-  token: new RegExp(`^${P}(添加|删除|获取)(token|Token|TOKEN|ck|CK)(.*)$`),
+  token: /^(?:!|！|\/|#|＃)(添加|删除|获取)(token|Token|TOKEN|ck|CK)(.*)$/,
   /** 每日/体力 */
-  stamina: new RegExp(`^${P}(每日|mr|实时便笺|便笺|便签|体力)$`),
+  stamina: /^(?:!|！|\/|#|＃)(每日|mr|实时便笺|便笺|便签|体力)$/,
   /** 查询/卡片 */
-  roleinfo: new RegExp(`^${P}(查询|卡片|kp)$`),
+  roleinfo: /^(?:!|！|\/|#|＃)(查询|卡片|kp)$/,
   /** 探索度 */
-  explore: new RegExp(`^${P}(ts|探索|探索度)$`),
+  explore: /^(?:!|！|\/|#|＃)(ts|探索|探索度)$/,
   /** 签到 */
-  sign: new RegExp(`^${P}(签到日历|签到记录|签到|qdjl|qd)$`),
+  sign: /^(?:!|！|\/|#|＃)(签到日历|签到记录|签到|qdjl|qd)$/,
   /** 深塔 */
-  tower: new RegExp(`^${P}(深塔|逆境深塔|st)$`),
+  tower: /^(?:!|！|\/|#|＃)(深塔|逆境深塔|st)$/,
   /** 全息战略 */
-  challenge: new RegExp(`^${P}(全息|全息战略|qx)$`),
+  challenge: /^(?:!|！|\/|#|＃)(全息|全息战略|qx)$/,
   /** 冥歌海墟 */
-  slash: new RegExp(`^${P}(冥海|冥歌海墟|无尽|禁忌海域|hx)$`),
+  slash: /^(?:!|！|\/|#|＃)(冥海|冥歌海墟|无尽|禁忌海域|hx)$/,
   /** 终焉矩阵 */
-  matrix: new RegExp(`^${P}(矩阵|终焉矩阵|jz|奇点扩张|稳态协议)$`),
+  matrix: /^(?:!|！|\/|#|＃)(矩阵|终焉矩阵|jz|奇点扩张|稳态协议)$/,
   /** 练度统计 */
-  charlist: new RegExp(`^${P}(练度|练度统计|ld)$`),
+  charlist: /^(?:!|！|\/|#|＃)(练度|练度统计|ld)$/,
   /** 库洛币 */
-  coin: new RegExp(`^${P}(库洛币|库币|coin)$`),
+  coin: /^(?:!|！|\/|#|＃)(库洛币|库币|coin)$/,
   /** 公告 */
-  announce: new RegExp(`^${P}(公告)(.*)?$`),
+  announce: /^(?:!|！|\/|#|＃)(公告)(.*)?$/,
   /** 兑换码 */
-  code: new RegExp(`^${P}(兑换码|code)$`),
+  code: /^(?:!|！|\/|#|＃)(兑换码|code)$/,
   /** 抽卡记录 */
-  gacha: new RegExp(`^${P}(抽卡记录|抽卡|ck|chou)$`),
+  gacha: /^(?:!|！|\/|#|＃)(抽卡记录|抽卡|ck|chou)$/,
   /** 声骸列表 */
-  echoList: new RegExp(`^${P}(声骸列表|声骸|sg)$`),
+  echoList: /^(?:!|！|\/|#|＃)(声骸列表|声骸|sg)$/,
   /** 数据坞 */
-  calabash: new RegExp(`^${P}(数据坞|声骸坞|swu)$`),
+  calabash: /^(?:!|！|\/|#|＃)(数据坞|声骸坞|swu)$/,
   /** 星声统计 */
-  period: new RegExp(`^${P}(星声|星声统计|资源统计|xx)(.*)$`),
+  period: /^(?:!|！|\/|#|＃)(星声|星声统计|资源统计|xx)(.*)$/,
   /** 日历 */
-  calendar: new RegExp(`^${P}(日历|活动日历|rl)$`),
+  calendar: /^(?:!|！|\/|#|＃)(日历|活动日历|rl)$/,
   /** 卡池 */
-  pool: new RegExp(`^${P}(卡池|当前卡池|kc)$`),
+  pool: /^(?:!|！|\/|#|＃)(卡池|当前卡池|kc)$/,
   /** 刷新面板 */
-  refresh: new RegExp(`^${P}(刷新面板|刷新)$`),
+  refresh: /^(?:!|！|\/|#|＃)(刷新面板|刷新)$/,
   /** 角色培养 */
-  develop: new RegExp(`^${P}(.*)(养成|培养|yc)(.*)$`),
+  develop: /^(?:!|！|\/|#|＃)(.*)(养成|培养|yc)(.*)$/,
   /** 激斗/牌局 */
-  poker: new RegExp(`^${P}(poker|牌局|扑克|激斗|打牌)$`),
+  poker: /^(?:!|！|\/|#|＃)(poker|牌局|扑克|激斗|打牌)$/,
   /** 排行 */
-  rank: new RegExp(`^${P}(练度排行|群排行|ldph|ldpm)$`),
+  rank: /^(?:!|！|\/|#|＃)(练度排行|群排行|ldph|ldpm)$/,
   /** Wiki/攻略 */
-  wiki: new RegExp(`^${P}(.*)(wiki|攻略|gl|技能|jn|共鸣链|gml|命座|回路|机制|jz|图鉴)$`)
+  wiki: /^(?:!|！|\/|#|＃)(.*)(wiki|攻略|gl|技能|jn|共鸣链|gml|命座|回路|机制|jz|图鉴)$/
 } as const;
 
 // ═══════════════════════════════════════
