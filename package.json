@@ -42,6 +42,7 @@
     "eslint-plugin-react": "^7.37.3",
     "globals": "^15.14.0",
     "husky": "^9.1.7",
+    "is-generator-function": "^1.1.2",
     "lint-staged": "^16.1.5",
     "lvyjs": "0.3.0-alpha.2",
     "prettier": "^3",

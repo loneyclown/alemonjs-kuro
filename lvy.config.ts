@@ -1,7 +1,6 @@
 import { defineConfig } from 'lvyjs';
-import { dirname, join } from 'path';
-import { fileURLToPath } from 'url';
-const __dirname = dirname(fileURLToPath(import.meta.url));
+import { join } from 'path';
+const __dirname = process.cwd();
 export default defineConfig({
   watch: [
     'src/**/*.{ts,tsx,js,jsx,json,html}'

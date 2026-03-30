@@ -47,11 +47,11 @@ apps:
   alemonjs-kuro: true # 启动扩展
 ```
 
-## 安装方式2: npm
+<!-- ## 安装方式2: npm
 
 ```sh
 yarn add alemonjs-kuro -W
-```
+``` -->
 
 - alemon.config.yaml
 

@@ -2,8 +2,6 @@ import QRCode from 'qrcode';
 import React from 'react';
 import HTML from './HTML.js';
 
-import IMG_BG from '@src/assets/img/help/texture2d/bg.jpg';
-
 const LOGIN_URL = 'https://www.kurobbs.com/mc';
 
 const STEPS = [
@@ -33,126 +31,60 @@ interface Props {
 
 export default function LoginHelpCard({ data }: Props) {
   return (
-    <HTML style={{ width: '480px' }}>
-      <div
-        style={{
-          fontFamily: '"tttgbnumber", system-ui, sans-serif',
-          color: '#ffffff',
-          backgroundImage: `url(${IMG_BG})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          padding: '24px'
-        }}
-      >
-        {/* 标题 */}
-        <div
-          style={{
-            textAlign: 'center',
-            marginBottom: '20px'
-          }}
-        >
-          <div style={{ fontSize: '24px', fontWeight: 'bold', letterSpacing: '2px' }}>鸣潮助手 · 登录指引</div>
-          <div style={{ fontSize: '18px', color: 'rgba(255,255,255,0.5)', marginTop: '4px' }}>请按照以下步骤完成登录</div>
-        </div>
+    <HTML style={{ width: '520px' }}>
+      <div className='relative flex justify-center p-6 bg-[#f6f6f6]' style={{ fontFamily: '"tttgbnumber", system-ui, sans-serif' }}>
+        <div className='relative w-full overflow-hidden bg-white border-2 border-[#eae5d9] rounded-3xl shadow-[0_12px_32px_rgba(0,0,0,0.05)]'>
+          {/* 标题 */}
+          <div className='flex flex-col items-start px-8 pt-6 pb-2'>
+            <div className='text-[32px] font-bold tracking-[2px] text-[#3d3833]'>鸣潮助手 · 登录指引</div>
+            <div className='mt-1 text-sm tracking-[4px] text-[#a09d98]'>请按照以下步骤完成登录</div>
+          </div>
 
-        {/* 步骤卡片 */}
-        {STEPS.map((step, i) => (
-          <div
-            key={i}
-            style={{
-              background: 'rgba(255,255,255,0.08)',
-              borderRadius: '12px',
-              padding: '16px 20px',
-              marginBottom: '12px',
-              border: '1px solid rgba(255,255,255,0.1)',
-              display: 'flex',
-              alignItems: 'flex-start',
-              gap: '14px'
-            }}
-          >
-            {/* 序号 */}
-            <div
-              style={{
-                width: '32px',
-                height: '32px',
-                borderRadius: '50%',
-                background: 'linear-gradient(135deg, #d32f2f, #ff5252)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: '22px',
-                fontWeight: 'bold',
-                flexShrink: 0,
-                marginTop: '2px'
-              }}
-            >
-              {step.num}
+          <div className='px-8 pt-3 pb-6'>
+            {/* 步骤卡片 */}
+            <div className='flex flex-col gap-4 mb-6'>
+              {STEPS.map((step, i) => (
+                <div key={i} className='flex items-start gap-4 p-4 bg-[#faf7f2] border border-[#e1dcce] rounded-2xl'>
+                  {/* 序号 */}
+                  <div className='flex items-center justify-center shrink-0 w-8 h-8 mt-0.5 text-[20px] font-bold text-white bg-[#eebb4d] rounded-full shadow-[0_2px_4px_rgba(238,187,77,0.4)]'>
+                    {step.num}
+                  </div>
+                  {/* 内容 */}
+                  <div className='flex flex-col w-full'>
+                    <div className='text-[20px] font-bold text-[#423c36]'>{step.title}</div>
+                    <div className='mt-1 text-[15px] text-[#b0a89d]'>{step.desc}</div>
+                    <div className='mt-2 px-3 py-1.5 text-[15px] font-bold text-[#5b534b] bg-white border border-[#eae5d9] rounded-lg break-all'>
+                      {step.detail}
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
-            {/* 内容 */}
-            <div style={{ flex: 1 }}>
-              <div style={{ fontSize: '22px', fontWeight: 'bold' }}>{step.title}</div>
-              <div style={{ fontSize: '18px', color: 'rgba(255,255,255,0.6)', marginTop: '4px' }}>{step.desc}</div>
-              <div
-                style={{
-                  fontSize: '18px',
-                  color: '#4fc3f7',
-                  marginTop: '6px',
-                  background: 'rgba(0,0,0,0.3)',
-                  padding: '6px 10px',
-                  borderRadius: '6px',
-                  wordBreak: 'break-all'
-                }}
-              >
-                {step.detail}
+
+            {/* 二维码区域 */}
+            <div className='flex items-center gap-5 p-4 bg-[#faf7f2] border border-[#e1dcce] rounded-2xl'>
+              <div className='shrink-0 p-1.5 bg-white border border-[#eae5d9] rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.04)]'>
+                <img src={data.qrDataUrl} className='block w-[100px] h-[100px]' />
+              </div>
+              <div className='flex flex-col'>
+                <div className='flex items-center'>
+                  <div className='w-[4px] h-[18px] mr-2.5 rounded-[2px] bg-[#dcb858] shadow-[0_2px_4px_rgba(220,184,88,0.4)]' />
+                  <span className='text-[20px] font-bold tracking-[1px] text-[#423c36]'>扫码打开登录页</span>
+                </div>
+                <div className='mt-2.5 text-[15px] leading-relaxed text-[#b0a89d]'>
+                  使用手机浏览器扫描左侧二维码
+                  <br />
+                  即可直接打开库街区登录页面
+                </div>
               </div>
             </div>
-          </div>
-        ))}
 
-        {/* 二维码区域 */}
-        <div
-          style={{
-            background: 'rgba(255,255,255,0.08)',
-            borderRadius: '12px',
-            padding: '16px',
-            border: '1px solid rgba(255,255,255,0.1)',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '16px'
-          }}
-        >
-          <div
-            style={{
-              width: '120px',
-              height: '120px',
-              background: '#ffffff',
-              borderRadius: '8px',
-              padding: '6px',
-              flexShrink: 0
-            }}
-          >
-            <img src={data.qrDataUrl} style={{ width: '108px', height: '108px', display: 'block' }} />
-          </div>
-          <div style={{ flex: 1 }}>
-            <div style={{ fontSize: '20px', fontWeight: 'bold' }}>扫码打开登录页</div>
-            <div style={{ fontSize: '18px', color: 'rgba(255,255,255,0.5)', marginTop: '6px', lineHeight: '1.6' }}>
-              使用手机浏览器扫描左侧二维码
-              <br />
-              即可打开库街区登录页面
+            {/* 底部提示 */}
+            <div className='flex items-center justify-between px-5 py-3 mt-6 bg-[#faf7f2] border border-[#e1dcce] rounded-xl'>
+              <span className='text-sm font-bold text-[#8a837b]'>指令前缀 # ! / ！＃</span>
+              <span className='text-xs text-[#c2bcb2]'>Powered by alemonjs-kuro</span>
             </div>
           </div>
-        </div>
-
-        {/* 底部提示 */}
-        <div
-          style={{
-            marginTop: '16px',
-            textAlign: 'center',
-            fontSize: '18px',
-            color: 'rgba(255,255,255,0.35)'
-          }}
-        >
-          指令前缀 # ! / ！＃ · Powered by alemonjs
         </div>
       </div>
     </HTML>
