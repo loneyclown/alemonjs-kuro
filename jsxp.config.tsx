@@ -24,6 +24,7 @@ import { defineConfig } from 'jsxp';
 import React from 'react';
 
 export default defineConfig({
+  port: 8127,
   routes: {
     '/wuwa-help': {
       component: <WuwaHelp />

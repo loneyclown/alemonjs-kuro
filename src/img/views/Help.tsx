@@ -1,12 +1,6 @@
 import React from 'react';
 import HTML from './HTML.js';
 
-/* ═══ 背景 & 纹理素材 ═══ */
-import IMG_BANNER from '@src/assets/img/help/texture2d/banner_bg.jpg';
-import IMG_BG from '@src/assets/img/help/texture2d/bg.jpg';
-import IMG_CAG from '@src/assets/img/help/texture2d/cag_bg.png';
-import IMG_ITEM from '@src/assets/img/help/texture2d/item.png';
-
 /* ═══ 指令图标 ═══ */
 import ICON_STAMINA from '@src/assets/img/help/icons/体力.png';
 import ICON_CODE from '@src/assets/img/help/icons/兑换码.png';
@@ -131,233 +125,65 @@ const HELP_DATA: HelpCategory[] = [
   }
 ];
 
-const COLUMNS = 4;
-const ITEM_W = 240;
-const ITEM_H = 100;
-const ITEM_GAP = 10;
-const CONTENT_PAD = 24;
+const COLUMNS = 5;
+const ITEM_W = 136;
+const ITEM_H = 140;
+const ITEM_GAP = 12;
+const CONTENT_PAD = 32;
 const TOTAL_W = COLUMNS * ITEM_W + (COLUMNS - 1) * ITEM_GAP + CONTENT_PAD * 2;
 
 export default function WuwaHelp() {
   return (
     <HTML style={{ width: `${TOTAL_W}px` }}>
-      <div
-        style={{
-          fontFamily: '"tttgbnumber", system-ui, sans-serif',
-          fontSize: '22px',
-          color: '#ffffff',
-          backgroundImage: `url(${IMG_BG})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          position: 'relative'
-        }}
-      >
-        {/* ═══ Banner ═══ */}
-        <div
-          style={{
-            width: '100%',
-            height: '260px',
-            backgroundImage: `url(${IMG_BANNER})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center 30%',
-            position: 'relative',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'flex-end',
-            padding: '20px 24px'
-          }}
-        >
-          {/* 渐变遮罩 */}
-          <div
-            style={{
-              position: 'absolute',
-              left: 0,
-              right: 0,
-              bottom: 0,
-              height: '120px',
-              background: 'linear-gradient(transparent, rgba(13,27,36,0.95))',
-              pointerEvents: 'none'
-            }}
-          />
-          <div style={{ position: 'relative', zIndex: 1 }}>
-            <div
-              style={{
-                fontSize: '34px',
-                fontWeight: 'bold',
-                textShadow: '0 2px 8px rgba(0,0,0,0.7)',
-                letterSpacing: '2px'
-              }}
-            >
-              鸣潮助手
-            </div>
-            <div
-              style={{
-                fontSize: '22px',
-                opacity: 0.8,
-                marginTop: '6px',
-                textShadow: '0 1px 4px rgba(0,0,0,0.7)'
-              }}
-            >
-              漂泊者，欢迎在这个时代醒来。
-            </div>
+      <div className='relative flex justify-center p-6 bg-[#f6f6f6]' style={{ fontFamily: '"tttgbnumber", system-ui, sans-serif' }}>
+        <div className='relative w-full overflow-hidden bg-white border-2 border-[#eae5d9] rounded-3xl shadow-[0_12px_32px_rgba(0,0,0,0.05)]'>
+          <div className='flex flex-col items-start px-8 pt-6 pb-2'>
+            <div className='text-[32px] font-bold tracking-[2px] text-[#3d3833]'>鸣潮助手</div>
+            <div className='mt-1 text-sm tracking-[4px] text-[#a09d98]'>WUTHERING WAVES ASSISTANT</div>
           </div>
-        </div>
 
-        {/* ═══ 内容区域 ═══ */}
-        <div style={{ padding: `16px ${CONTENT_PAD}px 20px` }}>
-          {HELP_DATA.map((cat, ci) => (
-            <div key={ci} style={{ marginBottom: '16px' }}>
-              {/* — 分类标题栏 — */}
-              <div
-                style={{
-                  height: '44px',
-                  backgroundImage: `url(${IMG_CAG})`,
-                  backgroundSize: '100% 100%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  paddingLeft: '32px',
-                  marginBottom: '10px',
-                  position: 'relative'
-                }}
-              >
-                {/* 红色方块装饰 */}
-                <div
-                  style={{
-                    position: 'absolute',
-                    left: '8px',
-                    top: '50%',
-                    transform: 'translateY(-50%)',
-                    width: '14px',
-                    height: '14px',
-                    background: '#d32f2f',
-                    borderRadius: '2px'
-                  }}
-                />
-                <span
-                  style={{
-                    fontSize: '18px',
-                    fontWeight: 'bold',
-                    color: '#ffffff'
-                  }}
-                >
-                  {cat.title}
-                </span>
-                <span
-                  style={{
-                    fontSize: '20px',
-                    color: 'rgba(255,255,255,0.5)',
-                    marginLeft: '12px'
-                  }}
-                >
-                  {cat.desc}
-                </span>
-              </div>
-
-              {/* — 指令网格 — */}
-              <div
-                style={{
-                  display: 'flex',
-                  flexWrap: 'wrap',
-                  gap: `${ITEM_GAP}px`
-                }}
-              >
-                {cat.items.map((item, idx) => (
-                  <div
-                    key={idx}
-                    style={{
-                      width: `${ITEM_W}px`,
-                      height: `${ITEM_H}px`,
-                      backgroundImage: `url(${IMG_ITEM})`,
-                      backgroundSize: '100% 100%',
-                      display: 'flex',
-                      alignItems: 'center',
-                      padding: '10px 12px',
-                      boxSizing: 'border-box',
-                      position: 'relative'
-                    }}
-                  >
-                    {/* 图标 */}
-                    <img
-                      src={item.icon}
-                      style={{
-                        width: '60px',
-                        height: '60px',
-                        display: 'block',
-                        objectFit: 'contain',
-                        flexShrink: 0
-                      }}
-                    />
-                    {/* 文字 */}
-                    <div
-                      style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                        overflow: 'hidden',
-                        flex: 1
-                      }}
-                    >
-                      <div
-                        style={{
-                          fontSize: '20px',
-                          fontWeight: 'bold',
-                          color: '#ffffff',
-                          lineHeight: '1.3',
-                          whiteSpace: 'nowrap',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis'
-                        }}
-                      >
-                        {item.name}
-                      </div>
-                      <div
-                        style={{
-                          fontSize: '18px',
-                          color: 'rgba(255,255,255,0.55)',
-                          lineHeight: '1.3',
-                          marginTop: '2px',
-                          whiteSpace: 'nowrap',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis'
-                        }}
-                      >
-                        {item.eg}
-                      </div>
-                    </div>
-                    {/* CK 标记 */}
-                    {item.needCk && (
-                      <div
-                        style={{
-                          position: 'absolute',
-                          top: '4px',
-                          right: '6px',
-                          width: '8px',
-                          height: '8px',
-                          borderRadius: '50%',
-                          background: '#4fc3f7'
-                        }}
-                      />
-                    )}
+          <div className='px-8 pt-3 pb-6'>
+            {HELP_DATA.map((cat, ci) => (
+              <div key={ci} className='mb-6'>
+                <div className='relative flex flex-col mb-4'>
+                  <div className='flex items-center'>
+                    <div className='w-[5px] h-[22px] mr-3 rounded-[3px] bg-[#dcb858] shadow-[0_2px_4px_rgba(220,184,88,0.4)]' />
+                    <span className='text-[22px] font-bold tracking-[1px] text-[#423c36]'>{cat.title}</span>
                   </div>
-                ))}
-              </div>
-            </div>
-          ))}
+                  <div className='mt-1.5 ml-[17px] font-sans text-[11px] tracking-[2px] text-[#b0a89d]'>{cat.desc}</div>
+                  <div className='w-full h-px mt-2.5 bg-gradient-to-r from-[rgba(0,0,0,0.08)] to-[rgba(0,0,0,0.02)]' />
+                </div>
 
-          {/* ═══ 底部说明 ═══ */}
-          <div
-            style={{
-              marginTop: '8px',
-              padding: '10px 16px',
-              background: 'rgba(0,0,0,0.35)',
-              borderRadius: '8px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between'
-            }}
-          >
-            <span style={{ fontSize: '20px', color: 'rgba(255,255,255,0.5)' }}>蓝色圆点 = 需要登录 · 指令前缀 # ! / ！＃</span>
-            <span style={{ fontSize: '20px', color: 'rgba(255,255,255,0.35)' }}>Powered by alemonjs</span>
+                <div className='flex flex-wrap gap-3'>
+                  {cat.items.map((item, idx) => (
+                    <div
+                      key={idx}
+                      className='relative flex flex-col items-center justify-start box-border pt-1'
+                      style={{ width: `${ITEM_W}px`, height: `${ITEM_H}px` }}
+                    >
+                      <img src={item.icon} className='block shrink-0 object-contain w-[76px] h-[76px] z-[2] drop-shadow-[0_6px_8px_rgba(0,0,0,0.08)]' />
+
+                      <div className='relative flex items-center justify-center box-border min-w-[116px] px-3 py-1 -mt-2 bg-[#faf7f2] border-2 border-[#e1dcce] rounded-3xl z-[1] shadow-[inset_0_0_0_1px_#fff,0_4px_6px_rgba(0,0,0,0.02)]'>
+                        <div className='text-[15px] font-bold whitespace-nowrap text-[#5b534b]'>{item.name}</div>
+                      </div>
+
+                      <div className='mt-1.5 text-xs text-center text-[#b0a89d]'>{item.eg}</div>
+
+                      {item.needCk && (
+                        <div className='absolute top-1 right-2 z-[3] px-1.5 py-0.5 text-[10px] font-bold text-white bg-[#eebb4d] border border-[#dca73a] shadow-[0_2px_4px_rgba(238,187,77,0.4)] rounded-t-lg rounded-bl-lg rounded-br-sm'>
+                          NEW
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+
+            <div className='flex items-center justify-between px-5 py-3 mt-2 bg-[#faf7f2] border border-[#e1dcce] rounded-xl'>
+              <span className='text-sm font-bold text-[#8a837b]'>NEW 标签 = 可能需要登录或绑定凭证 · 所有指令均需加前缀 (# / ! 等)</span>
+              <span className='text-xs text-[#c2bcb2]'>Powered by alemonjs-kuro</span>
+            </div>
           </div>
         </div>
       </div>
