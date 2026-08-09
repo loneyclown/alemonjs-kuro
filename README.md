@@ -1,10 +1,11 @@
 # 阿柠檬-库洛
 
-必要环境 `nodejs` 、`redis` 、`chrome`
+`alemonx` https://github.com/lemonade-lab/alemonx/releases
 
 `alemongo` https://github.com/lemonade-lab/alemongo
 
 `alemondesk` https://github.com/lemonade-lab/alemondesk
+
 
 ### alemongo/alemondesk
 
@@ -13,25 +14,13 @@
 ```sh
 https://github.com/loneyclown/alemonjs-kuro.git
 ```
-
-若访问受限，可使用如下加速地址
-
-```sh
-https://ghfast.top/https://github.com/loneyclown/alemonjs-kuro.git
-```
-
+ 
 - branch
 
 ```sh
 release
 ```
-
-- alemon.config.yaml
-
-```yaml
-apps:
-  alemonjs-kuro: true # 启动扩展
-```
+ 
 
 ## 免责声明
 
