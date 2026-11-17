@@ -1,9 +1,31 @@
-# 合并到机器人运行目录的 alemon.config.yaml，保留原有 QQ 凭据、Redis 和登录页配置。
+# 独立运行时复制为 alemon.config.yaml，填写自己的 QQ 应用与 Redis 配置。
+# 接入已有宿主时，只合并需要的部分，不要覆盖宿主凭据。
+login: qq-bot
+
+qq-bot:
+  app_id: '填写你的 QQ 机器人 AppID'
+  secret: '填写你的 QQ 机器人 AppSecret'
+  markdownToText: true # 开启可点击 Markdown 帮助时改为 false
+
+db:
+  redis:
+    host: '127.0.0.1'
+    port: 6379
+    db: 0
+    password: ''
+
 alemonjs-kuro:
   markdown:
     enabled: false # true：可点击 Markdown 帮助；false：图片帮助
+  login:
+    host: '0.0.0.0'
+    port: 8130
+    # 默认自动选择本机局域网地址。手机无法访问时，指定可访问的 IP 或域名：
+    # publicUrl: 'http://192.168.1.100:8130'
 
-# 开启上面的开关时，现有 QQ 配置还需要：
-# qq-bot:
-#   markdownToText: false
-# 并在 QQ 开放平台开通自定义 Markdown 消息权限。
+# Markdown 帮助需要 QQ 自定义 Markdown 权限，并将 markdownToText 改为 false。
+# 已有宿主未自动启用插件时，再合并以下配置：
+# apps:
+#   alemonjs-kuro:
+#     enabled: true
+#     order: 10
