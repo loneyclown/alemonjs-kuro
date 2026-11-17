@@ -4,18 +4,37 @@ export interface KuroApiResp<T = unknown> {
     data: T | null;
     success: boolean;
 }
-export interface EnergyData {
+export interface DailyWidget {
+    name?: string;
+    img?: string | null;
+    value?: string | null;
+    status?: number;
     cur: number;
     total: number;
+    refreshTimeStamp?: number;
+    timePreDesc?: string | null;
+    expireTimeStamp?: number;
+}
+export interface EnergyData extends DailyWidget {
     refreshTimeStamp: number;
 }
 export interface DailyData {
     energyData: EnergyData | null;
-    livenessData: {
-        cur: number;
-        total: number;
+    livenessData: DailyWidget | null;
+    battlePassData: (DailyWidget | null)[];
+    storeEnergyData?: DailyWidget | null;
+    weeklyData?: DailyWidget | null;
+    weeklyRougeData?: DailyWidget | null;
+    weeklyFrameData?: DailyWidget | null;
+    towerData?: DailyWidget | null;
+    slashTowerData?: DailyWidget | null;
+    newTowerData?: DailyWidget | null;
+    serverTime?: number;
+    activityData?: {
+        enabled: boolean;
+        title: string;
+        endTime?: number;
     } | null;
-    battlePassData: unknown[];
     shopDataList: unknown[];
 }
 export interface AccountBaseInfo {
@@ -61,6 +80,7 @@ export interface ExploreItem {
 export interface AreaInfo {
     areaId: number;
     areaName: string;
+    areaPic?: string | null;
     areaProgress: number;
     itemList: ExploreItem[];
 }
@@ -71,15 +91,17 @@ export interface ExploreCountry {
     detailPagePic: string;
     detailPageProgressColor: string;
     homePageIcon: string;
+    detailPageImage?: string | null;
+    detailPageAreaPic?: string | null;
 }
 export interface ExploreArea {
-    areaInfoList?: AreaInfo[] | null;
+    areaInfoList?: (AreaInfo | null)[] | null;
     country: ExploreCountry;
     countryProgress: string;
 }
 export interface ExploreResp {
     open: boolean;
-    exploreList?: ExploreArea[] | null;
+    exploreList?: (ExploreArea | null)[] | null;
 }
 export interface SignItem {
     id?: string;
@@ -147,17 +169,23 @@ export interface WeaponInfo {
     weaponIcon: string;
     weaponType: number;
     weaponEffectName?: string;
+    effectDescription?: string;
 }
 export interface WeaponData {
     weapon: WeaponInfo;
     level: number;
     breach?: number;
     resonLevel: number;
+    mainPropList?: PhantomProp[];
 }
 export interface PhantomProp {
+    attributeId?: number;
     attributeName: string;
     attributeValue: string;
     iconUrl?: string | null;
+    key?: string;
+    valid?: boolean;
+    sort?: number;
 }
 export interface PhantomBase {
     phantomPropId?: number;
@@ -196,6 +224,13 @@ export interface SkillEntry {
     level: number;
 }
 export interface RoleDetailResp {
+    roleAttributeList?: PhantomProp[];
+    equipPhantomAddPropList?: PhantomProp[];
+    equipPhantomAttributeList?: PhantomProp[];
+    roleSkin?: {
+        picUrl?: string;
+        skinName?: string;
+    };
     role: RoleData;
     level: number;
     chainList: {
@@ -207,7 +242,7 @@ export interface RoleDetailResp {
     weaponData: WeaponData;
     phantomData: {
         cost: number;
-        equipPhantomList: EquipPhantom[];
+        equipPhantomList: (EquipPhantom | null)[];
     };
     skillList: SkillEntry[];
 }

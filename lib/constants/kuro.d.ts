@@ -4,7 +4,6 @@ export declare const routeRules: {
     readonly bind: RegExp;
     readonly token: RegExp;
     readonly stamina: RegExp;
-    readonly roleinfo: RegExp;
     readonly chardetail: RegExp;
     readonly explore: RegExp;
     readonly sign: RegExp;
@@ -33,8 +32,10 @@ export declare const SERVER_ID = "76402e5b20be2c39f095a152090afddc";
 export declare const SERVER_ID_NET = "919752ae5ea09c1ced910dd668a63ffb";
 export declare const NET_SERVER_ID_MAP: Record<number, string>;
 export declare const KURO_BASE_URL = "https://api.kurobbs.com";
+export declare const GEETEST_CAPTCHA_ID = "ec4aa4174277d822d73f2442a165a2cd";
 export declare const KURO_API: {
     readonly LOGIN: "https://api.kurobbs.com/user/sdkLogin";
+    readonly SMS_CODE: "https://api.kurobbs.com/user/getSmsCodeForH5";
     readonly LOGIN_LOG: "https://api.kurobbs.com/user/login/log";
     readonly ROLE_LIST: "https://api.kurobbs.com/gamer/role/list";
     readonly REFRESH: "https://api.kurobbs.com/aki/roleBox/akiBox/refreshData";
