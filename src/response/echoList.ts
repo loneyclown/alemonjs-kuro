@@ -13,7 +13,7 @@ export default async (e: EventsEnum) => {
     selects: ['private.message.create', 'message.create', 'interaction.create', 'private.interaction.create']
   });
   const [message] = useMessage(event);
-  const userId = event.UserId;
+  const userId = event.UserKey;
 
   const format = Format.create();
   const md = Format.createMarkdown();
@@ -40,7 +40,7 @@ export default async (e: EventsEnum) => {
 
   const { cookie } = ckResult;
 
-  const [roleResp, baseResp] = await Promise.all([apiRoleData(uid, cookie), apiBaseInfo(uid, cookie)]);
+  const [roleResp, baseResp] = await Promise.all([apiRoleData(uid, cookie, userId), apiBaseInfo(uid, cookie, userId)]);
 
   if (!roleResp.success || !roleResp.data?.roleList?.length) {
     md.addText('[鸣潮] 角色列表为空或查询失败');
@@ -56,7 +56,7 @@ export default async (e: EventsEnum) => {
   const allEchoes: EchoRankItem[] = [];
 
   for (const role of roleResp.data.roleList) {
-    const detailResp = await apiRoleDetail(uid, cookie, role.roleId);
+    const detailResp = await apiRoleDetail(uid, cookie, userId, role.roleId);
 
     if (!detailResp.success || !detailResp.data?.phantomData?.equipPhantomList) {
       continue;

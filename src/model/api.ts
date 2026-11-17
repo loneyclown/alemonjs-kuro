@@ -116,14 +116,11 @@ async function kuroPost<T>(url: string, headers: Record<string, string>, data: R
   try {
     const body = formBody(data);
 
-    console.log(`[kuroPost] >>> ${url}`);
-    console.log('[kuroPost] headers:', JSON.stringify(headers));
-    console.log(`[kuroPost] body: ${body}`);
-
     const resp = await fetch(url, {
       method: 'POST',
       headers,
-      body
+      body,
+      signal: AbortSignal.timeout(10000)
     });
     const json = (await resp.json()) as KuroApiResp<T>;
 
@@ -134,24 +131,17 @@ async function kuroPost<T>(url: string, headers: Record<string, string>, data: R
       } catch {}
     }
 
-    console.log(`[kuroPost] <<< ${url} code=${json.code} msg=${json.msg}`);
-    if (url.includes('requestToken')) {
-      console.log('[kuroPost] <<< requestToken data:', JSON.stringify(json.data));
-    }
-
     return {
       ...json,
-      success: json.code === 0 || json.code === 200
+      success: json.code === 0 || json.code === 200 || ((json.code === undefined || json.code === null) && json.success === true)
     };
   } catch (err) {
-    console.log(`[kuroPost] !!! ${url} error: ${err}`);
-
     return { code: -999, msg: String(err), data: null, success: false };
   }
 }
 
 /** 获取用户已存储的 did / bat */
-async function getUserHeaders(token: string, uid: string, needToken = false): Promise<Record<string, string>> {
+async function getUserHeaders(token: string, uid: string, userId: string, needToken = false): Promise<Record<string, string>> {
   const headers: Record<string, string> = { did: '', 'b-at': '' };
 
   if (needToken) {
@@ -164,11 +154,15 @@ async function getUserHeaders(token: string, uid: string, needToken = false): Pr
     return headers;
   }
 
-  const userJson = await redis.get(kuroKeys.userByUid(uid));
+  const userJson = await redis.get(kuroKeys.userByUid(uid, userId));
 
   if (userJson) {
     try {
       const user = JSON.parse(userJson);
+
+      if (user.cookie !== token) {
+        return headers;
+      }
 
       headers['did'] = user.did ?? '';
       headers['b-at'] = user.bat ?? '';
@@ -190,14 +184,25 @@ export function apiLogin(mobile: string, code: string, did: string) {
 
   return kuroPost<{ token: string }>(KURO_API.LOGIN, headers, {
     mobile,
-    code
+    code,
+    devCode: did
   });
 }
 
-/** 登录校验 */
-export async function apiLoginLog(uid: string, token: string) {
+/** 滑块验证由用户在网页登录页完成，服务端转发验证结果 */
+export function apiSendSms(mobile: string, geeTestData: string, did: string) {
   const headers = getBaseHeaders();
-  const uh = await getUserHeaders(token, uid);
+
+  headers.source = 'h5';
+  headers.devCode = did;
+
+  return kuroPost(KURO_API.SMS_CODE, headers, { mobile, geeTestData });
+}
+
+/** 登录校验 */
+export async function apiLoginLog(uid: string, token: string, userId: string) {
+  const headers = getBaseHeaders();
+  const uh = await getUserHeaders(token, uid, userId);
 
   headers['token'] = token;
   headers['devCode'] = uh['did'] || '';
@@ -217,9 +222,9 @@ export function apiRoleList(token: string, did: string, gameId = WAVES_GAME_ID) 
 }
 
 /** 刷新数据 (查询前必须调) */
-export async function apiRefresh(uid: string, token: string) {
+export async function apiRefresh(uid: string, token: string, userId: string) {
   const headers = getBaseHeaders();
-  const uh = await getUserHeaders(token, uid);
+  const uh = await getUserHeaders(token, uid, userId);
 
   Object.assign(headers, uh);
 
@@ -245,9 +250,9 @@ export function apiRequestToken(uid: string, token: string, did: string) {
 }
 
 /** 每日体力 (widget) */
-export async function apiDailyInfo(uid: string, token: string) {
+export async function apiDailyInfo(uid: string, token: string, userId: string) {
   const headers = getBaseHeaders();
-  const uh = await getUserHeaders(token, uid, true);
+  const uh = await getUserHeaders(token, uid, userId, true);
 
   Object.assign(headers, uh);
 
@@ -261,9 +266,9 @@ export async function apiDailyInfo(uid: string, token: string) {
 }
 
 /** 基础信息 */
-export async function apiBaseInfo(uid: string, token: string) {
+export async function apiBaseInfo(uid: string, token: string, userId: string) {
   const headers = getBaseHeaders();
-  const uh = await getUserHeaders(token, uid);
+  const uh = await getUserHeaders(token, uid, userId);
 
   Object.assign(headers, uh);
 
@@ -275,9 +280,9 @@ export async function apiBaseInfo(uid: string, token: string) {
 }
 
 /** 角色列表 */
-export async function apiRoleData(uid: string, token: string) {
+export async function apiRoleData(uid: string, token: string, userId: string) {
   const headers = getBaseHeaders();
-  const uh = await getUserHeaders(token, uid);
+  const uh = await getUserHeaders(token, uid, userId);
 
   Object.assign(headers, uh);
 
@@ -289,9 +294,9 @@ export async function apiRoleData(uid: string, token: string) {
 }
 
 /** 探索度 */
-export async function apiExploreData(uid: string, token: string) {
+export async function apiExploreData(uid: string, token: string, userId: string) {
   const headers = getBaseHeaders();
-  const uh = await getUserHeaders(token, uid);
+  const uh = await getUserHeaders(token, uid, userId);
 
   Object.assign(headers, uh);
 
@@ -304,9 +309,9 @@ export async function apiExploreData(uid: string, token: string) {
 }
 
 /** 签到初始化 */
-export async function apiSignInit(uid: string, token: string) {
+export async function apiSignInit(uid: string, token: string, userId: string) {
   const headers = getBaseHeaders();
-  const uh = await getUserHeaders(token, uid, true);
+  const uh = await getUserHeaders(token, uid, userId, true);
 
   Object.assign(headers, uh);
   headers['devcode'] = '';
@@ -319,9 +324,9 @@ export async function apiSignInit(uid: string, token: string) {
 }
 
 /** 执行签到 */
-export async function apiSignIn(uid: string, token: string) {
+export async function apiSignIn(uid: string, token: string, userId: string) {
   const headers = getBaseHeaders();
-  const uh = await getUserHeaders(token, uid, true);
+  const uh = await getUserHeaders(token, uid, userId, true);
 
   Object.assign(headers, uh);
 
@@ -333,9 +338,9 @@ export async function apiSignIn(uid: string, token: string) {
 }
 
 /** 深塔 */
-export async function apiTowerDetail(uid: string, token: string) {
+export async function apiTowerDetail(uid: string, token: string, userId: string) {
   const headers = getBaseHeaders();
-  const uh = await getUserHeaders(token, uid);
+  const uh = await getUserHeaders(token, uid, userId);
 
   Object.assign(headers, uh);
 
@@ -347,9 +352,9 @@ export async function apiTowerDetail(uid: string, token: string) {
 }
 
 /** 全息战略 */
-export async function apiChallengeDetail(uid: string, token: string) {
+export async function apiChallengeDetail(uid: string, token: string, userId: string) {
   const headers = getBaseHeaders();
-  const uh = await getUserHeaders(token, uid);
+  const uh = await getUserHeaders(token, uid, userId);
 
   Object.assign(headers, uh);
 
@@ -361,9 +366,9 @@ export async function apiChallengeDetail(uid: string, token: string) {
 }
 
 /** 冥歌海墟 */
-export async function apiSlashDetail(uid: string, token: string) {
+export async function apiSlashDetail(uid: string, token: string, userId: string) {
   const headers = getBaseHeaders();
-  const uh = await getUserHeaders(token, uid);
+  const uh = await getUserHeaders(token, uid, userId);
 
   Object.assign(headers, uh);
 
@@ -375,9 +380,9 @@ export async function apiSlashDetail(uid: string, token: string) {
 }
 
 /** 终焉矩阵 */
-export async function apiMatrixDetail(uid: string, token: string) {
+export async function apiMatrixDetail(uid: string, token: string, userId: string) {
   const headers = getBaseHeaders();
-  const uh = await getUserHeaders(token, uid);
+  const uh = await getUserHeaders(token, uid, userId);
 
   Object.assign(headers, uh);
 
@@ -389,9 +394,9 @@ export async function apiMatrixDetail(uid: string, token: string) {
 }
 
 /** 角色详情 (含装备/声骸) */
-export async function apiRoleDetail(uid: string, token: string, roleId: number) {
+export async function apiRoleDetail(uid: string, token: string, userId: string, roleId: number) {
   const headers = getBaseHeaders();
-  const uh = await getUserHeaders(token, uid);
+  const uh = await getUserHeaders(token, uid, userId);
 
   Object.assign(headers, uh);
 
@@ -404,9 +409,9 @@ export async function apiRoleDetail(uid: string, token: string, roleId: number) 
 }
 
 /** 数据坞 (声骸) */
-export async function apiCalabashData(uid: string, token: string) {
+export async function apiCalabashData(uid: string, token: string, userId: string) {
   const headers = getBaseHeaders();
-  const uh = await getUserHeaders(token, uid);
+  const uh = await getUserHeaders(token, uid, userId);
 
   Object.assign(headers, uh);
 
@@ -486,9 +491,9 @@ export async function apiGachaLog(uid: string, cardPoolType: string, recordId = 
 }
 
 /** 资源统计 — 获取周期列表 */
-export async function apiPeriodList(uid: string, token: string) {
+export async function apiPeriodList(uid: string, token: string, userId: string) {
   const headers = getBaseHeaders();
-  const uh = await getUserHeaders(token, uid, true);
+  const uh = await getUserHeaders(token, uid, userId, true);
 
   Object.assign(headers, uh);
 
@@ -506,9 +511,9 @@ export async function apiPeriodList(uid: string, token: string) {
 }
 
 /** 资源统计 — 获取详情 (month/week/version) */
-export async function apiPeriodDetail(uid: string, token: string, type: 'month' | 'week' | 'version', period: number) {
+export async function apiPeriodDetail(uid: string, token: string, userId: string, type: 'month' | 'week' | 'version', period: number) {
   const headers = getBaseHeaders();
-  const uh = await getUserHeaders(token, uid, true);
+  const uh = await getUserHeaders(token, uid, userId, true);
 
   Object.assign(headers, uh);
 
@@ -531,9 +536,9 @@ export async function apiPeriodDetail(uid: string, token: string, type: 'month' 
 // ═══════════════════════════════════════
 
 /** 刷新计算器数据 */
-export async function apiCalcRefresh(uid: string, token: string) {
+export async function apiCalcRefresh(uid: string, token: string, userId: string) {
   const headers = getBaseHeaders();
-  const uh = await getUserHeaders(token, uid, true);
+  const uh = await getUserHeaders(token, uid, userId, true);
 
   Object.assign(headers, uh);
 
@@ -553,9 +558,9 @@ export function apiOnlineRoleList(token: string) {
 }
 
 /** 获取已拥有角色信息 */
-export async function apiOwnedRoleInfo(uid: string, token: string) {
+export async function apiOwnedRoleInfo(uid: string, token: string, userId: string) {
   const headers = getBaseHeaders();
-  const uh = await getUserHeaders(token, uid, true);
+  const uh = await getUserHeaders(token, uid, userId, true);
 
   Object.assign(headers, uh);
 
@@ -566,9 +571,9 @@ export async function apiOwnedRoleInfo(uid: string, token: string) {
 }
 
 /** 批量计算角色培养成本 */
-export async function apiBatchRoleCost(uid: string, token: string, content: unknown[]) {
+export async function apiBatchRoleCost(uid: string, token: string, userId: string, content: unknown[]) {
   const headers = getBaseHeaders();
-  const uh = await getUserHeaders(token, uid, true);
+  const uh = await getUserHeaders(token, uid, userId, true);
 
   Object.assign(headers, uh);
 
@@ -584,9 +589,9 @@ export async function apiBatchRoleCost(uid: string, token: string, content: unkn
 // ═══════════════════════════════════════
 
 /** 更多活动 (激斗/牌局) */
-export async function apiMoreActivity(uid: string, token: string) {
+export async function apiMoreActivity(uid: string, token: string, userId: string) {
   const headers = getBaseHeaders();
-  const uh = await getUserHeaders(token, uid);
+  const uh = await getUserHeaders(token, uid, userId);
 
   Object.assign(headers, uh);
 
@@ -625,58 +630,40 @@ export function apiWikiEntryDetail(entryId: string) {
 // ═══════════════════════════════════════
 
 /** 获取用户自己的 cookie. 如果无效返回 null */
-export async function getSelfCookie(uid: string, _userId: string): Promise<string | null> {
-  // 确保公网 IP 已缓存 (首次调用时获取)
-  await ensurePublicIp();
-  console.log(`[getSelfCookie] publicIp=${_publicIp}, uid=${uid}`);
-
+export async function getSelfCookie(uid: string, userId: string): Promise<string | null> {
   const redis = getIoRedis();
 
   if (!redis) {
-    console.log('[getSelfCookie] redis 未连接');
-
     return null;
   }
 
-  const userJson = await redis.get(kuroKeys.userByUid(uid));
+  const userJson = await redis.get(kuroKeys.userByUid(uid, userId));
 
   if (!userJson) {
-    console.log(`[getSelfCookie] redis 中未找到 uid=${uid} 的数据`);
-
     return null;
   }
 
   try {
     const user = JSON.parse(userJson);
 
-    console.log(
-      `[getSelfCookie] user: cookie=${user.cookie ? '***' + user.cookie.slice(-10) : 'null'}, did=${user.did}, bat=${user.bat ? '***' + user.bat.slice(-10) : 'null'}`
-    );
-
     if (!user.cookie) {
       return null;
     }
 
+    await ensurePublicIp();
+
     // bat 为空时主动获取
     if (!user.bat && user.did) {
-      console.log('[getSelfCookie] bat 为空, 主动获取...');
       const tokenResp = await apiRequestToken(uid, user.cookie, user.did);
-
-      console.log(
-        `[getSelfCookie] requestToken: code=${tokenResp.code}, msg=${tokenResp.msg}, success=${tokenResp.success}, data=${JSON.stringify(tokenResp.data)}`
-      );
 
       if (tokenResp.success && tokenResp.data?.accessToken) {
         user.bat = tokenResp.data.accessToken;
-        await redis.set(kuroKeys.userByUid(uid), JSON.stringify(user), 'EX', 86400 * 90);
-        console.log(`[getSelfCookie] bat 已更新: ***${user.bat.slice(-10)}`);
+        await redis.set(kuroKeys.userByUid(uid, userId), JSON.stringify(user), 'EX', 86400 * 90, 'XX');
       }
     }
 
     // 校验登录状态
-    const logResp = await apiLoginLog(uid, user.cookie);
-
-    console.log(`[getSelfCookie] loginLog: code=${logResp.code}, msg=${logResp.msg}, success=${logResp.success}`);
+    const logResp = await apiLoginLog(uid, user.cookie, userId);
 
     if (!logResp.success) {
       // code 220 = Token 真正过期
@@ -693,9 +680,7 @@ export async function getSelfCookie(uid: string, _userId: string): Promise<strin
     }
 
     // 刷新数据
-    const refreshResp = await apiRefresh(uid, user.cookie);
-
-    console.log(`[getSelfCookie] refresh: code=${refreshResp.code}, msg=${refreshResp.msg}, success=${refreshResp.success}`);
+    const refreshResp = await apiRefresh(uid, user.cookie, userId);
 
     if (!refreshResp.success) {
       // 服务器维护，跳过刷新
@@ -705,21 +690,14 @@ export async function getSelfCookie(uid: string, _userId: string): Promise<strin
 
       // bat 失效 => 尝试刷新 (10903=数据令牌已失效, 10900=角色查询失败也可能是bat问题)
       if ((refreshResp.code === 10903 || refreshResp.code === 10900) && user.did) {
-        console.log('[getSelfCookie] bat 失效, 尝试刷新 bat...');
         const tokenResp = await apiRequestToken(uid, user.cookie, user.did);
-
-        console.log(
-          `[getSelfCookie] requestToken: code=${tokenResp.code}, msg=${tokenResp.msg}, success=${tokenResp.success}, data=${JSON.stringify(tokenResp.data)}`
-        );
 
         if (tokenResp.success && tokenResp.data?.accessToken) {
           user.bat = tokenResp.data.accessToken;
-          await redis.set(kuroKeys.userByUid(uid), JSON.stringify(user), 'EX', 86400 * 90);
+          await redis.set(kuroKeys.userByUid(uid, userId), JSON.stringify(user), 'EX', 86400 * 90, 'XX');
 
           // 用新 bat 重试 refresh
-          const retryResp = await apiRefresh(uid, user.cookie);
-
-          console.log(`[getSelfCookie] refresh retry: code=${retryResp.code}, msg=${retryResp.msg}, success=${retryResp.success}`);
+          await apiRefresh(uid, user.cookie, userId);
 
           return user.cookie;
         }
@@ -727,20 +705,14 @@ export async function getSelfCookie(uid: string, _userId: string): Promise<strin
 
       // 非 Token 过期的刷新失败，乐观返回 cookie，让实际查询决定是否可用
       if (refreshResp.code !== 220) {
-        console.log('[getSelfCookie] 刷新失败但非220, 乐观返回 cookie');
-
         return user.cookie;
       }
 
       return null;
     }
 
-    console.log('[getSelfCookie] 一切正常, 返回 cookie');
-
     return user.cookie;
-  } catch (e) {
-    console.log(`[getSelfCookie] 异常: ${e}`);
-
+  } catch {
     return null;
   }
 }

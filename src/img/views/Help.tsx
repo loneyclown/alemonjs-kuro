@@ -1,192 +1,443 @@
 import React from 'react';
-import HTML from './HTML.js';
-
-/* ═══ 指令图标 ═══ */
-import ICON_STAMINA from '@src/assets/img/help/icons/体力.png';
-import ICON_CODE from '@src/assets/img/help/icons/兑换码.png';
-import ICON_CHALLENGE from '@src/assets/img/help/icons/全息战略.png';
-import ICON_ANN from '@src/assets/img/help/icons/公告.png';
-import ICON_SLASH from '@src/assets/img/help/icons/冥歌海墟.png';
+import type { routeRules } from '@src/constants/kuro';
+import ICON_LOGIN from '@src/assets/img/help/icons/登录.png';
+import ICON_STAMINA from '@src/assets/img/help/icons/星声.png';
+import ICON_PANEL from '@src/assets/img/help/icons/查询角色面板.png';
+import HELP_BACKGROUND from '@src/assets/img/help/rover-background.png';
+import COMMAND_ICONS from '@src/assets/img/help/command-icons.png';
+import ICON_EXPLORE from '@src/assets/img/help/icons/查询探索度.png';
+import ICON_TOWER from '@src/assets/img/help/icons/深塔.png';
+import ICON_PERIOD from '@src/assets/img/help/icons/星声.png';
+import ICON_SIGN from '@src/assets/img/help/icons/签到日历.png';
+import ICON_COIN from '@src/assets/img/help/icons/库洛币.png';
+import ICON_POOL from '@src/assets/img/help/icons/卡池.png';
+import ICON_BIND from '@src/assets/img/help/icons/绑定.png';
 import ICON_SWITCH from '@src/assets/img/help/icons/切换.png';
 import ICON_DELETE from '@src/assets/img/help/icons/删除.png';
-import ICON_DEL_TOKEN from '@src/assets/img/help/icons/删除token.png';
-import ICON_POOL from '@src/assets/img/help/icons/卡池.png';
-import ICON_CARD from '@src/assets/img/help/icons/基本信息卡片.png';
-import ICON_CALABASH from '@src/assets/img/help/icons/声骸介绍.png';
-import ICON_COIN from '@src/assets/img/help/icons/库洛币.png';
-import ICON_POKER from '@src/assets/img/help/icons/打牌.png';
-import ICON_GACHA from '@src/assets/img/help/icons/抽卡记录.png';
-import ICON_WIKI from '@src/assets/img/help/icons/攻略.png';
-import ICON_CALENDAR from '@src/assets/img/help/icons/日历.png';
-import ICON_PERIOD from '@src/assets/img/help/icons/星声.png';
-import ICON_VIEW from '@src/assets/img/help/icons/查看或刷新特征码列表.png';
-import ICON_ECHO from '@src/assets/img/help/icons/查询声骸列表.png';
-import ICON_EXPLORE from '@src/assets/img/help/icons/查询探索度.png';
-import ICON_ROLEINFO from '@src/assets/img/help/icons/查询角色面板.png';
-import ICON_TOWER from '@src/assets/img/help/icons/深塔.png';
 import ICON_ADD_TOKEN from '@src/assets/img/help/icons/添加token.png';
-import ICON_LOGIN from '@src/assets/img/help/icons/登录.png';
-import ICON_MATRIX from '@src/assets/img/help/icons/矩阵.png';
-import ICON_SIGN from '@src/assets/img/help/icons/签到.png';
-import ICON_SIGN_CAL from '@src/assets/img/help/icons/签到日历.png';
-import ICON_CHARLIST from '@src/assets/img/help/icons/练度.png';
-import ICON_RANK from '@src/assets/img/help/icons/练度排行.png';
-import ICON_BIND from '@src/assets/img/help/icons/绑定.png';
-import ICON_GET_TOKEN from '@src/assets/img/help/icons/获取绑定的token.png';
-import ICON_DEVELOP from '@src/assets/img/help/icons/角色.png';
-import ICON_GENERAL from '@src/assets/img/help/icons/通用.png';
-import ICON_REFRESH from '@src/assets/img/help/icons/面板更新.png';
+import ICON_DEL_TOKEN from '@src/assets/img/help/icons/删除token.png';
+import ICON_CALABASH from '@src/assets/img/help/icons/声骸介绍.png';
+import HTML from './HTML.js';
 
-/* ═══ 数据结构 ═══ */
-interface CmdItem {
-  icon: string;
+interface HelpCommand {
+  rule: keyof typeof routeRules;
   name: string;
-  desc: string;
-  eg: string;
-  needCk?: boolean;
+  command: string;
+  icon: string;
+  private?: boolean;
+  sprite?: string;
+  /** 点击指令时先填入输入框，留给用户补齐参数 */
+  input?: string;
 }
 
 interface HelpCategory {
   title: string;
-  desc: string;
-  items: CmdItem[];
+  items: HelpCommand[];
 }
 
-const HELP_DATA: HelpCategory[] = [
+export const HELP_DATA: HelpCategory[] = [
   {
-    title: '库街区登录',
-    desc: '登录后可使用更多功能',
+    title: '常用查询',
     items: [
-      { icon: ICON_LOGIN, name: '登录', desc: '手机号验证码登录', eg: '#mc登录' },
-      { icon: ICON_ADD_TOKEN, name: '添加Token', desc: '手动绑定库街区Token', eg: '#mc添加token xxx' },
-      { icon: ICON_DEL_TOKEN, name: '删除Token', desc: '删除指定UID的Token', eg: '#mc删除token' },
-      { icon: ICON_GET_TOKEN, name: '获取Token', desc: '查看已绑定的Token', eg: '#mc获取token', needCk: true }
+      { rule: 'stamina', name: '体力便笺', command: '#mc体力', icon: ICON_STAMINA },
+      { rule: 'chardetail', name: '角色面板', command: '#mc查询 今汐', input: '#mc查询 ', icon: ICON_PANEL },
+      { rule: 'charlist', name: '角色练度', command: '#mc练度', icon: COMMAND_ICONS, sprite: '11.1% 11.1%' },
+      { rule: 'explore', name: '探索进度', command: '#mc探索度', icon: ICON_EXPLORE },
+      { rule: 'tower', name: '逆境深塔', command: '#mc深塔', icon: ICON_TOWER },
+      { rule: 'period', name: '资源月报', command: '#mc星声', icon: ICON_PERIOD }
     ]
   },
   {
-    title: '绑定账号',
-    desc: '在执行查询之前请先绑定',
+    title: '记录与资讯',
     items: [
-      { icon: ICON_BIND, name: '绑定特征码', desc: '绑定游戏UID', eg: '#mc绑定123456' },
-      { icon: ICON_SWITCH, name: '切换特征码', desc: '切换当前使用的账户', eg: '#mc切换123456' },
-      { icon: ICON_DELETE, name: '删除特征码', desc: '删除已绑定的UID', eg: '#mc删除123456' },
-      { icon: ICON_VIEW, name: '查看特征码列表', desc: '查看已绑定的特征码', eg: '#mc查看' }
-    ]
-  },
-  {
-    title: '信息查询',
-    desc: '查询游戏数据信息',
-    items: [
-      { icon: ICON_STAMINA, name: '体力', desc: '查询当前体力状态', eg: '#mc每日', needCk: true },
-      { icon: ICON_CARD, name: '基本信息卡片', desc: '查询账号基本信息', eg: '#mc卡片', needCk: true },
-      { icon: ICON_ROLEINFO, name: '角色面板', desc: '查询角色装备面板', eg: '#mc查询 角色名', needCk: true },
-      { icon: ICON_EXPLORE, name: '探索度', desc: '查询地图探索进度', eg: '#mc探索度', needCk: true },
-      { icon: ICON_REFRESH, name: '刷新面板', desc: '刷新角色面板数据', eg: '#mc刷新面板', needCk: true }
-    ]
-  },
-  {
-    title: '深塔查询',
-    desc: '挑战模式数据查询',
-    items: [
-      { icon: ICON_TOWER, name: '逆境深塔', desc: '查询深塔通关记录', eg: '#mc深塔', needCk: true },
-      { icon: ICON_CHALLENGE, name: '全息战略', desc: '查询全息战略记录', eg: '#mc全息战略', needCk: true },
-      { icon: ICON_SLASH, name: '冥歌海墟', desc: '查询冥歌海墟记录', eg: '#mc冥海', needCk: true },
-      { icon: ICON_MATRIX, name: '终焉矩阵', desc: '查询终焉矩阵记录', eg: '#mc矩阵', needCk: true }
-    ]
-  },
-  {
-    title: '数据统计',
-    desc: '角色与资源数据',
-    items: [
-      { icon: ICON_CHARLIST, name: '练度统计', desc: '查看角色练度列表', eg: '#mc练度', needCk: true },
-      { icon: ICON_COIN, name: '库洛币', desc: '查询库洛币余额', eg: '#mc库洛币', needCk: true },
-      { icon: ICON_ECHO, name: '声骸列表', desc: '查询声骸数据', eg: '#mc声骸列表', needCk: true },
-      { icon: ICON_CALABASH, name: '数据坞', desc: '查看声骸数据坞', eg: '#mc数据坞', needCk: true },
-      { icon: ICON_GACHA, name: '抽卡记录', desc: '查询抽卡历史记录', eg: '#mc抽卡记录', needCk: true },
-      { icon: ICON_PERIOD, name: '星声统计', desc: '查看资源收支统计', eg: '#mc星声', needCk: true },
-      { icon: ICON_RANK, name: '练度排行', desc: '查看群练度排行', eg: '#mc练度排行', needCk: true },
-      { icon: ICON_DEVELOP, name: '角色培养', desc: '角色养成材料计算', eg: '#mc养成', needCk: true }
-    ]
-  },
-  {
-    title: '社区功能',
-    desc: '签到与活动',
-    items: [
-      { icon: ICON_SIGN, name: '签到', desc: '库街区每日签到', eg: '#mc签到', needCk: true },
-      { icon: ICON_SIGN_CAL, name: '签到日历', desc: '查看签到奖励日历', eg: '#mc签到日历', needCk: true },
-      { icon: ICON_ANN, name: '公告', desc: '查看游戏公告', eg: '#mc公告' },
-      { icon: ICON_CODE, name: '兑换码', desc: '查看可用兑换码', eg: '#mc兑换码' },
-      { icon: ICON_CALENDAR, name: '日历', desc: '查看活动日历', eg: '#mc日历' },
-      { icon: ICON_POOL, name: '卡池', desc: '查看当前卡池信息', eg: '#mc卡池' },
-      { icon: ICON_POKER, name: '激斗牌局', desc: '查看激斗活动数据', eg: '#mc牌局', needCk: true },
-      { icon: ICON_WIKI, name: 'Wiki攻略', desc: '角色技能/共鸣链/攻略', eg: '#mc安可攻略' },
-      { icon: ICON_GENERAL, name: '帮助', desc: '查看帮助列表', eg: '#mc帮助' }
+      { rule: 'sign', name: '签到记录', command: '#mc签到日历', icon: ICON_SIGN },
+      { rule: 'coin', name: '库街区积分', command: '#mc库洛币', icon: ICON_COIN },
+      { rule: 'announce', name: '游戏公告', command: '#mc公告', icon: COMMAND_ICONS, sprite: '88.9% 11.1%' },
+      { rule: 'pool', name: '当前卡池', command: '#mc卡池', icon: ICON_POOL },
+      { rule: 'refresh', name: '刷新数据', command: '#mc刷新面板', icon: COMMAND_ICONS, sprite: '11.1% 88.9%' },
+      { rule: 'bind', name: '我的账号', command: '#mc查看', icon: COMMAND_ICONS, sprite: '88.9% 88.9%' }
     ]
   }
 ];
 
-const COLUMNS = 5;
-const ITEM_W = 136;
-const ITEM_H = 140;
-const ITEM_GAP = 12;
-const CONTENT_PAD = 32;
-const TOTAL_W = COLUMNS * ITEM_W + (COLUMNS - 1) * ITEM_GAP + CONTENT_PAD * 2;
+export const MORE_HELP_DATA: HelpCategory[] = [
+  {
+    title: '账号管理',
+    items: [
+      { rule: 'login', name: '网页登录', command: '#mc登录', icon: ICON_LOGIN, private: true },
+      { rule: 'bind', name: '绑定特征码', command: '#mc绑定 123456789', input: '#mc绑定 ', icon: ICON_BIND },
+      { rule: 'bind', name: '切换账号', command: '#mc切换 123456789', input: '#mc切换 ', icon: ICON_SWITCH },
+      { rule: 'bind', name: '解绑账号', command: '#mc解绑 123456789', input: '#mc解绑 ', icon: ICON_DELETE }
+    ]
+  },
+  {
+    title: '补充指令',
+    items: [
+      { rule: 'calabash', name: '数据坞', command: '#mc数据坞', icon: ICON_CALABASH },
+      { rule: 'token', name: '添加凭据', command: '#mc添加token <Token>,<DID>', input: '#mc添加token ', icon: ICON_ADD_TOKEN, private: true },
+      { rule: 'token', name: '删除凭据', command: '#mc删除token 123456789', input: '#mc删除token ', icon: ICON_DEL_TOKEN, private: true }
+    ]
+  }
+];
 
-export default function WuwaHelp() {
+const STYLES = `
+.help-sheet{position:relative;
+width:1000px;
+height:940px;
+overflow:hidden;
+border-radius:24px;
+background:#1b202a;
+color:#f7f4ec;
+font-family:"Microsoft YaHei",
+system-ui,
+sans-serif}
+.help-scene{position:absolute;
+inset:0;
+width:100%;
+height:100%;
+object-fit:fill}
+.help-header{position:relative;
+height:208px;
+padding:22px 46px;
+box-sizing:border-box}
+.help-brand{display:flex;
+align-items:center;
+gap:22px;
+height:45px;
+color:#faf6ee}
+.help-brand-logo{font-family:"tttgbnumber",
+"SimSun",
+serif;
+font-size:35px;
+letter-spacing:5px;
+line-height:1}
+.help-brand .help-wave{max-width:145px}
+.help-brand small{display:block;
+font-family:Arial,
+sans-serif;
+font-size:5px;
+letter-spacing:2px;
+margin:6px 0 0 3px}
+.help-brand-divider{width:1px;
+height:34px;
+background:rgba(236,
+224,
+198,
+.7)}
+.help-wave{color:#c8ad7f;
+flex:1;
+height:20px;
+max-width:580px}
+.help-title{display:flex;
+align-items:center;
+gap:20px;
+margin-top:18px}
+.help-title h1{margin:0;
+font-family:"tttgbnumber",
+"KaiTi",
+"SimSun",
+serif;
+font-style:italic;
+font-size:65px;
+letter-spacing:3px;
+font-weight:700;
+line-height:1.15;
+color:#f9f4e6;
+background:linear-gradient(100deg,
+#e3c69a,
+#fff 85%);
+background-clip:text;
+-webkit-text-fill-color:transparent}
+.help-title-tag{display:inline-block;
+padding:5px 24px 6px;
+font-family:"tttgbnumber",
+"SimSun",
+serif;
+font-style:italic;
+font-size:27px;
+font-weight:700;
+letter-spacing:3px;
+background:#e6d1ac;
+color:#1a1d25;
+clip-path:polygon(9% 0,
+100% 0,
+91% 100%,
+0 100%)}
+.help-subtitle{margin:13px 0 0 4px;
+font-family:Arial,
+sans-serif;
+font-size:8px;
+letter-spacing:8px;
+color:#d3c4ab}
+.help-panel{position:relative;
+margin:0 16px;
+height:612px}
+.help-panel-frame{position:absolute;
+inset:0;
+width:100%;
+height:100%;
+pointer-events:none}
+.help-panel-content{position:relative;
+padding:17px 28px 30px}
+.help-section+.help-section{margin-top:20px}
+.help-section-title{position:relative;
+display:flex;
+align-items:center;
+gap:16px;
+height:44px;
+border-bottom:1px solid #c8ab7f;
+margin-bottom:14px}
+.help-section-title:after{position:absolute;
+content:"";
+width:8px;
+height:8px;
+background:#dfbe87;
+transform:rotate(45deg);
+left:-2px;
+bottom:-4px}
+.help-section-number{font-family:Georgia,
+serif;
+font-size:29px;
+line-height:1;
+font-weight:700;
+font-style:italic;
+color:#dfbd89;
+padding-left:16px}
+.help-section-title h2{font-family:"tttgbnumber",
+"SimSun",
+serif;
+font-size:29px;
+line-height:1;
+margin:0;
+letter-spacing:3px;
+font-weight:700}
+.help-section-title .help-wave{margin-left:16px}
+.help-commands{display:grid;
+grid-template-columns:repeat(3,
+minmax(0,
+1fr));
+gap:10px 16px}
+.help-sheet.more .help-commands{grid-template-columns:repeat(2,
+minmax(0,
+1fr))}
+.help-command{height:94px;
+padding:1px;
+box-sizing:border-box;
+--cut:polygon(10px 0,
+calc(100% - 10px) 0,
+100% 10px,
+100% calc(100% - 10px),
+calc(100% - 10px) 100%,
+10px 100%,
+0 calc(100% - 10px),
+0 10px);
+clip-path:var(--cut);
+background:linear-gradient(145deg,
+#7c818c,
+#4d5360 55%,
+#69717d)}
+.help-command-inner{height:100%;
+box-sizing:border-box;
+display:flex;
+align-items:center;
+gap:12px;
+padding:8px 13px;
+clip-path:var(--cut);
+background:linear-gradient(115deg,
+rgba(51,
+56,
+67,
+.94),
+rgba(35,
+39,
+49,
+.98))}
+.help-command-icon{width:76px;
+height:76px;
+flex-shrink:0;
+object-fit:contain;
+filter:drop-shadow(0 3px 4px rgba(0,
+0,
+0,
+.25))}
+.help-sprite{background-repeat:no-repeat;
+background-size:280% 280%}
+.help-command-text{min-width:0}
+.help-command-name{font-family:"tttgbnumber",
+"SimSun",
+serif;
+font-size:22px;
+color:#f7f7f2;
+white-space:nowrap;
+margin-bottom:9px;
+line-height:1.1}
+.help-private{font-family:"Microsoft YaHei",
+sans-serif;
+font-size:11px;
+margin-left:8px;
+color:#dec08f}
+.help-command code{display:inline-block;
+max-width:100%;
+box-sizing:border-box;
+background:linear-gradient(100deg,
+#f4e2bd,
+#e5cda6);
+color:#111720;
+border-radius:24px;
+padding:4px 12px 5px;
+font-family:"Microsoft YaHei",
+sans-serif;
+font-weight:700;
+font-size:20px;
+line-height:1.1;
+white-space:nowrap}
+.help-sheet.more .help-command code{font-size:17px}
+.help-footer{text-shadow:0 2px 4px #080d16;
+position:relative;
+margin:14px 50px 0;
+font-family:"tttgbnumber",
+"SimSun",
+serif;
+color:#ecdfc7}
+.help-footer-nav{display:flex;
+justify-content:space-between;
+align-items:center;
+font-size:22px;
+letter-spacing:1px}
+.help-footer-entry{display:flex;
+align-items:center;
+gap:12px;
+white-space:nowrap}
+.help-footer-icon{display:inline-flex;
+justify-content:center;
+align-items:center;
+width:33px;
+height:33px;
+border:1px solid #cdb081;
+border-radius:50%;
+font-size:19px;
+color:#d9bd8c}
+.help-footer code{font-family:"Microsoft YaHei",
+sans-serif;
+font-size:20px;
+font-weight:700;
+color:#e8c995;
+letter-spacing:0;
+background:rgba(18,
+22,
+30,
+.7);
+padding:5px 13px 6px;
+border-radius:24px}
+.help-footer-note{margin:11px 0 0 45px;
+font-size:15px;
+letter-spacing:1px;
+color:#d2c9b9}
+`;
+
+function WaveLine() {
   return (
-    <HTML style={{ width: `${TOTAL_W}px` }}>
-      <div className='relative flex justify-center p-6 bg-[#f6f6f6]' style={{ fontFamily: '"tttgbnumber", system-ui, sans-serif' }}>
-        <div className='relative w-full overflow-hidden bg-white border-2 border-[#eae5d9] rounded-3xl shadow-[0_12px_32px_rgba(0,0,0,0.05)]'>
-          <div className='flex flex-col items-start px-8 pt-6 pb-2'>
-            <div className='text-[32px] font-bold tracking-[2px] text-[#3d3833]'>鸣潮助手</div>
-            <div className='mt-1 text-sm tracking-[4px] text-[#a09d98]'>WUTHERING WAVES ASSISTANT</div>
+    <svg className='help-wave' viewBox='0 0 580 24' preserveAspectRatio='none' aria-hidden='true'>
+      <path
+        d='M0 12 H15 M15 9 V15 M20 7 V17 M25 2 V22 M30 8 V16 M35 5 V19 M40 9 V15 M45 11 V13 M45 12 H580'
+        fill='none'
+        stroke='currentColor'
+        strokeWidth='1'
+      />
+    </svg>
+  );
+}
+
+export default function WuwaHelp({ more = false }: { more?: boolean }) {
+  const categories = more ? MORE_HELP_DATA : HELP_DATA;
+
+  return (
+    <HTML style={{ width: '1000px', margin: 0, textAlign: 'left' }}>
+      <style>{STYLES}</style>
+      <main className={`help-sheet${more ? ' more' : ''}`}>
+        <img className='help-scene' src={HELP_BACKGROUND} alt='' />
+        <header className='help-header'>
+          <div className='help-brand'>
+            <div className='help-brand-logo'>
+              鸣潮<small>WUTHERING WAVES</small>
+            </div>
+            <span className='help-brand-divider' />
+            <WaveLine />
           </div>
+          <div className='help-title'>
+            <h1>鸣潮助手</h1>
+            <span className='help-title-tag'>{more ? '更多指令' : '常用指令'}</span>
+          </div>
+          <div className='help-subtitle'>WUTHERING WAVES ASSISTANT</div>
+        </header>
 
-          <div className='px-8 pt-3 pb-6'>
-            {HELP_DATA.map((cat, ci) => (
-              <div key={ci} className='mb-6'>
-                <div className='relative flex flex-col mb-4'>
-                  <div className='flex items-center'>
-                    <div className='w-[5px] h-[22px] mr-3 rounded-[3px] bg-[#dcb858] shadow-[0_2px_4px_rgba(220,184,88,0.4)]' />
-                    <span className='text-[22px] font-bold tracking-[1px] text-[#423c36]'>{cat.title}</span>
-                  </div>
-                  <div className='mt-1.5 ml-[17px] font-sans text-[11px] tracking-[2px] text-[#b0a89d]'>{cat.desc}</div>
-                  <div className='w-full h-px mt-2.5 bg-gradient-to-r from-[rgba(0,0,0,0.08)] to-[rgba(0,0,0,0.02)]' />
+        <div className='help-panel'>
+          <svg className='help-panel-frame' viewBox='0 0 968 612' preserveAspectRatio='none' aria-hidden='true'>
+            <path
+              d='M2 24 L24 2 H446 L470 23 H942 L966 45 V574 L944 596 H642 L620 610 H24 L2 588 Z'
+              fill='rgba(17,20,27,.78)'
+              stroke='#c9ad80'
+              strokeWidth='1.4'
+            />
+            <path
+              d='M7 27 L27 7 H444 L468 28 H940 L961 48 V571 L941 591 H640 L618 605 H27 L7 585 Z'
+              fill='none'
+              stroke='rgba(221,215,202,.3)'
+              strokeWidth='.6'
+            />
+          </svg>
+          <div className='help-panel-content'>
+            {categories.map((category, index) => (
+              <section className='help-section' key={category.title}>
+                <div className='help-section-title'>
+                  <span className='help-section-number'>{String(index + 1).padStart(2, '0')}</span>
+                  <h2>{category.title}</h2>
+                  <WaveLine />
                 </div>
-
-                <div className='flex flex-wrap gap-3'>
-                  {cat.items.map((item, idx) => (
-                    <div
-                      key={idx}
-                      className='relative flex flex-col items-center justify-start box-border pt-1'
-                      style={{ width: `${ITEM_W}px`, height: `${ITEM_H}px` }}
-                    >
-                      <img src={item.icon} className='block shrink-0 object-contain w-[76px] h-[76px] z-[2] drop-shadow-[0_6px_8px_rgba(0,0,0,0.08)]' />
-
-                      <div className='relative flex items-center justify-center box-border min-w-[116px] px-3 py-1 -mt-2 bg-[#faf7f2] border-2 border-[#e1dcce] rounded-3xl z-[1] shadow-[inset_0_0_0_1px_#fff,0_4px_6px_rgba(0,0,0,0.02)]'>
-                        <div className='text-[15px] font-bold whitespace-nowrap text-[#5b534b]'>{item.name}</div>
-                      </div>
-
-                      <div className='mt-1.5 text-xs text-center text-[#b0a89d]'>{item.eg}</div>
-
-                      {item.needCk && (
-                        <div className='absolute top-1 right-2 z-[3] px-1.5 py-0.5 text-[10px] font-bold text-white bg-[#eebb4d] border border-[#dca73a] shadow-[0_2px_4px_rgba(238,187,77,0.4)] rounded-t-lg rounded-bl-lg rounded-br-sm'>
-                          NEW
+                <div className='help-commands'>
+                  {category.items.map(item => (
+                    <div className='help-command' key={item.command}>
+                      <div className='help-command-inner'>
+                        {item.sprite ? (
+                          <div
+                            className='help-command-icon help-sprite'
+                            style={{ backgroundImage: `url(${encodeURI(item.icon)})`, backgroundPosition: item.sprite }}
+                          />
+                        ) : (
+                          <img className='help-command-icon' alt='' src={item.icon} />
+                        )}
+                        <div className='help-command-text'>
+                          <div className='help-command-name'>
+                            {item.name}
+                            {item.private && <span className='help-private'>私聊</span>}
+                          </div>
+                          <code>{item.command}</code>
                         </div>
-                      )}
+                      </div>
                     </div>
                   ))}
                 </div>
-              </div>
+              </section>
             ))}
-
-            <div className='flex items-center justify-between px-5 py-3 mt-2 bg-[#faf7f2] border border-[#e1dcce] rounded-xl'>
-              <span className='text-sm font-bold text-[#8a837b]'>NEW 标签 = 可能需要登录或绑定凭证 · 所有指令均需加前缀 (# / ! 等)</span>
-              <span className='text-xs text-[#c2bcb2]'>Powered by alemonjs-kuro</span>
-            </div>
           </div>
         </div>
-      </div>
+
+        <footer className='help-footer'>
+          <div className='help-footer-nav'>
+            <div className='help-footer-entry'>
+              <span className='help-footer-icon'>✦</span>
+              <span>{more ? '常用指令' : '私聊登录'}</span>
+              <code>{more ? '#mc帮助' : '#mc登录'}</code>
+            </div>
+            <div className='help-footer-entry'>
+              <span>»</span>
+              <span>{more ? '凭据仅限本人' : '更多指令'}</span>
+              {!more && <code>#mc更多帮助</code>}
+            </div>
+          </div>
+          <div className='help-footer-note'>{more ? '示例 UID 请替换为自己的 9 位特征码。' : '群内先 @机器人，示例：#mc体力'}</div>
+        </footer>
+      </main>
     </HTML>
   );
 }

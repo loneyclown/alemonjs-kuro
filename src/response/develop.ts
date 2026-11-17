@@ -17,7 +17,7 @@ export default async (e: EventsEnum) => {
     selects: ['private.message.create', 'message.create', 'interaction.create', 'private.interaction.create']
   });
   const [message] = useMessage(event);
-  const userId = event.UserId;
+  const userId = event.UserKey;
 
   const format = Format.create();
   const md = Format.createMarkdown();
@@ -45,10 +45,10 @@ export default async (e: EventsEnum) => {
   const { cookie } = ckResult;
 
   // 刷新计算器数据
-  await apiCalcRefresh(uid, cookie);
+  await apiCalcRefresh(uid, cookie, userId);
 
   // 获取已拥有角色
-  const ownedResp = await apiOwnedRoleInfo(uid, cookie);
+  const ownedResp = await apiOwnedRoleInfo(uid, cookie, userId);
 
   if (!ownedResp.success || !ownedResp.data) {
     md.addText('[鸣潮] 获取角色培养数据失败');
@@ -86,7 +86,7 @@ export default async (e: EventsEnum) => {
     };
   });
 
-  const costResp = await apiBatchRoleCost(uid, cookie, contentList);
+  const costResp = await apiBatchRoleCost(uid, cookie, userId, contentList);
 
   if (!costResp.success || !costResp.data?.costList) {
     md.addText('[鸣潮] 培养成本计算失败');

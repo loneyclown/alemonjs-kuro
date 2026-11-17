@@ -1,6 +1,7 @@
 import CharDetailCard from '@src/img/views/CharDetailCard';
-import { apiRoleData, apiRoleDetail, getCookie } from '@src/model/api';
+import { apiBaseInfo, apiMineV2, apiRoleData, apiRoleDetail, getCookie } from '@src/model/api';
 import { getActiveUid } from '@src/model/db';
+import { findMatchingRoles } from '@src/model/roles';
 import { createEvent, EventsEnum, Format, useMessage } from 'alemonjs';
 import { renderComponentIsHtmlToBuffer } from 'jsxp';
 
@@ -10,7 +11,7 @@ export default async (e: EventsEnum) => {
     selects: ['private.message.create', 'message.create', 'interaction.create', 'private.interaction.create']
   });
   const [message] = useMessage(event);
-  const userId = event.UserId;
+  const userId = event.UserKey;
 
   const format = Format.create();
   const md = Format.createMarkdown();
@@ -39,7 +40,7 @@ export default async (e: EventsEnum) => {
   const ckResult = await getCookie(uid, userId);
 
   if (!ckResult) {
-    md.addText('[鸣潮] 未添加Token或Token已失效\n请使用 #mc登录 手机号 验证码 重新登录');
+    md.addText('[鸣潮] 未添加Token或Token已失效\n请私聊发送 #mc登录 重新登录');
     format.addMarkdown(md);
     void message.send({ format });
 
@@ -49,7 +50,7 @@ export default async (e: EventsEnum) => {
   const { cookie } = ckResult;
 
   // 1. 获取角色列表，查找目标角色的 roleId
-  const roleResp = await apiRoleData(uid, cookie);
+  const roleResp = await apiRoleData(uid, cookie, userId);
 
   if (!roleResp.success || !roleResp.data) {
     md.addText(`[鸣潮] 角色列表查询失败: ${roleResp.msg || '未知错误'}`);
@@ -60,9 +61,17 @@ export default async (e: EventsEnum) => {
   }
 
   const roleList = roleResp.data.roleList || [];
-  const target = roleList.find(
-    r => r.roleName === charName || r.roleName.includes(charName) || (r.acronym && r.acronym.toLowerCase() === charName.toLowerCase())
-  );
+  const candidates = findMatchingRoles(roleList, charName);
+
+  if (candidates.length > 1) {
+    md.addText(`[鸣潮]「${charName}」匹配到多个角色：${candidates.map(role => role.roleName).join('、')}\n请使用完整角色名查询。`);
+    format.addMarkdown(md);
+    void message.send({ format });
+
+    return;
+  }
+
+  const target = candidates[0];
 
   if (!target) {
     const names = roleList.map(r => r.roleName).join('、');
@@ -75,7 +84,11 @@ export default async (e: EventsEnum) => {
   }
 
   // 2. 获取角色详情
-  const detailResp = await apiRoleDetail(uid, cookie, target.roleId);
+  const [detailResp, baseResp, mineResp] = await Promise.all([
+    apiRoleDetail(uid, cookie, userId, target.roleId),
+    apiBaseInfo(uid, cookie, userId),
+    apiMineV2(cookie)
+  ]);
 
   if (!detailResp.success || !detailResp.data) {
     md.addText(`[鸣潮] 角色详情查询失败: ${detailResp.msg || '未知错误'}\n提示: 请先在游戏内展示该角色的声骸数据`);
@@ -89,7 +102,9 @@ export default async (e: EventsEnum) => {
   const img = await renderComponentIsHtmlToBuffer(CharDetailCard, {
     data: {
       uid,
-      detail: detailResp.data
+      detail: detailResp.data,
+      base: baseResp.data ?? undefined,
+      headUrl: mineResp.data?.mine?.headUrl
     }
   });
 

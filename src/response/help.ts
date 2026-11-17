@@ -1,4 +1,5 @@
-import kuroHelp from '@src/img/views/Help';
+import kuroHelp, { HELP_DATA, MORE_HELP_DATA } from '@src/img/views/Help';
+import { trySendCommandMarkdown } from '@src/model/markdown';
 import { createEvent, EventsEnum, Format, useMessage } from 'alemonjs';
 import { renderComponentIsHtmlToBuffer } from 'jsxp';
 
@@ -9,8 +10,32 @@ export default async (e: EventsEnum) => {
   });
 
   const [message] = useMessage(event);
+  const more = event.MessageText.endsWith('更多帮助');
+  const isPrivate = event.name.startsWith('private.');
+  const categories = more ? MORE_HELP_DATA : HELP_DATA;
 
-  const img = await renderComponentIsHtmlToBuffer(kuroHelp, {});
+  if (
+    await trySendCommandMarkdown(event, {
+      title: more ? '鸣潮助手 · 更多指令' : '鸣潮助手 · 常用指令',
+      sections: categories.map(category => ({
+        title: category.title,
+        commands: category.items.map(item => ({
+          label: `${item.name}${item.private ? '（私聊）' : ''}`,
+          command: item.input ?? item.command,
+          autoEnter: item.input === undefined && (!item.private || isPrivate)
+        }))
+      })),
+      navigation: [
+        { label: '私聊登录', command: '#mc登录', autoEnter: isPrivate },
+        { label: more ? '返回常用帮助' : '更多指令', command: more ? '#mc帮助' : '#mc更多帮助' }
+      ],
+      note: '点击指令可执行或填入输入框；带参数的指令请补齐后发送。验证码与Token只在私聊提交。'
+    })
+  ) {
+    return;
+  }
+
+  const img = await renderComponentIsHtmlToBuffer(kuroHelp, { more });
 
   if (typeof img === 'boolean') {
     const format = Format.create();

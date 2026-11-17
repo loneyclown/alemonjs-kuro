@@ -10,7 +10,7 @@ export default async (e: EventsEnum) => {
     selects: ['private.message.create', 'message.create', 'interaction.create', 'private.interaction.create']
   });
   const [message] = useMessage(event);
-  const userId = event.UserId;
+  const userId = event.UserKey;
 
   const format = Format.create();
   const md = Format.createMarkdown();

@@ -7,10 +7,8 @@ export default async (e: EventsEnum) => {
     selects: ['private.message.create', 'message.create', 'interaction.create', 'private.interaction.create']
   });
   const [message] = useMessage(event);
-  const userId = event.UserId;
+  const userId = event.UserKey;
   const text = e.MessageText;
-
-  console.log('[鸣潮][绑定] handler invoked, text:', text, 'userId:', userId);
 
   const format = Format.create();
   const md = Format.createMarkdown();
@@ -22,13 +20,10 @@ export default async (e: EventsEnum) => {
     const bindMatch = text.match(/绑定(?:特征码|uid)?\s*(\d+)/i);
 
     if (bindMatch) {
-      console.log('[鸣潮][绑定] matched uid:', bindMatch[1], '- calling bindUid...');
       result = await bindUid(userId, bindMatch[1]);
-      console.log('[鸣潮][绑定] bindUid result:', result);
       md.addText(`[鸣潮] ${result}`);
       format.addMarkdown(md);
       await message.send({ format });
-      console.log('[鸣潮][绑定] message sent');
 
       return;
     }
@@ -72,7 +67,6 @@ export default async (e: EventsEnum) => {
     format.addMarkdown(md);
     void message.send({ format });
   } catch (err) {
-    console.error('[鸣潮][绑定] error:', err);
     md.addText(`[鸣潮] 绑定操作出错: ${err instanceof Error ? err.message : String(err)}`);
     format.addMarkdown(md);
     void message.send({ format });

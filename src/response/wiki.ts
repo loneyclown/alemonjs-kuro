@@ -1,5 +1,6 @@
 import WikiCard from '@src/img/views/WikiCard';
 import { apiRoleData, getCookie } from '@src/model/api';
+import { findMatchingRoles } from '@src/model/roles';
 import { getActiveUid } from '@src/model/db';
 import { createEvent, EventsEnum, Format, useMessage } from 'alemonjs';
 import { renderComponentIsHtmlToBuffer } from 'jsxp';
@@ -47,7 +48,7 @@ export default async (e: EventsEnum) => {
     selects: ['private.message.create', 'message.create', 'interaction.create', 'private.interaction.create']
   });
   const [message] = useMessage(event);
-  const userId = event.UserId;
+  const userId = event.UserKey;
 
   const format = Format.create();
   const md = Format.createMarkdown();
@@ -86,7 +87,7 @@ export default async (e: EventsEnum) => {
   const { cookie } = ckResult;
 
   // 通过角色列表查找匹配的角色
-  const roleResp = await apiRoleData(uid, cookie);
+  const roleResp = await apiRoleData(uid, cookie, userId);
 
   if (!roleResp.success || !roleResp.data?.roleList) {
     md.addText('[鸣潮] 角色数据获取失败');
@@ -96,7 +97,17 @@ export default async (e: EventsEnum) => {
     return;
   }
 
-  const matchedRole = roleResp.data.roleList.find(r => r.roleName === charName || r.roleName.includes(charName));
+  const candidates = findMatchingRoles(roleResp.data.roleList, charName);
+
+  if (candidates.length > 1) {
+    md.addText(`[鸣潮]「${charName}」匹配到多个角色：${candidates.map(role => role.roleName).join('、')}\n请使用完整角色名查询。`);
+    format.addMarkdown(md);
+    void message.send({ format });
+
+    return;
+  }
+
+  const matchedRole = candidates[0];
 
   if (!matchedRole) {
     md.addText(`[鸣潮] 未找到角色「${charName}」，请检查角色名是否正确`);
@@ -108,7 +119,7 @@ export default async (e: EventsEnum) => {
 
   // 获取角色详情 (含技能、共鸣链)
   const { apiRoleDetail } = await import('@src/model/api');
-  const detailResp = await apiRoleDetail(uid, cookie, matchedRole.roleId);
+  const detailResp = await apiRoleDetail(uid, cookie, userId, matchedRole.roleId);
 
   if (!detailResp.success || !detailResp.data) {
     md.addText(`[鸣潮] 角色「${matchedRole.roleName}」详情获取失败`);

@@ -10,7 +10,7 @@ export default async (e: EventsEnum) => {
     selects: ['private.message.create', 'message.create', 'interaction.create', 'private.interaction.create']
   });
   const [message] = useMessage(event);
-  const userId = event.UserId;
+  const userId = event.UserKey;
 
   const format = Format.create();
   const md = Format.createMarkdown();
@@ -37,7 +37,7 @@ export default async (e: EventsEnum) => {
 
   const { cookie } = ckResult;
 
-  const [towerResp, baseResp, mineResp] = await Promise.all([apiTowerDetail(uid, cookie), apiBaseInfo(uid, cookie), apiMineV2(cookie)]);
+  const [towerResp, baseResp, mineResp] = await Promise.all([apiTowerDetail(uid, cookie, userId), apiBaseInfo(uid, cookie, userId), apiMineV2(cookie)]);
 
   if (!towerResp.success || !towerResp.data) {
     md.addText(`[鸣潮] 深塔查询失败: ${towerResp.msg || '未知错误'}`);

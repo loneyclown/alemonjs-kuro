@@ -1,22 +1,20 @@
 export const routeRules = {
   /** 帮助 */
-  help: /^(?:!|！|\/|#|＃)(?:库洛|kuro|mc|鸣潮)(帮助|help)$/,
+  help: /^(?:!|！|\/|#|＃)(?:库洛|kuro|mc|鸣潮)(帮助|更多帮助|help)$/,
   /** 登录 */
   login: /^(?:!|！|\/|#|＃)(?:库洛|kuro|mc|鸣潮)(登录|登陆|登入|login|dl)(.*)$/,
   /** 绑定特征码 */
   bind: /^(?:!|！|\/|#|＃)(?:库洛|kuro|mc|鸣潮)(绑定|切换|解绑|删除|查看|我的)(?:特征码|uid)?(.*)$/,
-  /** 添加/删除/获取 token */
-  token: /^(?:!|！|\/|#|＃)(?:库洛|kuro|mc|鸣潮)(添加|删除|获取)(token|Token|TOKEN|ck|CK)(.*)$/,
+  /** 获取 Token 状态入口暂时停用，只保留添加和删除 */
+  token: /^(?:!|！|\/|#|＃)(?:库洛|kuro|mc|鸣潮)(添加|删除)(token|Token|TOKEN|ck|CK)(.*)$/,
   /** 每日/体力 */
   stamina: /^(?:!|！|\/|#|＃)(?:库洛|kuro|mc|鸣潮)(每日|mr|实时便笺|便笺|便签|体力)$/,
-  /** 查询/卡片 (无参数=总览) */
-  roleinfo: /^(?:!|！|\/|#|＃)(?:库洛|kuro|mc|鸣潮)(查询|卡片|kp)$/,
   /** 角色面板 (带角色名) */
   chardetail: /^(?:!|！|\/|#|＃)(?:库洛|kuro|mc|鸣潮)(查询|卡片|kp|面板|面版|mb)\s+(.+)$/,
   /** 探索度 */
   explore: /^(?:!|！|\/|#|＃)(?:库洛|kuro|mc|鸣潮)(ts|探索|探索度)$/,
-  /** 签到 */
-  sign: /^(?:!|！|\/|#|＃)(?:库洛|kuro|mc|鸣潮)(签到日历|签到记录|签到|qdjl|qd)$/,
+  /** 执行签到暂时停用，仅保留日历查询 */
+  sign: /^(?:!|！|\/|#|＃)(?:库洛|kuro|mc|鸣潮)(签到日历|签到记录|qdjl)$/,
   /** 深塔 */
   tower: /^(?:!|！|\/|#|＃)(?:库洛|kuro|mc|鸣潮)(深塔|逆境深塔|st)$/,
   /** 全息战略 */
@@ -25,8 +23,8 @@ export const routeRules = {
   slash: /^(?:!|！|\/|#|＃)(?:库洛|kuro|mc|鸣潮)(冥海|冥歌海墟|无尽|禁忌海域|hx)$/,
   /** 终焉矩阵 */
   matrix: /^(?:!|！|\/|#|＃)(?:库洛|kuro|mc|鸣潮)(矩阵|终焉矩阵|jz|奇点扩张|稳态协议)$/,
-  /** 练度统计 */
-  charlist: /^(?:!|！|\/|#|＃)(?:库洛|kuro|mc|鸣潮)(练度|练度统计|ld)$/,
+  /** 角色练度总览，兼容旧卡片及无参数查询 */
+  charlist: /^(?:!|！|\/|#|＃)(?:库洛|kuro|mc|鸣潮)(练度|练度统计|ld|查询|卡片|kp)$/,
   /** 库洛币 */
   coin: /^(?:!|！|\/|#|＃)(?:库洛|kuro|mc|鸣潮)(库洛币|库币|coin)$/,
   /** 公告 */
@@ -78,11 +76,14 @@ export const NET_SERVER_ID_MAP: Record<number, string> = {
 };
 
 export const KURO_BASE_URL = 'https://api.kurobbs.com';
+export const GEETEST_CAPTCHA_ID = 'ec4aa4174277d822d73f2442a165a2cd';
 
 /** Kuro API 路径 */
 export const KURO_API = {
   /** 登录 (手机+验证码) */
   LOGIN: `${KURO_BASE_URL}/user/sdkLogin`,
+  /** 网页滑块验证后发送短信 */
+  SMS_CODE: `${KURO_BASE_URL}/user/getSmsCodeForH5`,
   /** 登录校验 */
   LOGIN_LOG: `${KURO_BASE_URL}/user/login/log`,
   /** 获取角色列表 */

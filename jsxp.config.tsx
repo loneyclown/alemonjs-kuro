@@ -10,7 +10,7 @@ import EchoListCard from '@src/img/views/EchoListCard';
 import ExploreCard from '@src/img/views/ExploreCard';
 import GachaCard from '@src/img/views/GachaCard';
 import WuwaHelp from '@src/img/views/Help';
-import LoginHelpCard from '@src/img/views/LoginHelpCard';
+import LoginHelpCard, { generateQrDataUrl } from '@src/img/views/LoginHelpCard';
 import PeriodCard from '@src/img/views/PeriodCard';
 import PokerCard from '@src/img/views/PokerCard';
 import PoolCard from '@src/img/views/PoolCard';
@@ -29,12 +29,15 @@ export default defineConfig({
     '/wuwa-help': {
       component: <WuwaHelp />
     },
+    '/wuwa-help-more': {
+      component: <WuwaHelp more />
+    },
     '/login-help': {
       component: (
         <LoginHelpCard
           data={{
-            qrDataUrl:
-              'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAAEACAYAAABccqhmAAAAAklEQVR4AewaftIAAAW6SURBVO3Bwa0rSRIEQY8E9Vc59gMrQNeh0I+cdLP0HyStNEhaa5C01iBprUHSWoOktQZJaw2S1hokrTVIWuvDoSQI2nJLEm5pyy9LwpO2nEiCoC1PBklrDZLWGiStNUhaa5C01iBprUHSWoOktT5c1JZflgRBEk605UkSTrTlTW35ZUm4YZC01iBprUHSWoOktQZJaw2S1hokrTVIWmuQtNaHP5CEN7XlbUl40pYTSXhTW25pyy9Lwpva8qZB0lqDpLUGSWsNktYaJK01SFprkLTWIGmtD/ozSTjRlidJ+GVt0fsGSWsNktYaJK01SFprkLTWIGmtQdJag6S1BklrfdCfacstbTmRhCdtOZGEJ205kYQnbdFdg6S1BklrDZLWGiStNUhaa5C01iBprUHSWh/+QFt0VxJuScKJtjxJwi9ry3/ZIGmtQdJag6S1BklrDZLWGiStNUhaa5C01iBprQ8XJUH3JeFJW04k4UlbTiThSVtOJOFNSRAMktYaJK01SFprkLTWIGmtQdJag6S1BklrfTjUFt2VhFuScKIt/3Vt0ZlB0lqDpLUGSWsNktYaJK01SFprkLTWIGmtQdJa6T8cSMKTtpxIwq9qyy1JuKUtJ5JwS1u+URJ+VVveNEhaa5C01iBprUHSWoOktQZJaw2S1hokrfXhUFve1JZbknCiLbck4Za2/Ncl4Za2PEnCiba8KQkn2nLDIGmtQdJag6S1BklrDZLWGiStNUhaa5C01iBprfQfDiThSVtuScItbTmRhCdtOZGEW9rypiS8rS1PkvDL2vIkCbe05ckgaa1B0lqDpLUGSWsNktYaJK01SFprkLTWh0NteZKEW9pyIgm3tOVJEm5pyy1JuKUtv6wtT5Jwoi1vasuJJNwwSFprkLTWIGmtQdJag6S1BklrDZLWGiStNUha68OhJDxpyy1JONGWW5LwjZLwpiT8siTckoQnbTmRhG8zSFprkLTWIGmtQdJag6S1BklrDZLWGiStlf7DgSTc0pZbkvCkLbck4Za2vC0JT9rytiTc0pYnSTjRlidJONGWJ0k40ZYbBklrDZLWGiStNUhaa5C01iBprUHSWoOktQZJa324qC3fKAlva8uTJJxoyy1teZKEE215koS3JeGWJHyjJDxpy5NB0lqDpLUGSWsNktYaJK01SFprkLTWIGmtD38gCW9qyy9LwpvaciIJ36gtT5JwS1tuacuJJNwwSFprkLTWIGmtQdJag6S1BklrDZLWGiStNUha68MCSXhbW5605W1JeJKEX5aEb5SEJ2050ZYbBklrDZLWGiStNUhaa5C01iBprUHSWoOktdJ/0HVJeNKWW5Jwoi1PknCiLbck4Ulb3paEW9rybQZJaw2S1hokrTVIWmuQtNYgaa1B0lqDpLUGSWt9OJQEQVtOtOVJEm5py9uS8KQtb0vCk7bc0pYTSXhTW54MktYaJK01SFprkLTWIGmtQdJag6S1BklrfbioLb8sCbck4UlbTiThTW05kYRv1JY3JeFEW77NIGmtQdJag6S1BklrDZLWGiStNUhaa5C01iBprQ9/IAlvast/XRK+URJuScI3asuJJDxpy5sGSWsNktYaJK01SFprkLTWIGmtQdJag6S1PujrteVJEk605UkSTrTlliQ8acuJJDxpy4kkPEnCLUm4pS1PBklrDZLWGiStNUhaa5C01iBprUHSWoOktQZJa33Qn0nCLW25pS0nkvCN2nJLW54k4Za2nEjCDYOktQZJaw2S1hokrTVIWmuQtNYgaa1B0lof/kBb/uva8iQJtyThRFt+VRJOtOVJEt7Wlm8zSFprkLTWIGmtQdJag6S1BklrDZLWGiStNUha68NFSdD/JeEbJeGWtuhcEr7NIGmtQdJag6S1BklrDZLWGiStNUhaa5C0VvoPklYaJK01SFprkLTWIGmtQdJag6S1BklrDZLW+h/pfn8oNtYTVgAAAABJRU5ErkJggg=='
+            qrDataUrl: await generateQrDataUrl('http://127.0.0.1:8130/kuro/login/preview'),
+            loginUrl: 'http://127.0.0.1:8130/kuro/login/preview'
           }}
         />
       )

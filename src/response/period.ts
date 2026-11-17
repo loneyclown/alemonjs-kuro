@@ -10,7 +10,7 @@ export default async (e: EventsEnum) => {
     selects: ['private.message.create', 'message.create', 'interaction.create', 'private.interaction.create']
   });
   const [message] = useMessage(event);
-  const userId = event.UserId;
+  const userId = event.UserKey;
 
   const format = Format.create();
   const md = Format.createMarkdown();
@@ -38,7 +38,7 @@ export default async (e: EventsEnum) => {
   const { cookie } = ckResult;
 
   // 获取可用周期列表
-  const listResp = await apiPeriodList(uid, cookie);
+  const listResp = await apiPeriodList(uid, cookie, userId);
 
   if (!listResp.success || !listResp.data) {
     md.addText(`[鸣潮] 资源统计周期获取失败: ${listResp.msg || '未知错误'}`);
@@ -60,7 +60,7 @@ export default async (e: EventsEnum) => {
     return;
   }
 
-  const detailResp = await apiPeriodDetail(uid, cookie, 'month', latestMonth.index);
+  const detailResp = await apiPeriodDetail(uid, cookie, userId, 'month', latestMonth.index);
 
   if (!detailResp.success || !detailResp.data) {
     md.addText(`[鸣潮] 资源统计详情获取失败: ${detailResp.msg || '未知错误'}`);

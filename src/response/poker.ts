@@ -10,7 +10,7 @@ export default async (e: EventsEnum) => {
     selects: ['private.message.create', 'message.create', 'interaction.create', 'private.interaction.create']
   });
   const [message] = useMessage(event);
-  const userId = event.UserId;
+  const userId = event.UserKey;
 
   const format = Format.create();
   const md = Format.createMarkdown();
@@ -37,7 +37,7 @@ export default async (e: EventsEnum) => {
 
   const { cookie } = ckResult;
 
-  const [moreResp, baseResp, mineResp] = await Promise.all([apiMoreActivity(uid, cookie), apiBaseInfo(uid, cookie), apiMineV2(cookie)]);
+  const [moreResp, baseResp, mineResp] = await Promise.all([apiMoreActivity(uid, cookie, userId), apiBaseInfo(uid, cookie, userId), apiMineV2(cookie)]);
 
   if (!moreResp.success || !moreResp.data?.phantomBattle) {
     md.addText('[鸣潮] 激斗数据获取失败或未解锁');

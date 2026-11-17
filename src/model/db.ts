@@ -13,7 +13,12 @@ export interface kuroUser {
 
 /** Redis 操作超时包装 */
 function withTimeout<T>(promise: Promise<T>, ms = 5000): Promise<T> {
-  return Promise.race([promise, new Promise<never>((_, reject) => setTimeout(() => reject(new Error('Redis 操作超时')), ms))]);
+  let timer: ReturnType<typeof setTimeout>;
+  const timeout = new Promise<never>((_, reject) => {
+    timer = setTimeout(() => reject(new Error('Redis 操作超时')), ms);
+  });
+
+  return Promise.race([promise, timeout]).finally(() => clearTimeout(timer));
 }
 
 // ═══ UID 绑定 ═══
@@ -132,7 +137,7 @@ export async function unbindUid(userId: string, uid: string): Promise<string> {
   }
 
   // 清理用户数据
-  await withTimeout(redis.del(kuroKeys.userByUid(uid)));
+  await deleteToken(uid, userId);
 
   return `特征码 ${uid} 已解绑`;
 }
@@ -154,11 +159,12 @@ export async function viewUids(userId: string): Promise<string> {
 // ═══ Token/Cookie 管理 ═══
 
 /** 添加 Token (cookie) */
-export async function addToken(_userId: string, uid: string, cookie: string, did: string, bat = ''): Promise<void> {
+export async function addToken(userId: string, uid: string, cookie: string, did: string, bat = ''): Promise<void> {
+  const key = kuroKeys.userByUid(uid, userId);
   const redis = getIoRedis();
 
   if (!redis) {
-    return;
+    throw new Error('数据库未连接，请确认 Redis 已启动');
   }
 
   const user: kuroUser = {
@@ -170,18 +176,19 @@ export async function addToken(_userId: string, uid: string, cookie: string, did
     createdAt: Date.now()
   };
 
-  await withTimeout(redis.set(kuroKeys.userByUid(uid), JSON.stringify(user), 'EX', 86400 * 90));
+  await withTimeout(redis.set(key, JSON.stringify(user), 'EX', 86400 * 90));
 }
 
 /** 获取用户信息 */
-export async function getUserByUid(uid: string): Promise<kuroUser | null> {
+export async function getUserByUid(uid: string, userId: string): Promise<kuroUser | null> {
+  const key = kuroKeys.userByUid(uid, userId);
   const redis = getIoRedis();
 
   if (!redis) {
     return null;
   }
 
-  const raw = await withTimeout(redis.get(kuroKeys.userByUid(uid)));
+  const raw = await withTimeout(redis.get(key));
 
   if (!raw) {
     return null;
@@ -195,12 +202,13 @@ export async function getUserByUid(uid: string): Promise<kuroUser | null> {
 }
 
 /** 删除 Token */
-export async function deleteToken(uid: string): Promise<void> {
+export async function deleteToken(uid: string, userId: string): Promise<boolean> {
+  const key = kuroKeys.userByUid(uid, userId);
   const redis = getIoRedis();
 
   if (!redis) {
-    return;
+    throw new Error('数据库未连接，请确认 Redis 已启动');
   }
 
-  await withTimeout(redis.del(kuroKeys.userByUid(uid)));
+  return (await withTimeout(redis.del(key))) > 0;
 }

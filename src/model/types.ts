@@ -6,10 +6,21 @@ export interface KuroApiResp<T = unknown> {
   success: boolean;
 }
 
-/** 体力信息 */
-export interface EnergyData {
+/** 实时便笺中的通用数据项；total=0 表示未提供上限，不能展示为分母。 */
+export interface DailyWidget {
+  name?: string;
+  img?: string | null;
+  value?: string | null;
+  status?: number;
   cur: number;
   total: number;
+  refreshTimeStamp?: number;
+  timePreDesc?: string | null;
+  expireTimeStamp?: number;
+}
+
+/** 体力信息 */
+export interface EnergyData extends DailyWidget {
   refreshTimeStamp: number;
 }
 
@@ -18,12 +29,18 @@ export interface DailyData {
   /** 体力 */
   energyData: EnergyData | null;
   /** 活跃度 */
-  livenessData: {
-    cur: number;
-    total: number;
-  } | null;
-  /** 战歌/挑战次数 */
-  battlePassData: unknown[];
+  livenessData: DailyWidget | null;
+  /** 电台等级、本周经验；数组可能含空项。 */
+  battlePassData: (DailyWidget | null)[];
+  storeEnergyData?: DailyWidget | null;
+  weeklyData?: DailyWidget | null;
+  weeklyRougeData?: DailyWidget | null;
+  weeklyFrameData?: DailyWidget | null;
+  towerData?: DailyWidget | null;
+  slashTowerData?: DailyWidget | null;
+  newTowerData?: DailyWidget | null;
+  serverTime?: number;
+  activityData?: { enabled: boolean; title: string; endTime?: number } | null;
   /** 商店物品 */
   shopDataList: unknown[];
 }
@@ -90,6 +107,7 @@ export interface ExploreItem {
 export interface AreaInfo {
   areaId: number;
   areaName: string;
+  areaPic?: string | null;
   areaProgress: number;
   itemList: ExploreItem[];
 }
@@ -102,11 +120,13 @@ export interface ExploreCountry {
   detailPagePic: string;
   detailPageProgressColor: string;
   homePageIcon: string;
+  detailPageImage?: string | null;
+  detailPageAreaPic?: string | null;
 }
 
 /** 探索区域 */
 export interface ExploreArea {
-  areaInfoList?: AreaInfo[] | null;
+  areaInfoList?: (AreaInfo | null)[] | null;
   country: ExploreCountry;
   countryProgress: string;
 }
@@ -114,7 +134,7 @@ export interface ExploreArea {
 /** 探索数据响应 */
 export interface ExploreResp {
   open: boolean;
-  exploreList?: ExploreArea[] | null;
+  exploreList?: (ExploreArea | null)[] | null;
 }
 
 /** 签到日历项 */
@@ -212,6 +232,7 @@ export interface WeaponInfo {
   weaponIcon: string;
   weaponType: number;
   weaponEffectName?: string;
+  effectDescription?: string;
 }
 
 /** 角色详情 — 武器数据 */
@@ -220,13 +241,18 @@ export interface WeaponData {
   level: number;
   breach?: number;
   resonLevel: number;
+  mainPropList?: PhantomProp[];
 }
 
 /** 角色详情 — 属性词条 */
 export interface PhantomProp {
+  attributeId?: number;
   attributeName: string;
   attributeValue: string;
   iconUrl?: string | null;
+  key?: string;
+  valid?: boolean;
+  sort?: number;
 }
 
 /** 角色详情 — 声骸基础信息 */
@@ -275,13 +301,21 @@ export interface SkillEntry {
 
 /** 角色完整详情响应 */
 export interface RoleDetailResp {
+  /** 库街区结算后的最终属性，已含装备加成，不能再次叠加声骸。 */
+  roleAttributeList?: PhantomProp[];
+  /** 声骸对最终面板的贡献（百分比生命/攻击/防御已折算）。 */
+  equipPhantomAddPropList?: PhantomProp[];
+  /** 声骸原始词条汇总，区分固定值和百分比。 */
+  equipPhantomAttributeList?: PhantomProp[];
+  roleSkin?: { picUrl?: string; skinName?: string };
   role: RoleData;
   level: number;
   chainList: { order: number; name: string; iconUrl: string; unlocked: boolean }[];
   weaponData: WeaponData;
   phantomData: {
     cost: number;
-    equipPhantomList: EquipPhantom[];
+    /** 未装备的槽位可能直接返回 null。 */
+    equipPhantomList: (EquipPhantom | null)[];
   };
   skillList: SkillEntry[];
 }

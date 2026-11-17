@@ -1,0 +1,9 @@
+# 合并到机器人运行目录的 alemon.config.yaml，保留原有 QQ 凭据、Redis 和登录页配置。
+alemonjs-kuro:
+  markdown:
+    enabled: false # true：可点击 Markdown 帮助；false：图片帮助
+
+# 开启上面的开关时，现有 QQ 配置还需要：
+# qq-bot:
+#   markdownToText: false
+# 并在 QQ 开放平台开通自定义 Markdown 消息权限。

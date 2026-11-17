@@ -1,4 +1,4 @@
-import { addToken, deleteToken, getActiveUid, getUserByUid } from '@src/model/db';
+import { addToken, deleteToken, getActiveUid } from '@src/model/db';
 import { createEvent, EventsEnum, Format, useMessage } from 'alemonjs';
 
 export default async (e: EventsEnum) => {
@@ -7,11 +7,19 @@ export default async (e: EventsEnum) => {
     selects: ['private.message.create', 'message.create', 'interaction.create', 'private.interaction.create']
   });
   const [message] = useMessage(event);
-  const userId = event.UserId;
+  const userId = event.UserKey;
   const text = e.MessageText;
 
   const format = Format.create();
   const md = Format.createMarkdown();
+
+  if (!event.name.startsWith('private.')) {
+    md.addText('[鸣潮] 请私聊机器人进行Token操作');
+    format.addMarkdown(md);
+    void message.send({ format });
+
+    return;
+  }
 
   // 添加 token
   if (/添加/i.test(text)) {
@@ -75,44 +83,25 @@ export default async (e: EventsEnum) => {
       return;
     }
 
-    await deleteToken(uidMatch[1]);
-    md.addText(`[鸣潮] UID ${uidMatch[1]} 的Token已删除`);
+    const deleted = await deleteToken(uidMatch[1], userId);
+
+    md.addText(deleted ? `[鸣潮] UID ${uidMatch[1]} 的Token已删除` : '[鸣潮] 你未保存该UID的Token');
     format.addMarkdown(md);
     void message.send({ format });
 
     return;
   }
 
-  // 获取/查看 token
+  // 暂停状态查询；即使绕过路由直接调用，也不再读取凭据。
   if (/获取/i.test(text)) {
-    const uid = await getActiveUid(userId);
-
-    if (!uid) {
-      md.addText('[鸣潮] 未绑定特征码');
-      format.addMarkdown(md);
-      void message.send({ format });
-
-      return;
-    }
-
-    const user = await getUserByUid(uid);
-
-    if (!user?.cookie) {
-      md.addText(`[鸣潮] UID ${uid} 未添加Token`);
-      format.addMarkdown(md);
-      void message.send({ format });
-
-      return;
-    }
-
-    md.addText(`[鸣潮] UID: ${uid}\nToken: ${user.cookie.substring(0, 20)}...`);
+    md.addText('[鸣潮] Token状态查询已停用，账号绑定请使用 #mc查看');
     format.addMarkdown(md);
     void message.send({ format });
 
     return;
   }
 
-  md.addText('[鸣潮] Token指令:\n#mc添加token <token>\n#mc删除token <uid>\n#mc获取token');
+  md.addText('[鸣潮] Token指令:\n#mc添加token <token>\n#mc删除token <uid>');
   format.addMarkdown(md);
   void message.send({ format });
 };

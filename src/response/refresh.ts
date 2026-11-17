@@ -8,7 +8,7 @@ export default async (e: EventsEnum) => {
     selects: ['private.message.create', 'message.create', 'interaction.create', 'private.interaction.create']
   });
   const [message] = useMessage(event);
-  const userId = event.UserId;
+  const userId = event.UserKey;
 
   const format = Format.create();
   const md = Format.createMarkdown();
@@ -35,7 +35,7 @@ export default async (e: EventsEnum) => {
 
   const { cookie } = ckResult;
 
-  const refreshResp = await apiRefresh(uid, cookie);
+  const refreshResp = await apiRefresh(uid, cookie, userId);
 
   if (refreshResp.success) {
     md.addText('[鸣潮] 面板数据刷新成功');

@@ -31,10 +31,6 @@ export default defineRouter([
         handler: lazy(() => import('@src/response/chardetail'))
       },
       {
-        regular: routeRules.roleinfo,
-        handler: lazy(() => import('@src/response/roleinfo'))
-      },
-      {
         regular: routeRules.explore,
         handler: lazy(() => import('@src/response/explore'))
       },
@@ -46,18 +42,21 @@ export default defineRouter([
         regular: routeRules.tower,
         handler: lazy(() => import('@src/response/tower'))
       },
-      {
-        regular: routeRules.challenge,
-        handler: lazy(() => import('@src/response/challenge'))
-      },
-      {
-        regular: routeRules.slash,
-        handler: lazy(() => import('@src/response/slash'))
-      },
-      {
-        regular: routeRules.matrix,
-        handler: lazy(() => import('@src/response/matrix'))
-      },
+      // 暂停：全息战略尚未完成独立数据结构适配。
+      // {
+      //   regular: routeRules.challenge,
+      //   handler: lazy(() => import('@src/response/challenge'))
+      // },
+      // 暂停：冥歌海墟尚未完成独立数据结构适配。
+      // {
+      //   regular: routeRules.slash,
+      //   handler: lazy(() => import('@src/response/slash'))
+      // },
+      // 暂停：终焉矩阵尚未完成独立数据结构适配。
+      // {
+      //   regular: routeRules.matrix,
+      //   handler: lazy(() => import('@src/response/matrix'))
+      // },
       {
         regular: routeRules.charlist,
         handler: lazy(() => import('@src/response/charlist'))
@@ -70,18 +69,21 @@ export default defineRouter([
         regular: routeRules.announce,
         handler: lazy(() => import('@src/response/announce'))
       },
-      {
-        regular: routeRules.code,
-        handler: lazy(() => import('@src/response/code'))
-      },
-      {
-        regular: routeRules.gacha,
-        handler: lazy(() => import('@src/response/gacha'))
-      },
-      {
-        regular: routeRules.echoList,
-        handler: lazy(() => import('@src/response/echoList'))
-      },
+      // 暂停：兑换码仅靠网页正则猜测，不能保证有效。
+      // {
+      //   regular: routeRules.code,
+      //   handler: lazy(() => import('@src/response/code'))
+      // },
+      // 暂停：抽卡缺少记录凭证接入，分页游标及终止保护不完整。
+      // {
+      //   regular: routeRules.gacha,
+      //   handler: lazy(() => import('@src/response/gacha'))
+      // },
+      // 暂停：声骸列表固定第一页，没有翻页入口。
+      // {
+      //   regular: routeRules.echoList,
+      //   handler: lazy(() => import('@src/response/echoList'))
+      // },
       {
         regular: routeRules.calabash,
         handler: lazy(() => import('@src/response/calabash'))
@@ -90,10 +92,11 @@ export default defineRouter([
         regular: routeRules.period,
         handler: lazy(() => import('@src/response/period'))
       },
-      {
-        regular: routeRules.calendar,
-        handler: lazy(() => import('@src/response/calendar'))
-      },
+      // 暂停：活动周期由固定日期推算，尚未对齐实时数据。
+      // {
+      //   regular: routeRules.calendar,
+      //   handler: lazy(() => import('@src/response/calendar'))
+      // },
       {
         regular: routeRules.pool,
         handler: lazy(() => import('@src/response/pool'))
@@ -101,23 +104,27 @@ export default defineRouter([
       {
         regular: routeRules.refresh,
         handler: lazy(() => import('@src/response/refresh'))
-      },
-      {
-        regular: routeRules.develop,
-        handler: lazy(() => import('@src/response/develop'))
-      },
-      {
-        regular: routeRules.poker,
-        handler: lazy(() => import('@src/response/poker'))
-      },
-      {
-        regular: routeRules.rank,
-        handler: lazy(() => import('@src/response/rank'))
-      },
-      {
-        regular: routeRules.wiki,
-        handler: lazy(() => import('@src/response/wiki'))
       }
+      // 暂停：培养目标和技能起点写死，尚未支持实际养成参数。
+      // {
+      //   regular: routeRules.develop,
+      //   handler: lazy(() => import('@src/response/develop'))
+      // },
+      // 暂停：激斗活动的数据映射尚未实测，先收起实验入口。
+      // {
+      //   regular: routeRules.poker,
+      //   handler: lazy(() => import('@src/response/poker'))
+      // },
+      // 暂停：目前仅个人角色简易评分，没有群排行。
+      // {
+      //   regular: routeRules.rank,
+      //   handler: lazy(() => import('@src/response/rank'))
+      // },
+      // 暂停：没有攻略来源，机制分支也没有对应内容。
+      // {
+      //   regular: routeRules.wiki,
+      //   handler: lazy(() => import('@src/response/wiki'))
+      // }
     ]
   }
 ]);

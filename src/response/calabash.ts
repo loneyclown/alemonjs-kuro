@@ -10,7 +10,7 @@ export default async (e: EventsEnum) => {
     selects: ['private.message.create', 'message.create', 'interaction.create', 'private.interaction.create']
   });
   const [message] = useMessage(event);
-  const userId = event.UserId;
+  const userId = event.UserKey;
 
   const format = Format.create();
   const md = Format.createMarkdown();
@@ -37,7 +37,7 @@ export default async (e: EventsEnum) => {
 
   const { cookie } = ckResult;
 
-  const resp = await apiCalabashData(uid, cookie);
+  const resp = await apiCalabashData(uid, cookie, userId);
 
   if (!resp.success || !resp.data) {
     md.addText(`[鸣潮] 数据坞查询失败: ${resp.msg || '未知错误'}`);

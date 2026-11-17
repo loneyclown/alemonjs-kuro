@@ -10,7 +10,7 @@ export default async (e: EventsEnum) => {
     selects: ['private.message.create', 'message.create', 'interaction.create', 'private.interaction.create']
   });
   const [message] = useMessage(event);
-  const userId = event.UserId;
+  const userId = event.UserKey;
 
   const format = Format.create();
   const md = Format.createMarkdown();
@@ -28,7 +28,7 @@ export default async (e: EventsEnum) => {
   const ckResult = await getCookie(uid, userId);
 
   if (!ckResult) {
-    md.addText('[鸣潮] 未添加Token或Token已失效\n请使用 #mc登录 手机号 验证码 重新登录');
+    md.addText('[鸣潮] 未添加Token或Token已失效\n请私聊发送 #mc登录 重新登录');
     format.addMarkdown(md);
     void message.send({ format });
 
@@ -37,7 +37,7 @@ export default async (e: EventsEnum) => {
 
   const { cookie } = ckResult;
 
-  const [exploreResp, baseResp, mineResp] = await Promise.all([apiExploreData(uid, cookie), apiBaseInfo(uid, cookie), apiMineV2(cookie)]);
+  const [exploreResp, baseResp, mineResp] = await Promise.all([apiExploreData(uid, cookie, userId), apiBaseInfo(uid, cookie, userId), apiMineV2(cookie)]);
 
   if (!exploreResp.success || !exploreResp.data) {
     md.addText(`[鸣潮] 探索度查询失败: ${exploreResp.msg || '未知错误'}`);

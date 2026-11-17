@@ -2,100 +2,55 @@ import QRCode from 'qrcode';
 import React from 'react';
 import HTML from './HTML.js';
 
-const LOGIN_URL = 'https://www.kurobbs.com/mc';
-
-const STEPS = [
-  {
-    num: '1',
-    title: '打开登录页',
-    desc: '打开下方链接或扫描二维码',
-    detail: LOGIN_URL
-  },
-  {
-    num: '2',
-    title: '获取验证码',
-    desc: '在网页中输入手机号',
-    detail: '点击获取验证码，等待短信'
-  },
-  {
-    num: '3',
-    title: '发送登录指令',
-    desc: '在聊天中发送以下指令',
-    detail: '#mc登录 手机号 验证码'
-  }
-];
-
 interface Props {
-  data: { qrDataUrl: string };
+  data: { qrDataUrl: string; loginUrl: string };
 }
 
 export default function LoginHelpCard({ data }: Props) {
   return (
-    <HTML style={{ width: '520px' }}>
-      <div className='relative flex justify-center p-6 bg-[#f6f6f6]' style={{ fontFamily: '"tttgbnumber", system-ui, sans-serif' }}>
-        <div className='relative w-full overflow-hidden bg-white border-2 border-[#eae5d9] rounded-3xl shadow-[0_12px_32px_rgba(0,0,0,0.05)]'>
-          {/* 标题 */}
-          <div className='flex flex-col items-start px-8 pt-6 pb-2'>
-            <div className='text-[32px] font-bold tracking-[2px] text-[#3d3833]'>鸣潮助手 · 登录指引</div>
-            <div className='mt-1 text-sm tracking-[4px] text-[#a09d98]'>请按照以下步骤完成登录</div>
-          </div>
-
-          <div className='px-8 pt-3 pb-6'>
-            {/* 步骤卡片 */}
-            <div className='flex flex-col gap-4 mb-6'>
-              {STEPS.map((step, i) => (
-                <div key={i} className='flex items-start gap-4 p-4 bg-[#faf7f2] border border-[#e1dcce] rounded-2xl'>
-                  {/* 序号 */}
-                  <div className='flex items-center justify-center shrink-0 w-8 h-8 mt-0.5 text-[20px] font-bold text-white bg-[#eebb4d] rounded-full shadow-[0_2px_4px_rgba(238,187,77,0.4)]'>
-                    {step.num}
-                  </div>
-                  {/* 内容 */}
-                  <div className='flex flex-col w-full'>
-                    <div className='text-[20px] font-bold text-[#423c36]'>{step.title}</div>
-                    <div className='mt-1 text-[15px] text-[#b0a89d]'>{step.desc}</div>
-                    <div className='mt-2 px-3 py-1.5 text-[15px] font-bold text-[#5b534b] bg-white border border-[#eae5d9] rounded-lg break-all'>
-                      {step.detail}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* 二维码区域 */}
-            <div className='flex items-center gap-5 p-4 bg-[#faf7f2] border border-[#e1dcce] rounded-2xl'>
-              <div className='shrink-0 p-1.5 bg-white border border-[#eae5d9] rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.04)]'>
-                <img src={data.qrDataUrl} className='block w-[100px] h-[100px]' />
-              </div>
-              <div className='flex flex-col'>
-                <div className='flex items-center'>
-                  <div className='w-[4px] h-[18px] mr-2.5 rounded-[2px] bg-[#dcb858] shadow-[0_2px_4px_rgba(220,184,88,0.4)]' />
-                  <span className='text-[20px] font-bold tracking-[1px] text-[#423c36]'>扫码打开登录页</span>
-                </div>
-                <div className='mt-2.5 text-[15px] leading-relaxed text-[#b0a89d]'>
-                  使用手机浏览器扫描左侧二维码
-                  <br />
-                  即可直接打开库街区登录页面
-                </div>
-              </div>
-            </div>
-
-            {/* 底部提示 */}
-            <div className='flex items-center justify-between px-5 py-3 mt-6 bg-[#faf7f2] border border-[#e1dcce] rounded-xl'>
-              <span className='text-sm font-bold text-[#8a837b]'>指令前缀 # ! / ！＃</span>
-              <span className='text-xs text-[#c2bcb2]'>Powered by alemonjs-kuro</span>
-            </div>
+    <HTML style={{ width: '520px', margin: 0, textAlign: 'left' }}>
+      <main
+        style={{
+          padding: '30px',
+          background: '#111d23',
+          color: '#eef3f1',
+          borderTop: '4px solid #e5c78b',
+          fontFamily: '"Microsoft YaHei", system-ui, sans-serif'
+        }}
+      >
+        <div style={{ color: '#e5c78b', fontSize: '12px', letterSpacing: '4px' }}>WUTHERING WAVES</div>
+        <h1 style={{ margin: '14px 0 8px', fontSize: '30px' }}>登录鸣潮助手</h1>
+        <p style={{ color: '#a8b6bc', fontSize: '16px', lineHeight: 1.8 }}>
+          使用浏览器扫码，在专属页面完成验证。
+          <br />
+          登录结果会自动保存到你的聊天账号。
+        </p>
+        <div style={{ textAlign: 'center', padding: '22px 0' }}>
+          <img
+            alt='专属登录链接二维码'
+            src={data.qrDataUrl}
+            style={{ display: 'block', width: '220px', height: '220px', margin: '0 auto', padding: '10px', background: '#fff', borderRadius: '8px' }}
+          />
+          <div style={{ marginTop: '14px', color: '#e5c78b', fontSize: '15px' }}>3 分钟有效 · 仅供本人使用</div>
+          <div style={{ marginTop: '8px', color: '#91a3aa', fontSize: '13px' }}>{new URL(data.loginUrl).host}</div>
+        </div>
+        <div style={{ borderTop: '1px solid #38505b', paddingTop: '18px', color: '#c0ccd0', fontSize: '16px', lineHeight: 2 }}>
+          <div>01 输入手机号，完成滑块验证</div>
+          <div>02 获取短信验证码，在页面提交登录</div>
+          <div>
+            03 返回聊天，发送 <strong style={{ color: '#e5c78b' }}>#mc体力</strong>
           </div>
         </div>
-      </div>
+        <p style={{ color: '#91a3aa', fontSize: '13px', lineHeight: 1.8, marginBottom: 0 }}>
+          手机需要能访问上方服务地址。也可在电脑打开消息中的链接。
+          <br />
+          链接失效时重新发送 #mc登录，请勿转发二维码。
+        </p>
+      </main>
     </HTML>
   );
 }
 
-/** 生成 QR code data URL */
-export async function generateQrDataUrl(): Promise<string> {
-  return await QRCode.toDataURL(LOGIN_URL, {
-    width: 256,
-    margin: 1,
-    color: { dark: '#000000', light: '#ffffff' }
-  });
+export function generateQrDataUrl(loginUrl: string): Promise<string> {
+  return QRCode.toDataURL(loginUrl, { width: 320, margin: 2, color: { dark: '#111d23', light: '#ffffff' } });
 }

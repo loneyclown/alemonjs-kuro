@@ -1,24 +1,8 @@
-import { WAVES_GAME_ID } from '@src/constants/kuro';
-import LoginHelpCard, { generateQrDataUrl } from '@src/img/views/LoginHelpCard';
-import { apiLogin, apiRequestToken, apiRoleList } from '@src/model/api';
-import { addToken, bindUid } from '@src/model/db';
 import { createEvent, EventsEnum, Format, useMessage } from 'alemonjs';
+import LoginHelpCard, { generateQrDataUrl } from '@src/img/views/LoginHelpCard';
+import { LoginError, loginWithCode } from '@src/model/login';
+import { createLoginSession, revokeLoginSessions } from '@src/model/login-server';
 import { renderComponentIsHtmlToBuffer } from 'jsxp';
-
-function generateUUID(): string {
-  const chars = 'abcdef0123456789';
-  let result = '';
-
-  for (let i = 0; i < 36; i++) {
-    if (i === 8 || i === 13 || i === 18 || i === 23) {
-      result += '-';
-    } else {
-      result += chars[Math.floor(Math.random() * chars.length)];
-    }
-  }
-
-  return result.toUpperCase();
-}
 
 export default async (e: EventsEnum) => {
   const event = createEvent({
@@ -26,105 +10,53 @@ export default async (e: EventsEnum) => {
     selects: ['private.message.create', 'message.create', 'interaction.create', 'private.interaction.create']
   });
   const [message] = useMessage(event);
-  const userId = event.UserId;
-  const text = e.MessageText.replace(/^(?:!|！|\/|#|＃)(?:库洛|kuro|mc|鸣潮)(?:登录|登陆|登入|login|dl)\s*/, '').trim();
+  const sendText = (text: string) => {
+    const format = Format.create();
 
-  const format = Format.create();
-  const md = Format.createMarkdown();
+    format.addText(text);
 
-  // 无参数 → 发送登录帮助图片
-  if (!text) {
-    const qrDataUrl = await generateQrDataUrl();
-    const img = await renderComponentIsHtmlToBuffer(LoginHelpCard, { data: { qrDataUrl } });
+    return message.send({ format });
+  };
 
-    if (img && typeof img !== 'boolean') {
-      format.addImage(img);
-      void message.send({ format });
+  if (!event.name.startsWith('private.')) {
+    await sendText('[鸣潮] 请私聊机器人发送 #mc登录，获取专属登录链接');
+
+    return;
+  }
+
+  const userId = event.UserKey;
+  const text = event.MessageText.replace(/^[!！/#＃](?:库洛|kuro|mc|鸣潮)(?:登录|登陆|登入|login|dl)\s*/, '').trim();
+
+  try {
+    if (!text) {
+      const loginUrl = await createLoginSession(userId, sendText);
+      const qrDataUrl = await generateQrDataUrl(loginUrl);
+      const img = await renderComponentIsHtmlToBuffer(LoginHelpCard, { data: { qrDataUrl, loginUrl } }).catch(() => false);
+      const format = Format.create();
+
+      if (img && typeof img !== 'boolean') {
+        format.addImage(img);
+        await message.send({ format });
+      }
+
+      await sendText(`[鸣潮] 扫码或打开专属登录页，完成滑块和短信验证。\n${loginUrl}\n链接3分钟有效，请勿转发；手机扫码需能访问这台电脑。`);
 
       return;
     }
 
-    // 图片渲染失败则回退文字
-    md.addText('[鸣潮] 登录方式:\n#mc登录 手机号 验证码\n\n请先在库街区APP获取短信验证码后使用此命令');
-    format.addMarkdown(md);
-    void message.send({ format });
+    const parts = text.split(/[\s,，]+/);
 
-    return;
+    if (parts.length !== 2) {
+      await sendText('[鸣潮] 请发送 #mc登录 获取登录页，或使用 #mc登录 手机号 验证码');
+
+      return;
+    }
+
+    revokeLoginSessions(userId);
+    const result = await loginWithCode(userId, parts[0], parts[1]);
+
+    await sendText(`[鸣潮] 登录成功！\n特征码：${result.uid}\n服务器：${result.serverName}\n发送 #mc体力 开始查询`);
+  } catch (error) {
+    await sendText(`[鸣潮] ${error instanceof LoginError ? error.message : '登录失败，请检查 Redis 和登录服务配置后重试'}`);
   }
-
-  // 手机号+验证码
-  const parts = text.split(/\s+/);
-
-  if (parts.length !== 2) {
-    md.addText('[鸣潮] 格式错误，请使用:\n#mc登录 手机号 验证码');
-    format.addMarkdown(md);
-    void message.send({ format });
-
-    return;
-  }
-
-  const [phone, code] = parts;
-
-  if (!/^1[3-9]\d{9}$/.test(phone)) {
-    md.addText('[鸣潮] 手机号格式错误');
-    format.addMarkdown(md);
-    void message.send({ format });
-
-    return;
-  }
-
-  if (!/^\d{6}$/.test(code)) {
-    md.addText('[鸣潮] 验证码格式错误，请输入6位数字');
-    format.addMarkdown(md);
-    void message.send({ format });
-
-    return;
-  }
-
-  const did = generateUUID();
-
-  // 调用登录 API
-  const loginResp = await apiLogin(phone, code, did);
-
-  if (!loginResp.success || !loginResp.data?.token) {
-    md.addText(`[鸣潮] 登录失败: ${loginResp.msg || '未知错误'}\n请检查:\n1.是否注册过库街区\n2.验证码是否正确`);
-    format.addMarkdown(md);
-    void message.send({ format });
-
-    return;
-  }
-
-  const token = loginResp.data.token;
-
-  // 获取角色列表
-  const roleResp = await apiRoleList(token, did, WAVES_GAME_ID);
-
-  if (!roleResp.success || !roleResp.data || !Array.isArray(roleResp.data) || roleResp.data.length === 0) {
-    md.addText('[鸣潮] 登录成功但未找到鸣潮角色，请确认库街区已绑定鸣潮');
-    format.addMarkdown(md);
-    void message.send({ format });
-
-    return;
-  }
-
-  const role = roleResp.data[0];
-  const uid = role.roleId;
-
-  // 获取 bat token
-  let bat = '';
-  const tokenResp = await apiRequestToken(uid, token, did);
-
-  if (tokenResp.success && tokenResp.data?.accessToken) {
-    bat = tokenResp.data.accessToken;
-  }
-
-  // 存储用户信息
-  await addToken(userId, uid, token, did, bat);
-
-  // 绑定 UID
-  await bindUid(userId, uid);
-
-  md.addText(`[鸣潮] 登录成功!\n特征码: ${uid}\n服务器: ${role.serverName || '未知'}\nToken 已保存`);
-  format.addMarkdown(md);
-  void message.send({ format });
 };

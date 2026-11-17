@@ -1,240 +1,637 @@
-import type { AccountBaseInfo, DailyData } from '@src/model/types';
+import type { AccountBaseInfo, DailyData, DailyWidget } from '@src/model/types';
+import BACKGROUND from '@src/assets/img/stamina/lily-background.png';
 import React from 'react';
-import HTML from './HTML.js';
-
-export interface DailyDataExt extends DailyData {
-  storeEnergyData?: { cur: number; total: number; refreshTimeStamp?: number };
-}
+import HTML from './HTML';
 
 interface StaminaCardProps {
-  data: {
-    uid: string;
-    daily: DailyDataExt;
-    base: AccountBaseInfo;
-    headUrl?: string;
-  };
+  data: { uid: string; daily: DailyData; base: AccountBaseInfo; headUrl?: string };
 }
 
-function formatTime(timestamp: number): string {
-  if (!timestamp || timestamp <= 0) {
-    return '已满';
-  }
-  const diff = timestamp - Math.floor(Date.now() / 1000);
+const STYLES = `
+.daily-sheet{position:relative;
+width:1000px;
+overflow:hidden;
+border-radius:24px;
+background:#c8cbdc;
+color:#303448;
+text-align:left;
+font-family:"Microsoft YaHei",
+sans-serif}
+.daily-sheet *{box-sizing:border-box}
+.daily-background{position:absolute;
+inset:0;
+width:100%;
+height:100%;
+object-fit:fill}
+.daily-outline{position:absolute;
+inset:78px 16px 16px;
+border:1px solid #e2c58f;
+border-radius:35px;
+box-shadow:inset 0 0 0 4px rgba(255,
+255,
+255,
+.15);
+pointer-events:none}
+.daily-brand{position:relative;
+padding:22px 43px 0;
+color:#f5eddd;
+font-family:"tttgbnumber",
+"SimSun",
+serif;
+font-size:27px;
+letter-spacing:4px;
+line-height:1.2}
+.daily-brand span{color:#e4c995;
+margin-right:12px}
+.daily-brand small{display:block;
+font:7px Arial,
+sans-serif;
+letter-spacing:5px;
+margin:8px 0 0 43px;
+color:#e5d9c4}
+.daily-profile{position:relative;
+display:flex;
+align-items:center;
+gap:26px;
+height:152px;
+margin:0 48px;
+color:#f7f0e5}
+.daily-avatar{position:relative;
+display:flex;
+align-items:center;
+justify-content:center;
+width:108px;
+height:108px;
+flex-shrink:0;
+border-radius:50%;
+border:3px solid #e2c88d;
+box-shadow:0 0 0 5px rgba(232,
+220,
+184,
+.18),
+0 0 22px rgba(234,
+204,
+143,
+.22);
+overflow:hidden;
+background:#55526b;
+font-family:"tttgbnumber",
+"SimSun",
+serif;
+font-size:42px}
+.daily-avatar img{position:absolute;
+inset:0;
+width:100%;
+height:100%;
+object-fit:cover}
+.daily-user{border-left:1px solid #d1bc96;
+padding-left:26px;
+max-width:600px}
+.daily-user h1{font-family:"tttgbnumber",
+"SimSun",
+serif;
+font-size:38px;
+letter-spacing:3px;
+line-height:1.2;
+margin:0 0 11px;
+overflow-wrap:anywhere;
+text-shadow:0 2px 6px #242637}
+.daily-uid{display:inline-block;
+font:17px Arial,
+sans-serif;
+letter-spacing:1px;
+border:1px solid #b7aeac;
+border-radius:20px;
+padding:5px 18px;
+background:rgba(71,
+72,
+94,
+.4)}
+.daily-levels{margin-top:9px;
+font-size:12px;
+letter-spacing:1px;
+color:#e5dac9}
+.daily-panel{position:relative;
+margin:0 28px;
+padding:21px 25px 24px;
+border:1px solid #eee5d5;
+border-radius:24px;
+background:linear-gradient(120deg,
+rgba(245,
+246,
+253,
+.83),
+rgba(230,
+231,
+246,
+.86));
+box-shadow:inset 0 0 0 5px rgba(255,
+255,
+255,
+.27),
+0 10px 24px rgba(44,
+48,
+74,
+.18)}
+.daily-heading{display:flex;
+align-items:center;
+gap:11px;
+margin-bottom:18px;
+font-family:"tttgbnumber",
+"SimSun",
+serif;
+font-size:25px;
+letter-spacing:2px}
+.daily-heading small{font:8px Arial,
+sans-serif;
+letter-spacing:5px;
+color:#777b90}
+.daily-heading:before{content:"✦";
+color:#b99151}
+.daily-heading:after{content:"";
+height:1px;
+flex:1;
+margin-left:8px;
+background:linear-gradient(90deg,
+#b99c65,
+transparent)}
+.daily-resources{display:grid;
+grid-template-columns:repeat(3,
+minmax(0,
+1fr));
+gap:12px;
+margin-bottom:17px}
+.daily-resource{padding:1px;
+--cut:polygon(17px 0,
+calc(100% - 17px) 0,
+100% 17px,
+100% calc(100% - 17px),
+calc(100% - 17px) 100%,
+17px 100%,
+0 calc(100% - 17px),
+0 17px);
+clip-path:var(--cut);
+background:linear-gradient(135deg,
+#c3a876,
+#fff 23%,
+#fbf8f0 70%,
+#bea16b)}
+.daily-resource-inner{display:flex;
+align-items:center;
+gap:12px;
+height:141px;
+padding:15px 11px;
+clip-path:var(--cut);
+background:linear-gradient(140deg,
+#f1f1fa,
+#e2e3ef)}
+.daily-orbit{position:relative;
+display:flex;
+align-items:center;
+justify-content:center;
+width:73px;
+height:73px;
+border:1px solid #bfc1d4;
+border-radius:50%;
+box-shadow:0 0 0 7px rgba(255,
+255,
+255,
+.25),
+0 0 0 9px rgba(205,
+204,
+218,
+.5);
+flex-shrink:0}
+.daily-orbit:after{content:"";
+position:absolute;
+inset:-8px;
+border:1px dashed rgba(177,
+156,
+116,
+.65);
+border-radius:50%}
+.daily-orbit img{width:52px;
+height:52px;
+object-fit:contain;
+filter:drop-shadow(0 3px 5px rgba(45,
+50,
+70,
+.2))}
+.daily-resource-text{min-width:0}
+.daily-resource-name{font-family:"tttgbnumber",
+"SimSun",
+serif;
+font-size:20px;
+letter-spacing:1px;
+white-space:nowrap;
+margin-bottom:6px}
+.daily-number{font-family:Georgia,
+"Microsoft YaHei",
+serif;
+font-size:35px;
+font-weight:700;
+color:#b38a42;
+line-height:1.2;
+white-space:nowrap}
+.daily-number small{font-size:23px;
+color:#53566e}
+.daily-value-text{font-size:16px;
+color:#777b8e;
+line-height:1.5}
+.daily-resource-note{font-size:11px;
+line-height:1.7;
+color:#7f7f8f;
+margin-top:7px}
+.daily-radio{display:flex;
+flex-direction:column;
+gap:10px;
+margin-bottom:21px}
+.daily-row{display:flex;
+align-items:center;
+gap:18px;
+padding:13px 18px;
+border:1px solid #f6f3ed;
+border-radius:10px;
+background:linear-gradient(110deg,
+rgba(252,
+252,
+255,
+.65),
+rgba(215,
+219,
+236,
+.55))}
+.daily-row-icon{width:40px;
+height:40px;
+flex-shrink:0;
+transform:rotate(45deg);
+border:1px solid #b49b72;
+box-shadow:0 0 0 3px rgba(244,
+240,
+229,
+.7);
+background:#676b80;
+display:flex;
+align-items:center;
+justify-content:center;
+color:#f2dbb0;
+margin:2px 8px}
+.daily-row-icon svg{width:26px;
+height:26px;
+transform:rotate(-45deg)}
+.daily-row-body{flex:1;
+min-width:0}
+.daily-row-top{display:flex;
+align-items:center;
+justify-content:space-between;
+gap:15px}
+.daily-row-name{font-family:"tttgbnumber",
+"SimSun",
+serif;
+font-size:21px;
+letter-spacing:2px}
+.daily-row-top .daily-number{font-size:27px}
+.daily-row-caption{font-size:11px;
+color:#868899;
+margin-right:13px}
+.daily-bar{height:8px;
+margin-top:10px;
+border:1px solid #b9bbcd;
+box-shadow:inset 0 1px 3px rgba(74,
+75,
+100,
+.22);
+background:#adafc2;
+border-radius:10px;
+overflow:hidden}
+.daily-bar-fill{height:100%;
+border-radius:8px;
+background:repeating-linear-gradient(125deg,
+transparent 0 9px,
+rgba(255,
+255,
+255,
+.4) 10px 13px),
+linear-gradient(90deg,
+#edd391,
+#e6bd74);
+box-shadow:0 0 6px rgba(232,
+199,
+135,
+.5)}
+.daily-section-small{font-size:20px;
+margin-bottom:13px}
+.daily-weekly-grid{display:grid;
+grid-template-columns:repeat(3,
+minmax(0,
+1fr));
+gap:11px}
+.daily-task{min-width:0;
+padding:13px;
+border:1px solid #c3c3d4;
+border-radius:10px;
+background:rgba(249,
+249,
+255,
+.38)}
+.daily-task-head{display:flex;
+align-items:center;
+gap:9px;
+font-size:14px;
+font-weight:600;
+line-height:1.4;
+min-height:34px}
+.daily-task-head img{width:30px;
+height:30px;
+object-fit:contain;
+flex-shrink:0}
+.daily-task-value{display:flex;
+align-items:baseline;
+justify-content:space-between;
+gap:8px;
+margin:8px 0 0}
+.daily-task-value .daily-number{font-size:24px}
+.daily-task-value .daily-number small{font-size:17px}
+.daily-task-hint{font-size:10px;
+color:#7c8094;
+line-height:1.5;
+max-width:105px}
+.daily-task .daily-value-text{font-size:13px}
+.daily-activity{display:flex;
+align-items:center;
+justify-content:space-between;
+gap:14px;
+margin-top:15px;
+padding:12px 14px;
+border:1px solid #c0b8ca;
+border-radius:8px;
+background:rgba(235,
+231,
+243,
+.65);
+font-size:13px}
+.daily-activity-label{font-size:10px;
+letter-spacing:2px;
+color:#8e7854;
+margin-bottom:5px}
+.daily-activity-end{font-size:11px;
+color:#78778d;
+white-space:nowrap}
+.daily-empty{font-size:13px;
+color:#828498;
+padding:10px 0}
+.daily-footer{position:relative;
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:20px;
+margin:15px 29px 25px;
+padding:13px 19px;
+border:1px solid #cdb98e;
+border-radius:10px;
+color:#f4e9d2;
+background:rgba(48,
+53,
+75,
+.85);
+font-size:13px}
+.daily-footer small{font-size:10px;
+color:#ded8cf}
+`;
 
-  if (diff <= 0) {
-    return '已满';
-  }
-  const h = Math.floor(diff / 3600);
-  const m = Math.floor((diff % 3600) / 60);
-
-  if (h > 0) {
-    return `${h}小时${m}分钟`;
-  }
-
-  return `${m}分钟`;
+function available(item?: DailyWidget | null): boolean {
+  return !!item && (item.status ?? 0) === 0 && !item.value?.trim();
 }
 
-// 模拟图标的占位
-function FallbackSquare({ color, size = 'w-12 h-12' }: { color: string; size?: string }) {
+function Value({ item, level = false }: { item?: DailyWidget | null; level?: boolean }) {
+  if (!item) {
+    return <span className='daily-value-text'>未返回数据</span>;
+  }
+  if (!available(item)) {
+    return <span className='daily-value-text'>{item.value?.trim() ? item.value : '暂无数据'}</span>;
+  }
+  if (!Number.isFinite(item.cur)) {
+    return <span className='daily-value-text'>暂无数据</span>;
+  }
+  if (level) {
+    return (
+      <span className='daily-number'>
+        <small>Lv.</small>
+        {item.cur}
+      </span>
+    );
+  }
+  if (item.total <= 0 && item.cur === 0) {
+    return <span className='daily-value-text'>暂无进度</span>;
+  }
+
   return (
-    <div className={`${size} shrink-0 flex items-center justify-center bg-[#f6f6f6] border border-[#e8e8e8] rounded-lg`}>
-      <div className='w-3/5 h-3/5 rounded shadow-sm' style={{ backgroundColor: color }} />
+    <span className='daily-number'>
+      {item.cur}
+      {item.total > 0 && <small>/{item.total}</small>}
+    </span>
+  );
+}
+
+function Progress({ item }: { item?: DailyWidget | null }) {
+  if (!item || !available(item) || item.total <= 0 || !Number.isFinite(item.cur) || !Number.isFinite(item.total)) {
+    return null;
+  }
+  const percent = Math.max(0, Math.min(100, (item.cur / item.total) * 100));
+
+  return (
+    <div className='daily-bar'>
+      <div className='daily-bar-fill' style={{ width: `${percent}%` }} />
+    </div>
+  );
+}
+
+function recovery(item?: DailyWidget | null) {
+  if (!item || !available(item)) {
+    return '恢复时间未返回';
+  }
+  if (item.total > 0 && item.cur >= item.total) {
+    return '已达上限';
+  }
+  if (!item.refreshTimeStamp || item.refreshTimeStamp <= 0) {
+    return '暂无恢复倒计时';
+  }
+  const minutes = Math.ceil((item.refreshTimeStamp - Date.now() / 1000) / 60);
+
+  if (minutes <= 0) {
+    return '预计已恢复，请刷新确认';
+  }
+  const days = Math.floor(minutes / 1440);
+  const hours = Math.floor((minutes % 1440) / 60);
+  const remainder = minutes % 60;
+
+  return `距回满 ${days ? `${days}天` : ''}${hours ? `${hours}小时` : ''}${remainder}分钟`;
+}
+
+function dateTime(timestamp: number, short = false) {
+  return new Date(timestamp * 1000).toLocaleString('zh-CN', {
+    timeZone: 'Asia/Shanghai',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+    ...(short ? {} : { year: 'numeric' })
+  });
+}
+
+function LineIcon({ book = false }: { book?: boolean }) {
+  return (
+    <svg viewBox='0 0 32 32' fill='none' stroke='currentColor' strokeWidth='1.6' aria-hidden='true'>
+      {book ? (
+        <path d='M16 8 C11 5 6 5 3 6 V25 C8 23 12 24 16 27 C20 24 25 23 29 25 V6 C24 5 20 5 16 8 Z M16 8 V27' />
+      ) : (
+        <>
+          <path d='M16 9 L10 27 H22 Z M8 7 C3 12 3 18 8 23 M24 7 C29 12 29 18 24 23 M11 10 C8 13 8 17 11 20 M21 10 C24 13 24 17 21 20' />
+          <circle cx='16' cy='8' r='2.5' />
+        </>
+      )}
+    </svg>
+  );
+}
+
+function ResourceIcon({ item, color }: { item?: DailyWidget | null; color: string }) {
+  return (
+    <div className='daily-orbit'>
+      {item?.img ? (
+        <img src={item.img} alt='' />
+      ) : (
+        <svg width='45' height='45' viewBox='0 0 48 48' aria-hidden='true'>
+          <path d='M9 4 H39 L45 13 L39 44 H9 L3 35 Z' fill={color} stroke='#fff' strokeWidth='2' />
+          <path d='M9 4 L15 13 H35 L39 44 M3 35 L15 13 M35 13 L39 4' fill='none' stroke='#fff' strokeOpacity='.6' />
+        </svg>
+      )}
     </div>
   );
 }
 
 export default function StaminaCard({ data }: StaminaCardProps) {
   const { daily, base, uid, headUrl } = data;
-  const energy = daily?.energyData;
-  const storeEnergy = daily?.storeEnergyData;
-  const liveness = daily?.livenessData;
-  const bpList = (daily?.battlePassData as any[]) || [];
-
-  const eCur = energy?.cur ?? 0;
-  const eTotal = energy?.total ?? 240;
-  const eTime = energy?.refreshTimeStamp ? formatTime(energy.refreshTimeStamp) : '已满';
-
-  const sCur = storeEnergy?.cur ?? 0;
-  const sTotal = storeEnergy?.total ?? 480;
-  const sTime = storeEnergy?.refreshTimeStamp ? formatTime(storeEnergy.refreshTimeStamp) : '暂停恢复';
-
-  const lCur = liveness?.cur ?? 0;
-  const lTotal = liveness?.total ?? 100;
-
-  // 渲染底部的副本与电台内容
-  // 尽量使用源数据，如果不存在则使用参照图中的数据结构打底
-  const rows =
-    bpList.length > 0
-      ? bpList
-      : [
-          { name: '战歌重奏', cur: 0, total: 3, unit: '本周剩余收取次数', isBp: true },
-          { name: '千道门扉的异想', cur: 0, total: 0, unit: '本期异想积分 暂无数据', isBp: true },
-          { name: '先约电台', cur: 9900, total: 12000, unit: '本周经验上限', isBp: true }
-        ];
+  const resources = [
+    { item: daily.energyData, name: '结晶波片', color: '#24b6cb', note: recovery(daily.energyData) },
+    { item: daily.storeEnergyData, name: '结晶单质', color: '#56b16d', note: recovery(daily.storeEnergyData) },
+    { item: daily.livenessData, name: '活跃度', color: '#d1a25b', note: '每日活跃进度' }
+  ];
+  const battlePass = daily.battlePassData?.filter((item): item is DailyWidget => !!item) ?? [];
+  const tasks = [
+    { item: daily.weeklyData, name: '战歌重奏', hint: '剩余领奖次数' },
+    { item: daily.weeklyRougeData, name: '千道门扉的异想', hint: '本期积分' },
+    { item: daily.weeklyFrameData, name: '周度游历', hint: '本周进度' },
+    { item: daily.towerData, name: '逆境深塔', hint: '本期进度' },
+    { item: daily.slashTowerData, name: '冥歌海墟', hint: '本期进度' },
+    { item: daily.newTowerData, name: '终焉矩阵', hint: '本期进度' }
+  ].filter(task => task.item);
+  const activity = daily.activityData;
 
   return (
-    <HTML style={{ width: '720px' }}>
-      {/* 整体卡片风格参考 LoginHelpCard.tsx 的外层容器 */}
-      <div className='relative flex justify-center p-6 bg-[#f6f6f6]' style={{ fontFamily: '"tttgbnumber", system-ui, sans-serif' }}>
-        {/* 白底倒圆角大容器 */}
-        <div className='relative w-full overflow-hidden bg-white border-2 border-[#eae5d9] rounded-3xl shadow-[0_12px_32px_rgba(0,0,0,0.05)] flex flex-col'>
-          {/* 头部用户信息 */}
-          <div className='flex items-center px-8 pt-8 pb-3'>
-            {/* 头像 */}
-            <div className='relative shrink-0 w-[86px] h-[86px] bg-[#f8f5ea] rounded-full border-[3px] border-[#ecd98e] flex items-center justify-center shadow-sm overflow-hidden'>
-              {headUrl ? <img src={headUrl} className='w-full h-full object-cover' alt='avatar' /> : <FallbackSquare color='#d39c5b' size='w-12 h-12' />}
-            </div>
-            {/* 名字 & 特征码 */}
-            <div className='flex flex-col ml-5 justify-center'>
-              <span className='text-[28px] font-bold text-[#3d3833] tracking-wide'>{base.name}</span>
-              <span className='text-[16px] font-medium text-[#a09d98] mt-2 tracking-wider'>特征码: {uid}</span>
-            </div>
+    <HTML style={{ width: '1000px', margin: 0 }}>
+      <style>{STYLES}</style>
+      <main className='daily-sheet'>
+        <img className='daily-background' src={BACKGROUND} alt='' />
+        <div className='daily-outline' />
+        <header className='daily-brand'>
+          <span>✦</span>鸣潮助手<small>WUTHERING WAVES ASSISTANT</small>
+        </header>
+        <div className='daily-profile'>
+          <div className='daily-avatar'>
+            {base.name?.[0] ?? '漂'}
+            {headUrl && <img src={headUrl} alt='' />}
           </div>
-
-          {/* 日常数据区域 */}
-          <div className='px-8 pt-4 pb-6'>
-            <div className='relative w-full overflow-hidden border-2 border-[#eae5d9] rounded-2xl flex flex-col'>
-              {/* 顶栏栏目 */}
-              <div className='flex items-center justify-between px-6 h-[64px] bg-gradient-to-r from-[#514d48] to-[#43403c] text-[#ecece1] shadow-sm shrink-0'>
-                <div className='flex items-center gap-3'>
-                  {/* 顶部的指尖流星状小图标标识 */}
-                  <div className='flex items-center justify-center w-[26px] h-[26px] border-[1.5px] border-[#c1b5a5] rounded-full bg-black bg-opacity-10'>
-                    <div className='w-[10px] h-[10px] border-[1.5px] border-[#c1b5a5] rounded-sm rotate-45 transform skew-x-12' />
-                  </div>
-                  <span className='text-[20px] font-bold tracking-[1.5px] drop-shadow-md text-white'>日常数据</span>
-                </div>
-              </div>
-
-              {/* 核心资源区：结晶、结晶单质、活跃度 */}
-              <div className='flex items-center justify-evenly px-5 py-8 h-[140px] bg-white'>
-                {/* 结晶波片 */}
-                <div className='flex items-start gap-3 flex-1 px-3'>
-                  <FallbackSquare color='#1fb2b7' />
-                  <div className='flex flex-col'>
-                    <div className='flex items-baseline'>
-                      <span className='text-[26px] font-bold text-[#e1bb4f]'>{eCur}</span>
-                      <span className='text-[22px] font-bold text-[#7d7975] ml-[2px]'>/{eTotal}</span>
-                    </div>
-                    <div className='text-[15px] font-medium tracking-wide text-[#9e9a94] mt-0.5'>结晶波片</div>
-                    <div className='text-[13px] font-medium tracking-wider text-[#b1aba2] mt-1.5 flex items-center'>
-                      <span className='mr-1.5 opacity-80' style={{ fontSize: '11px', transform: 'scale(1.2)' }}>
-                        ◷
-                      </span>
-                      {eTime}
-                    </div>
-                  </div>
-                </div>
-
-                <div className='w-[1.5px] h-[64px] bg-[#edeae1]' />
-
-                {/* 结晶单质 */}
-                <div className='flex items-start gap-3 flex-1 pl-7'>
-                  <FallbackSquare color='#3bae4c' />
-                  <div className='flex flex-col'>
-                    <div className='flex items-baseline'>
-                      <span className='text-[26px] font-bold text-[#e1bb4f]'>{sCur}</span>
-                      <span className='text-[22px] font-bold text-[#7d7975] ml-[2px]'>/{sTotal}</span>
-                    </div>
-                    <div className='text-[15px] font-medium tracking-wide text-[#9e9a94] mt-0.5'>结晶单质</div>
-                    <div className='text-[13px] font-medium tracking-wider text-[#b1aba2] mt-1.5 flex items-center'>
-                      <span className='mr-1.5 opacity-80' style={{ fontSize: '11px', transform: 'scale(1.2)' }}>
-                        ◷
-                      </span>
-                      {sTime}
-                    </div>
-                  </div>
-                </div>
-
-                <div className='w-[1.5px] h-[64px] bg-[#edeae1]' />
-
-                {/* 活跃度 */}
-                <div className='flex items-start gap-3 flex-1 pl-7'>
-                  <FallbackSquare color='#d39c5b' />
-                  <div className='flex flex-col'>
-                    <div className='flex items-baseline'>
-                      <span className='text-[26px] font-bold text-[#e1bb4f]'>{lCur}</span>
-                      <span className='text-[22px] font-bold text-[#7d7975] ml-[2px]'>/{lTotal}</span>
-                    </div>
-                    <div className='text-[15px] font-medium tracking-wide text-[#9e9a94] mt-0.5'>活跃度</div>
-                    <div className='h-[20px]' /> {/* 占位以保持高度一致 */}
-                  </div>
-                </div>
-              </div>
-
-              {/* 底部详细项 (战歌重奏/异想/经验等) */}
-              <div className='flex flex-col px-8 pb-7 gap-5 bg-white'>
-                {rows.map((row: any, i: number) => {
-                  const iconUrl = row.iconUrl ?? row.picUrl;
-                  const title = row.title ?? row.name ?? '未知任务';
-                  const cur = typeof row.cur !== 'undefined' ? row.cur : (row.experience ?? 0);
-                  const total = typeof row.total !== 'undefined' ? row.total : (row.experienceTotal ?? 0);
-
-                  let rightContent;
-
-                  if (title.includes('异想')) {
-                    rightContent = <span className='text-[#868686] font-medium text-[15px] tracking-wide'>本期异想积分 暂无数据</span>;
-                  } else {
-                    const desc = row.unit ?? (title.includes('战歌') ? '本周剩余收取次数' : '当前进度');
-
-                    rightContent = (
-                      <div className='flex items-baseline'>
-                        <span className='text-[#868686] font-medium text-[15px] mr-2.5 tracking-wide'>{desc}</span>
-                        <span className='text-[#e1bb4f] font-bold text-[18px] tracking-wide'>
-                          {cur}/{total}
-                        </span>
-                      </div>
-                    );
-                  }
-
-                  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-                  const isBp = title.includes('电台') || row.isBp;
-                  const pct = isBp && total > 0 ? Math.floor((cur / total) * 45) : 0;
-
-                  return (
-                    <div key={i} className='flex flex-col relative'>
-                      {/* 内部带虚线的长条行布局 */}
-                      <div className='flex items-center w-full justify-between z-10 relative bg-transparent'>
-                        {/* Left */}
-                        <div className='flex items-center gap-3 pr-4 bg-white'>
-                          {iconUrl ? (
-                            <img src={iconUrl} className='w-8 h-8 rounded shrink-0 object-contain' alt='' />
-                          ) : (
-                            <FallbackSquare color='#7a7a7a' size='w-8 h-8' />
-                          )}
-                          <span className='text-[18px] font-bold text-[#443e39] tracking-wide drop-shadow-sm'>{title}</span>
-                        </div>
-
-                        {/* Middle Dot Line Filler */}
-                        <div className='absolute w-[96%] top-1/2 left-[2%] border-b-[2.5px] border-dotted border-[#e3dcd3] -z-10 mt-[2px]' />
-
-                        {/* Right */}
-                        <div className='pl-4 bg-white'>{rightContent}</div>
-                      </div>
-
-                      {/* Optional Progress bar for Battle Pass */}
-                      {isBp && (
-                        <div className='flex w-full h-[6px] mt-3.5 gap-[2px] bg-white'>
-                          {Array.from({ length: 45 }).map((_, idx) => (
-                            <div key={idx} className={`flex-1 ${idx < pct ? 'bg-[#dba83e]' : 'bg-[#e7e1d8]'} rounded-sm`} />
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-
-          {/* 底部提示区，保持和 LoginHelpCard 一致 */}
-          <div className='px-8 pb-8 pt-1'>
-            <div className='flex items-center justify-between px-5 py-3 bg-[#faf7f2] border border-[#e1dcce] rounded-xl'>
-              <span className='text-sm font-bold text-[#8a837b]'>指令前缀 # ! / ！＃</span>
-              <span className='text-xs text-[#c2bcb2]'>Powered by alemonjs-kuro</span>
+          <div className='daily-user'>
+            <h1>{base.name}</h1>
+            <div className='daily-uid'>特征码：{uid}</div>
+            <div className='daily-levels'>
+              联觉等级 {base.level} · 索拉等级 {base.worldLevel ?? base.bigWorldLevel ?? '—'}
             </div>
           </div>
         </div>
-      </div>
+        <section className='daily-panel'>
+          <h2 className='daily-heading'>
+            日常数据<small>DAILY STATUS</small>
+          </h2>
+          <div className='daily-resources'>
+            {resources.map(resource => (
+              <div className='daily-resource' key={resource.name}>
+                <div className='daily-resource-inner'>
+                  <ResourceIcon item={resource.item} color={resource.color} />
+                  <div className='daily-resource-text'>
+                    <div className='daily-resource-name'>{resource.item?.name ?? resource.name}</div>
+                    <Value item={resource.item} />
+                    <div className='daily-resource-note'>{resource.note}</div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className='daily-radio'>
+            {battlePass.length ? (
+              battlePass.map((item, i) => {
+                const isLevel = item.name?.includes('等级') ?? false;
+
+                return (
+                  <div className='daily-row' key={i}>
+                    <div className='daily-row-icon'>
+                      <LineIcon book={!isLevel} />
+                    </div>
+                    <div className='daily-row-body'>
+                      <div className='daily-row-top'>
+                        <span className='daily-row-name'>{item.name ?? '电台进度'}</span>
+                        <div>
+                          <span className='daily-row-caption'>{isLevel ? '当前等级' : '当前进度'}</span>
+                          <Value item={item} level={isLevel} />
+                        </div>
+                      </div>
+                      {!isLevel && <Progress item={item} />}
+                    </div>
+                  </div>
+                );
+              })
+            ) : (
+              <div className='daily-empty'>电台数据暂未返回</div>
+            )}
+          </div>
+          {!!tasks.length && (
+            <>
+              <h2 className='daily-heading daily-section-small'>
+                周常与挑战<small>WEEKLY & CHALLENGES</small>
+              </h2>
+              <div className='daily-weekly-grid'>
+                {tasks.map(({ item, name, hint }) => (
+                  <article className='daily-task' key={name}>
+                    <div className='daily-task-head'>
+                      {item?.img && <img src={item.img} alt='' />}
+                      <span>{item?.name ?? name}</span>
+                    </div>
+                    <div className='daily-task-value'>
+                      <Value item={item} />
+                      <span className='daily-task-hint'>{hint}</span>
+                    </div>
+                    <Progress item={item} />
+                  </article>
+                ))}
+              </div>
+            </>
+          )}
+          {activity?.enabled && activity.title && (
+            <div className='daily-activity'>
+              <div>
+                <div className='daily-activity-label'>CURRENT EVENT · 当前活动</div>
+                {activity.title}
+              </div>
+              {!!activity.endTime && <span className='daily-activity-end'>截至 {dateTime(activity.endTime, true)}</span>}
+            </div>
+          )}
+        </section>
+        <footer className='daily-footer'>
+          <span>✦ #mc体力 · 实时便笺</span>
+          <small>{daily.serverTime ? `数据时间 ${dateTime(daily.serverTime)}` : '以库街区返回的数据为准'}</small>
+        </footer>
+      </main>
     </HTML>
   );
 }
