@@ -19,6 +19,7 @@
     "test:panel": "npm run build && node --test tests/panel.test.mjs",
     "test:stamina": "npm run build && node --test tests/stamina.test.mjs",
     "test:explore": "npm run build && node --test tests/explore.test.mjs",
+    "test:expose": "npm run build && node --test tests/expose.test.mjs",
     "lint": "eslint src --ext .ts,.tsx,.js --max-warnings=0",
     "lint:fix": "eslint src --ext .ts,.tsx,.js --fix --max-warnings=0",
     "format": "prettier --write .",

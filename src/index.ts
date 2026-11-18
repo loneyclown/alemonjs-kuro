@@ -1,10 +1,12 @@
 import router from './response/router';
 import { closeLoginServer } from './model/login-server';
+import { wavesExpose } from './model/expose';
 
 export default defineChildren({
   register() {
     return {
-      responseRouter: router
+      responseRouter: router,
+      expose: wavesExpose
     };
   },
   onCreated() {
