@@ -342,7 +342,7 @@ export default defineConfig({
         <CalabashCard
           data={{
             uid: '100000001',
-            calabash: { level: 16, baseCatch: 100, strengthenCatch: 50, catchQuality: 5, cost: 12, maxCost: 12, phantomList: [] }
+            calabash: { level: 30, baseCatch: '20%', strengthenCatch: '100%', catchQuality: 5, cost: 12, unlockCount: 0, maxCount: 748, phantomList: [] }
           }}
         />
       )
@@ -483,10 +483,16 @@ export default defineConfig({
       component: (
         <PoolCard
           data={{
-            pools: [
-              { poolName: '吟霖 限定唤取', type: 'char', dateRange: ['2026-03-20 10:00', '2026-04-10 06:00'], status: '进行中', timeLeft: '剩余11天', isActive: true, items: ['吟霖'] },
-              { poolName: '苍鳞千嶂 武器唤取', type: 'weapon', dateRange: ['2026-03-20 10:00', '2026-04-10 06:00'], status: '进行中', timeLeft: '剩余11天', isActive: true, items: ['苍鳞千嶂'] },
-              { poolName: '角色常驻唤取', type: 'char', dateRange: ['2026-03-01 06:00', '2026-12-31 06:00'], status: '进行中', timeLeft: '剩余277天', isActive: true, items: [] }
+            rounds: [
+              {
+                status: '进行中',
+                countdown: '11 天 2 小时',
+                range: ['2026-03-20 10:00', '2026-04-10 06:00'],
+                pools: [
+                  { name: '吟霖 限定唤取', type: 'char', images: [] },
+                  { name: '苍鳞千嶂 武器唤取', type: 'weapon', images: [] }
+                ]
+              }
             ]
           }}
         />

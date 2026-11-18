@@ -44,18 +44,19 @@ test('incomplete features are absent from both help and active routes', () => {
   }
 });
 
-test('compact main help and read-only sign routes match the tested feature scope', () => {
+test('compact main help and sign routes match the tested feature scope', () => {
   const routes = router.current[0].children;
   const primary = HELP_DATA.flatMap(category => category.items.map(item => item.command));
   const all = [...primary, ...MORE_HELP_DATA.flatMap(category => category.items.map(item => item.command))];
   assert.ok(primary.length <= 12);
   assert.ok(!all.includes('#mc卡片'), 'card alias must not duplicate the collection entry');
   assert.ok(all.includes('#mc数据坞'), 'deferred data issue retains its entry');
-  for (const command of ['#mc签到', '#mcqd', '!鸣潮签到', '#mc获取token', '#mc获取ck']) {
+  assert.ok(all.includes('#mc签到'));
+  for (const command of ['#mc获取token', '#mc获取ck']) {
     assert.ok(!routes.some(route => route.regular.test(command)), `disabled command is still reachable: ${command}`);
     assert.ok(!all.includes(command));
   }
-  for (const command of ['#mc签到日历', '#mc签到记录', '#mcqdjl']) {
+  for (const command of ['#mc签到', '#mcqd', '!鸣潮签到', '#mc签到日历', '#mc签到记录', '#mcqdjl']) {
     assert.ok(routeRules.sign.test(command));
   }
   assert.ok(routeRules.help.test('#mc更多帮助'));

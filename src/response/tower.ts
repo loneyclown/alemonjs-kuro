@@ -1,4 +1,5 @@
 import TowerCard from '@src/img/views/TowerCard';
+import { routeRules } from '@src/constants/kuro';
 import { apiBaseInfo, apiMineV2, apiTowerDetail, getCookie } from '@src/model/api';
 import { getActiveUid } from '@src/model/db';
 import { createEvent, EventsEnum, Format, useMessage } from 'alemonjs';
@@ -28,7 +29,7 @@ export default async (e: EventsEnum) => {
   const ckResult = await getCookie(uid, userId);
 
   if (!ckResult) {
-    md.addText('[鸣潮] 未添加Token或Token已失效\n请使用 #mc登录 手机号 验证码 重新登录');
+    md.addText('[鸣潮] 未添加Token或Token已失效\n请私聊发送 #mc登录 重新登录');
     format.addMarkdown(md);
     void message.send({ format });
 
@@ -60,6 +61,7 @@ export default async (e: EventsEnum) => {
       uid,
       base: baseResp.data,
       tower: towerResp.data,
+      zone: `${routeRules.tower.exec(event.MessageText)?.[2] ?? '深境'}区`,
       headUrl: mineResp.data?.mine?.headUrl
     }
   });

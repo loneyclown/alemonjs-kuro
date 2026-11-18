@@ -186,15 +186,47 @@ await test('credential ownership, deletion and disclosure regressions', async t 
     assert.equal(requests.length, 0);
   });
 
-  await t.test('sign execution is blocked while calendar lookup stays read-only', async () => {
+  await t.test('signing uses only the active owned account and server month, while calendar lookup stays read-only', async () => {
     await signHandler(event('#mc签到'));
-    assert.match(sent.at(-1), /签到执行暂未开放/);
+    assert.match(sent.at(-1), /请先登录/);
     assert.equal(requests.length, 0);
     await db.bindUid(alice, uid);
     await db.addToken(alice, uid, secret, 'device', bat);
+    let signed = false;
+    let ambiguous = false;
+    const submitPath = '/encourage/signIn/v2';
+    state.respond = url => {
+      if (url.endsWith(submitPath)) {
+        if (ambiguous) return { code: -999, data: null };
+        signed = true;
+        return { code: 200, data: '签到完成' };
+      }
+      if (url.endsWith('/encourage/signIn/initSignInV2')) {
+        return { code: 200, data: { isSigIn: signed, sigInNum: signed ? 1 : 0, nowServerTimes: '2026-11-18 17:00:00' } };
+      }
+      return { code: 200, data: { mine: { userId: '16795526' } } };
+    };
     await signHandler(event('#mc签到日历'));
     assert.ok(requests.some(request => request.url.endsWith('/encourage/signIn/initSignInV2')));
-    assert.ok(!requests.some(request => request.url.endsWith('/encourage/signIn/v2')));
+    assert.ok(!requests.some(request => request.url.endsWith(submitPath)));
+    await db.bindUid(bob, uid);
+    await signHandler(event('#mc签到', bob));
+    assert.ok(!requests.some(request => request.url.endsWith(submitPath)));
+    await Promise.all([signHandler(event('#mc签到')), signHandler(event('#mc签到'))]);
+    assert.ok(sent.some(message => message.includes('签到成功')));
+    await signHandler(event('#mc签到'));
+    assert.match(sent.at(-1), /今日已签到/);
+    const writes = requests.filter(request => request.url.endsWith(submitPath));
+    assert.equal(writes.length, 1);
+    const fields = new URLSearchParams(writes[0].body);
+    assert.equal(fields.get('reqMonth'), '11');
+    assert.equal(fields.get('userId'), '16795526');
+    assert.equal(fields.get('roleId'), uid);
+    signed = false;
+    ambiguous = true;
+    await signHandler(event('#mc签到'));
+    assert.match(sent.at(-1), /暂未确认签到结果/);
+    assert.equal(requests.filter(request => request.url.endsWith(submitPath)).length, 2, 'an ambiguous submission must not be retried automatically');
   });
 
   await t.test('API and binding logs do not include credentials or raw message text', async () => {

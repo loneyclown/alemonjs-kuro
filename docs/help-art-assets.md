@@ -29,7 +29,7 @@ Match the attached reference icons' hand-painted anime RPG polished gold metal a
 - 仅生成无文字插画背景；头像、标题、数值、边框、进度条和全部数据项由 HTML/CSS 渲染，资源图标优先使用接口返回的官方图片。
 - 便笺按真实接口字段展示 `energyData`、`storeEnergyData`、`livenessData`、`battlePassData`、六项周常/挑战数据及 `activityData.title/endTime`、`serverTime`。
 - `total=0` 不画进度条或显示为分母；`status!=0` 优先展示接口的 `value`，否则标记暂无数据；恢复时间缺失、倒计时过期均不能推断资源已满。删除了原先演示用的假周常/电台数值。
-- `activityData.coreRewards` 的本次数值均为 `0/0`，不解读成活动已完成；内部用户编号、服务器标识、主题颜色和下载链接不放入便笺。签到执行入口保持关闭。
+- `activityData.coreRewards` 的本次数值均为 `0/0`，不解读成活动已完成；内部用户编号、服务器标识、主题颜色和下载链接不放入便笺。
 
 ### 生成提示词
 

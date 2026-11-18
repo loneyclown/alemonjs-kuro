@@ -3,6 +3,7 @@ import { Format, ResultCode, getConfigValue, logger, useMessage, type EventsEnum
 export interface MarkdownCommand {
   label: string;
   command: string;
+  display?: string;
   /** 有待填写的参数时只填入输入框，不自动发送 */
   autoEnter?: boolean;
 }
@@ -23,7 +24,12 @@ export function createCommandMarkdown(content: CommandMarkdown) {
     markdown.addSubtitle(section.title).addNewline();
     for (const command of section.commands) {
       markdown.addText(`${command.label}：`);
-      markdown.addButton(command.command, { type: 'command', data: command.command, autoEnter: command.autoEnter ?? true, commandTarget: false });
+      markdown.addButton(command.display ?? command.command, {
+        type: 'command',
+        data: command.command,
+        autoEnter: command.autoEnter ?? true,
+        commandTarget: false
+      });
       markdown.addNewline();
     }
     markdown.addNewline();

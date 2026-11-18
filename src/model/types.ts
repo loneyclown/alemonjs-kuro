@@ -139,7 +139,7 @@ export interface ExploreResp {
 
 /** 签到日历项 */
 export interface SignItem {
-  id?: string;
+  id?: string | number;
   goodsId?: number;
   goodsName: string;
   goodsNum: number;
@@ -167,6 +167,7 @@ export interface SignInitResp {
   sigInDTOList?: SignItem[];
   eventStartTimes?: string;
   eventEndTimes?: string;
+  nowServerTimes?: string;
 }
 
 /** Kuro 角色列表（登录后） */
@@ -337,29 +338,43 @@ export interface MineV2Resp {
 
 /** 声骸坞（数据坞）响应 */
 export interface CalabashResp {
-  level: number;
-  baseCatch: number;
-  strengthenCatch: number;
-  catchQuality: number;
-  cost: number;
-  maxCost: number;
-  phantomList: {
-    phantomId: number;
-    name: string;
-    iconUrl: string;
-    cost: number;
-    skillDescription: string;
-  }[];
+  isUnlock?: boolean;
+  showToGuest?: boolean;
+  level?: number;
+  baseCatch?: string | number;
+  strengthenCatch?: string | number;
+  catchQuality?: number;
+  /** 装备 COST 上限，不是已装备 COST。 */
+  cost?: number;
+  curExp?: number;
+  target?: number;
+  /** 图鉴品质收集进度，不是声骸种数。 */
+  maxCount?: number;
+  unlockCount?: number;
+  phantomList?: (CalabashPhantom | null)[];
+}
+
+export interface CalabashPhantom {
+  phantom?: {
+    phantomId?: number;
+    name?: string;
+    iconUrl?: string;
+    cost?: number;
+  } | null;
+  /** 已收集品质档数，不等于声骸品质星级。 */
+  star?: number;
+  maxStar?: number;
 }
 
 /** 公告项 */
 export interface AnnItem {
-  id: number;
+  id: number | string;
   postId: string;
   postTitle: string;
   coverUrl: string;
   coverImages?: { url: string }[];
   publishTime: number;
+  firstPublishTime?: number;
   eventType: number;
 }
 
@@ -534,25 +549,26 @@ export interface PeriodListResp {
 /** 资源明细节点 */
 export interface PeriodNode {
   type: string;
-  num: number;
+  num?: number | null;
+  sort?: number;
 }
 
 /** 资源明细项 */
 export interface PeriodDetailItem {
   type: number;
-  total: number;
-  inc?: number;
-  detail: PeriodNode[];
+  total?: number | null;
+  inc?: string | number | null;
+  detail?: (PeriodNode | null)[] | null;
   copyWriting?: string;
 }
 
 /** 资源统计详情 */
 export interface PeriodDetailResp {
-  totalCoin?: number;
-  totalStar?: number;
-  coinList: PeriodNode[];
-  starList: PeriodNode[];
-  itemList: PeriodDetailItem[];
+  totalCoin?: number | null;
+  totalStar?: number | null;
+  coinList?: (PeriodNode | null)[] | null;
+  starList?: (PeriodNode | null)[] | null;
+  itemList?: (PeriodDetailItem | null)[] | null;
   copyWriting?: string;
 }
 

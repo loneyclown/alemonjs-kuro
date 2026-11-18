@@ -43,7 +43,7 @@ export const HELP_DATA: HelpCategory[] = [
       { rule: 'chardetail', name: '角色面板', command: '#mc查询 今汐', input: '#mc查询 ', icon: ICON_PANEL },
       { rule: 'charlist', name: '角色练度', command: '#mc练度', icon: COMMAND_ICONS, sprite: '11.1% 11.1%' },
       { rule: 'explore', name: '探索进度', command: '#mc探索度', icon: ICON_EXPLORE },
-      { rule: 'tower', name: '逆境深塔', command: '#mc深塔', icon: ICON_TOWER },
+      { rule: 'tower', name: '深塔 · 深境区', command: '#mc深塔', icon: ICON_TOWER },
       { rule: 'period', name: '资源月报', command: '#mc星声', icon: ICON_PERIOD }
     ]
   },
@@ -74,11 +74,29 @@ export const MORE_HELP_DATA: HelpCategory[] = [
     title: '补充指令',
     items: [
       { rule: 'calabash', name: '数据坞', command: '#mc数据坞', icon: ICON_CALABASH },
+      { rule: 'sign', name: '每日签到', command: '#mc签到', icon: ICON_SIGN },
       { rule: 'token', name: '添加凭据', command: '#mc添加token <Token>,<DID>', input: '#mc添加token ', icon: ICON_ADD_TOKEN, private: true },
       { rule: 'token', name: '删除凭据', command: '#mc删除token 123456789', input: '#mc删除token ', icon: ICON_DEL_TOKEN, private: true }
     ]
+  },
+  {
+    title: '分区与详情',
+    items: [
+      { rule: 'tower', name: '深塔 · 超载区', command: '#mc深塔 超载区', icon: ICON_TOWER },
+      { rule: 'tower', name: '深塔 · 实验区', command: '#mc深塔 实验区', icon: ICON_TOWER },
+      { rule: 'tower', name: '深塔 · 稳定区', command: '#mc深塔 稳定区', icon: ICON_TOWER },
+      { rule: 'period', name: '历史月报（月份）', command: '#mc星声 10月', input: '#mc星声 ', icon: ICON_PERIOD },
+      { rule: 'calabash', name: '数据坞（页码）', command: '#mc数据坞 2', input: '#mc数据坞 ', icon: ICON_CALABASH },
+      { rule: 'announce', name: '活动速递', command: '#mc公告 活动', icon: COMMAND_ICONS, sprite: '88.9% 11.1%' },
+      { rule: 'announce', name: '游戏资讯', command: '#mc公告 资讯', icon: COMMAND_ICONS, sprite: '88.9% 11.1%' },
+      { rule: 'announce', name: '公告原文（编号）', command: '#mc公告 1', input: '#mc公告 ', icon: COMMAND_ICONS, sprite: '88.9% 11.1%' },
+      { rule: 'announce', name: '活动原文（编号）', command: '#mc公告 活动 1', input: '#mc公告 活动 ', icon: COMMAND_ICONS, sprite: '88.9% 11.1%' },
+      { rule: 'announce', name: '资讯原文（编号）', command: '#mc公告 资讯 1', input: '#mc公告 资讯 ', icon: COMMAND_ICONS, sprite: '88.9% 11.1%' }
+    ]
   }
 ];
+
+export const MORE_HELP_NOTES = ['原文编号取自同分类最近一次查询，10 分钟内有效。', '历史月报可填 10月 或 202610。示例 UID 请换成自己的 9 位特征码。'];
 
 const STYLES = `
 .help-sheet{position:relative;
@@ -96,6 +114,8 @@ inset:0;
 width:100%;
 height:100%;
 object-fit:fill}
+.help-sheet.more{height:auto;min-height:940px;padding-bottom:32px}
+.help-sheet.more .help-panel{height:auto}
 .help-header{position:relative;
 height:208px;
 padding:22px 46px;
@@ -435,7 +455,7 @@ export default function WuwaHelp({ more = false }: { more?: boolean }) {
               {!more && <code>#mc更多帮助</code>}
             </div>
           </div>
-          <div className='help-footer-note'>{more ? '示例 UID 请替换为自己的 9 位特征码。' : '群内先 @机器人，示例：#mc体力'}</div>
+          <div className='help-footer-note'>{more ? MORE_HELP_NOTES.map(note => <div key={note}>{note}</div>) : '群内先 @机器人，示例：#mc体力'}</div>
         </footer>
       </main>
     </HTML>

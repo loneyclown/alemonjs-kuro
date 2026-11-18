@@ -1,6 +1,8 @@
 import PeriodCard from '@src/img/views/PeriodCard';
+import { routeRules } from '@src/constants/kuro';
 import { apiPeriodDetail, apiPeriodList, getCookie } from '@src/model/api';
 import { getActiveUid } from '@src/model/db';
+import { selectMonth } from '@src/model/period';
 import { createEvent, EventsEnum, Format, useMessage } from 'alemonjs';
 import { renderComponentIsHtmlToBuffer } from 'jsxp';
 
@@ -28,7 +30,7 @@ export default async (e: EventsEnum) => {
   const ckResult = await getCookie(uid, userId);
 
   if (!ckResult) {
-    md.addText('[鸣潮] 未添加Token或Token已失效\n请使用 #mc登录 手机号 验证码 重新登录');
+    md.addText('[鸣潮] 未添加Token或Token已失效\n请私聊发送 #mc登录 重新登录');
     format.addMarkdown(md);
     void message.send({ format });
 
@@ -48,19 +50,25 @@ export default async (e: EventsEnum) => {
     return;
   }
 
-  // 默认查询本月
   const months = listResp.data.months ?? [];
-  const latestMonth = months.length > 0 ? months[0] : null;
+  const query = routeRules.period.exec(event.MessageText)?.[2]?.trim() ?? '';
+  const selected = selectMonth(months, query);
 
-  if (!latestMonth) {
-    md.addText('[鸣潮] 暂无可用的资源统计数据');
+  if (!selected) {
+    const latest = selectMonth(months);
+    const available = months
+      .filter(month => month && Number.isSafeInteger(month.index))
+      .map(month => `${month.title}（${month.index}）`)
+      .join('、');
+
+    md.addText(available && latest ? `[鸣潮] 未找到对应月报，可用月份：${available}\n例如：#mc星声 ${latest.index}` : '[鸣潮] 暂无可用的资源统计数据');
     format.addMarkdown(md);
     void message.send({ format });
 
     return;
   }
 
-  const detailResp = await apiPeriodDetail(uid, cookie, userId, 'month', latestMonth.index);
+  const detailResp = await apiPeriodDetail(uid, cookie, userId, 'month', selected.index);
 
   if (!detailResp.success || !detailResp.data) {
     md.addText(`[鸣潮] 资源统计详情获取失败: ${detailResp.msg || '未知错误'}`);
@@ -74,7 +82,9 @@ export default async (e: EventsEnum) => {
     data: {
       uid,
       periodType: 'month',
-      periodTitle: latestMonth.title || `月报 #${latestMonth.index}`,
+      periodTitle: selected.title || `月报 #${selected.index}`,
+      periodIndex: selected.index,
+      availableMonths: months,
       detail: detailResp.data
     }
   });

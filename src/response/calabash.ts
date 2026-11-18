@@ -28,7 +28,7 @@ export default async (e: EventsEnum) => {
   const ckResult = await getCookie(uid, userId);
 
   if (!ckResult) {
-    md.addText('[鸣潮] 未添加Token或Token已失效\n请使用 #mc登录 手机号 验证码 重新登录');
+    md.addText('[鸣潮] 未添加Token或Token已失效\n请私聊发送 #mc登录 重新登录');
     format.addMarkdown(md);
     void message.send({ format });
 
@@ -48,7 +48,7 @@ export default async (e: EventsEnum) => {
   }
 
   const img = await renderComponentIsHtmlToBuffer(CalabashCard, {
-    data: { uid, calabash: resp.data }
+    data: { uid, calabash: resp.data, page: Number(event.MessageText.trim().match(/\s+(\d+)$/)?.[1] ?? 1) }
   });
 
   if (typeof img === 'boolean') {

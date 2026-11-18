@@ -1,4 +1,4 @@
-import kuroHelp, { HELP_DATA, MORE_HELP_DATA } from '@src/img/views/Help';
+import kuroHelp, { HELP_DATA, MORE_HELP_DATA, MORE_HELP_NOTES } from '@src/img/views/Help';
 import { trySendCommandMarkdown } from '@src/model/markdown';
 import { createEvent, EventsEnum, Format, useMessage } from 'alemonjs';
 import { renderComponentIsHtmlToBuffer } from 'jsxp';
@@ -22,6 +22,7 @@ export default async (e: EventsEnum) => {
         commands: category.items.map(item => ({
           label: `${item.name}${item.private ? '（私聊）' : ''}`,
           command: item.input ?? item.command,
+          display: item.private ? undefined : item.command,
           autoEnter: item.input === undefined && (!item.private || isPrivate)
         }))
       })),
@@ -29,7 +30,9 @@ export default async (e: EventsEnum) => {
         { label: '私聊登录', command: '#mc登录', autoEnter: isPrivate },
         { label: more ? '返回常用帮助' : '更多指令', command: more ? '#mc帮助' : '#mc更多帮助' }
       ],
-      note: '点击指令可执行或填入输入框；带参数的指令请补齐后发送。验证码与Token只在私聊提交。'
+      note: more
+        ? ['带参数的指令会填入输入框，补齐后发送。凭据请在私聊提交。', ...MORE_HELP_NOTES].join('\n')
+        : '点击指令可执行或填入输入框。进阶用法见更多指令。'
     })
   ) {
     return;

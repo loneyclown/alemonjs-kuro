@@ -324,16 +324,18 @@ export async function apiSignInit(uid: string, token: string, userId: string) {
 }
 
 /** 执行签到 */
-export async function apiSignIn(uid: string, token: string, userId: string) {
+export async function apiSignIn(uid: string, token: string, owner: string, reqMonth: string, communityId: string) {
   const headers = getBaseHeaders();
-  const uh = await getUserHeaders(token, uid, userId, true);
+  const uh = await getUserHeaders(token, uid, owner, true);
 
   Object.assign(headers, uh);
 
   return kuroPost(KURO_API.SIGN_IN, headers, {
     gameId: WAVES_GAME_ID,
     serverId: getServerId(uid),
-    roleId: uid
+    roleId: uid,
+    userId: communityId,
+    reqMonth
   });
 }
 

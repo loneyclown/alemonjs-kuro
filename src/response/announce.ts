@@ -1,6 +1,8 @@
 import AnnCard from '@src/img/views/AnnCard';
+import { routeRules } from '@src/constants/kuro';
 import { apiAnnList } from '@src/model/api';
-import { createEvent, EventsEnum, Format, useMessage } from 'alemonjs';
+import { ANN_CATEGORIES, annPostUrl, getAnnList, parseAnnQuery, rememberAnnList, sortedAnnouncements } from '@src/model/announcements';
+import { conversationIdentity, createEvent, type EventsEnum, Format, useMessage } from 'alemonjs';
 import { renderComponentIsHtmlToBuffer } from 'jsxp';
 
 export default async (e: EventsEnum) => {
@@ -9,37 +11,56 @@ export default async (e: EventsEnum) => {
     selects: ['private.message.create', 'message.create', 'interaction.create', 'private.interaction.create']
   });
   const [message] = useMessage(event);
+  const sendText = (text: string) => message.send({ format: Format.create().addText(text) });
+  const query = parseAnnQuery(routeRules.announce.exec(event.MessageText)?.[2] ?? '');
 
-  const format = Format.create();
-  const md = Format.createMarkdown();
+  if (!query) {
+    await sendText('[鸣潮] 用法：#mc公告、#mc公告 活动、#mc公告 资讯\n查看原文：先查询列表，再发送 #mc公告 1 或 #mc公告 活动 1');
 
-  // 同时拉活动/资讯/公告三种
-  const [actResp, infoResp, newsResp] = await Promise.all([apiAnnList('1', 6), apiAnnList('2', 6), apiAnnList('3', 6)]);
+    return;
+  }
+  const meta = ANN_CATEGORIES[query.category];
+  const scope = `${conversationIdentity(event)}:${event.UserKey}`;
 
-  const activities = actResp.success && actResp.data ? actResp.data.list : [];
-  const infos = infoResp.success && infoResp.data ? infoResp.data.list : [];
-  const notices = newsResp.success && newsResp.data ? newsResp.data.list : [];
+  if (query.index !== undefined) {
+    const items = getAnnList(scope, query.category);
 
-  if (activities.length === 0 && infos.length === 0 && notices.length === 0) {
-    md.addText('[鸣潮] 暂无公告信息');
-    format.addMarkdown(md);
-    void message.send({ format });
+    if (!items) {
+      await sendText(`[鸣潮] 列表尚未查询或已过期，请先发送 ${meta.command}，再按图中编号查看原文（编号保留10分钟）。`);
+
+      return;
+    }
+    const selected = items[query.index - 1];
+
+    if (!selected) {
+      await sendText(`[鸣潮] 没有这个编号，请按最近一次 ${meta.command} 图片中的编号查询。`);
+
+      return;
+    }
+    const url = annPostUrl(selected.postId);
+
+    await sendText(url ? `[鸣潮] ${selected.postTitle}\n${url}` : '[鸣潮] 这条内容未返回有效的原文地址，请在库街区查看。');
 
     return;
   }
 
-  const img = await renderComponentIsHtmlToBuffer(AnnCard, {
-    data: { activities, infos, notices }
+  const response = await apiAnnList(meta.eventType, 6);
+
+  if (!response.success || !Array.isArray(response.data?.list)) {
+    await sendText(`[鸣潮] ${meta.title}获取失败，请稍后重试。`);
+
+    return;
+  }
+  const items = sortedAnnouncements(response.data.list);
+  const image = await renderComponentIsHtmlToBuffer(AnnCard, {
+    data: { activities: [], infos: [], notices: [], [meta.key]: items, category: query.category }
   });
 
-  if (typeof img === 'boolean') {
-    md.addText('[鸣潮] 公告卡片渲染失败');
-    format.addMarkdown(md);
-    void message.send({ format });
+  if (typeof image === 'boolean') {
+    await sendText('[鸣潮] 公告卡片渲染失败，请稍后重试。');
 
     return;
   }
-
-  format.addImage(img);
-  void message.send({ format });
+  await message.send({ format: Format.create().addImage(image) });
+  rememberAnnList(scope, query.category, items);
 };

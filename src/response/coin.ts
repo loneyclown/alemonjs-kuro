@@ -28,7 +28,7 @@ export default async (e: EventsEnum) => {
   const ckResult = await getCookie(uid, userId);
 
   if (!ckResult) {
-    md.addText('[鸣潮] 未添加Token或Token已失效\n请使用 #mc登录 手机号 验证码 重新登录');
+    md.addText('[鸣潮] 未添加Token或Token已失效\n请私聊发送 #mc登录 重新登录');
     format.addMarkdown(md);
     void message.send({ format });
 
@@ -39,8 +39,8 @@ export default async (e: EventsEnum) => {
 
   const resp = await apiMineV2(cookie);
 
-  if (!resp.success || !resp.data) {
-    md.addText(`[鸣潮] 库洛币查询失败: ${resp.msg || '未知错误'}`);
+  if (!resp.success || !resp.data?.mine) {
+    md.addText(`[鸣潮] 库洛币查询失败: ${resp.success ? '未返回库街区账号资料' : resp.msg || '未知错误'}`);
     format.addMarkdown(md);
     void message.send({ format });
 
