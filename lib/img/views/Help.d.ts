@@ -15,6 +15,7 @@ interface HelpCategory {
 }
 export declare const HELP_DATA: HelpCategory[];
 export declare const MORE_HELP_DATA: HelpCategory[];
+export declare const MORE_HELP_NOTES: string[];
 export default function WuwaHelp({ more }: {
     more?: boolean;
 }): React.JSX.Element;

@@ -14,7 +14,7 @@ export declare function apiBaseInfo(uid: string, token: string, userId: string):
 export declare function apiRoleData(uid: string, token: string, userId: string): Promise<KuroApiResp<RoleListResp>>;
 export declare function apiExploreData(uid: string, token: string, userId: string): Promise<KuroApiResp<ExploreResp>>;
 export declare function apiSignInit(uid: string, token: string, userId: string): Promise<KuroApiResp<SignInitResp>>;
-export declare function apiSignIn(uid: string, token: string, userId: string): Promise<KuroApiResp<unknown>>;
+export declare function apiSignIn(uid: string, token: string, owner: string, reqMonth: string, communityId: string): Promise<KuroApiResp<unknown>>;
 export declare function apiTowerDetail(uid: string, token: string, userId: string): Promise<KuroApiResp<TowerResp>>;
 export declare function apiChallengeDetail(uid: string, token: string, userId: string): Promise<KuroApiResp<TowerResp>>;
 export declare function apiSlashDetail(uid: string, token: string, userId: string): Promise<KuroApiResp<TowerResp>>;

@@ -1,6 +1,6 @@
 {
   "name": "alemonjs-kuro",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "description": "mhy-mod",
   "author": "ningmengchongshui",
   "type": "module",
@@ -18,6 +18,12 @@
     "test:panel": "npm run build && node --test tests/panel.test.mjs",
     "test:stamina": "npm run build && node --test tests/stamina.test.mjs",
     "test:explore": "npm run build && node --test tests/explore.test.mjs",
+    "test:calabash": "npm run build && node --test tests/calabash.test.mjs",
+    "test:tower": "npm run build && node --test tests/tower.test.mjs",
+    "test:period": "npm run build && node --test tests/period.test.mjs",
+    "test:coin": "npm run build && node --test tests/coin.test.mjs",
+    "test:sign": "npm run build && node --test tests/sign.test.mjs",
+    "test:announce": "npm run build && node --test tests/announce.test.mjs",
     "test:expose": "npm run build && node --test tests/expose.test.mjs",
     "lint": "eslint src --ext .ts,.tsx,.js --max-warnings=0",
     "lint:fix": "eslint src --ext .ts,.tsx,.js --fix --max-warnings=0",
@@ -59,5 +65,5 @@
     "type": "git",
     "url": "https://github.com/xiuxianjs/alemonjs-kuro.git"
   },
-  "gitHead": "d3e329005a14ecb9efe431b3cb847fcd0b51395d"
+  "gitHead": "ba61a67a3834a5147d6c8c4772396a68ebf87c88"
 }

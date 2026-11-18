@@ -104,7 +104,7 @@ export interface ExploreResp {
     exploreList?: (ExploreArea | null)[] | null;
 }
 export interface SignItem {
-    id?: string;
+    id?: string | number;
     goodsId?: number;
     goodsName: string;
     goodsNum: number;
@@ -124,6 +124,7 @@ export interface SignInitResp {
     sigInDTOList?: SignItem[];
     eventStartTimes?: string;
     eventEndTimes?: string;
+    nowServerTimes?: string;
 }
 export interface KuroRole {
     roleId: string;
@@ -258,22 +259,31 @@ export interface MineV2Resp {
     mine: MineInfo;
 }
 export interface CalabashResp {
-    level: number;
-    baseCatch: number;
-    strengthenCatch: number;
-    catchQuality: number;
-    cost: number;
-    maxCost: number;
-    phantomList: {
-        phantomId: number;
-        name: string;
-        iconUrl: string;
-        cost: number;
-        skillDescription: string;
-    }[];
+    isUnlock?: boolean;
+    showToGuest?: boolean;
+    level?: number;
+    baseCatch?: string | number;
+    strengthenCatch?: string | number;
+    catchQuality?: number;
+    cost?: number;
+    curExp?: number;
+    target?: number;
+    maxCount?: number;
+    unlockCount?: number;
+    phantomList?: (CalabashPhantom | null)[];
+}
+export interface CalabashPhantom {
+    phantom?: {
+        phantomId?: number;
+        name?: string;
+        iconUrl?: string;
+        cost?: number;
+    } | null;
+    star?: number;
+    maxStar?: number;
 }
 export interface AnnItem {
-    id: number;
+    id: number | string;
     postId: string;
     postTitle: string;
     coverUrl: string;
@@ -281,6 +291,7 @@ export interface AnnItem {
         url: string;
     }[];
     publishTime: number;
+    firstPublishTime?: number;
     eventType: number;
 }
 export interface AnnListResp {
@@ -421,21 +432,22 @@ export interface PeriodListResp {
 }
 export interface PeriodNode {
     type: string;
-    num: number;
+    num?: number | null;
+    sort?: number;
 }
 export interface PeriodDetailItem {
     type: number;
-    total: number;
-    inc?: number;
-    detail: PeriodNode[];
+    total?: number | null;
+    inc?: string | number | null;
+    detail?: (PeriodNode | null)[] | null;
     copyWriting?: string;
 }
 export interface PeriodDetailResp {
-    totalCoin?: number;
-    totalStar?: number;
-    coinList: PeriodNode[];
-    starList: PeriodNode[];
-    itemList: PeriodDetailItem[];
+    totalCoin?: number | null;
+    totalStar?: number | null;
+    coinList?: (PeriodNode | null)[] | null;
+    starList?: (PeriodNode | null)[] | null;
+    itemList?: (PeriodDetailItem | null)[] | null;
     copyWriting?: string;
 }
 export interface OnlineRole {

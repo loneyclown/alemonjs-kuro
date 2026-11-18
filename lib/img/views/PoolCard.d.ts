@@ -1,17 +1,7 @@
+import type { PoolRound } from '@src/model/pools';
 import React from 'react';
-interface PoolInfo {
-    poolName: string;
-    type: 'char' | 'weapon';
-    dateRange?: [string, string];
-    status: string;
-    timeLeft: string;
-    isActive: boolean;
-    items: string[];
-}
-interface PoolCardProps {
+export default function PoolCard({ data }: {
     data: {
-        pools: PoolInfo[];
+        rounds: PoolRound[];
     };
-}
-export default function PoolCard({ data }: PoolCardProps): React.JSX.Element;
-export {};
+}): React.JSX.Element;

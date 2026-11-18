@@ -2,6 +2,7 @@ import { Format, type EventsEnum } from 'alemonjs';
 export interface MarkdownCommand {
     label: string;
     command: string;
+    display?: string;
     autoEnter?: boolean;
 }
 export interface CommandMarkdown {
