@@ -30,6 +30,8 @@ export default async (e: EventsEnum) => {
   try {
     if (!text) {
       const loginUrl = await createLoginSession(userId, sendText);
+
+      await sendText(`[鸣潮] 打开专属登录页，完成滑块和短信验证。\n${loginUrl}\n链接3分钟有效，请勿转发。正在生成二维码，也可直接打开链接登录。`);
       const qrDataUrl = await generateQrDataUrl(loginUrl);
       const img = await renderComponentIsHtmlToBuffer(LoginHelpCard, { data: { qrDataUrl, loginUrl } }).catch(() => false);
       const format = Format.create();
@@ -38,8 +40,6 @@ export default async (e: EventsEnum) => {
         format.addImage(img);
         await message.send({ format });
       }
-
-      await sendText(`[鸣潮] 扫码或打开专属登录页，完成滑块和短信验证。\n${loginUrl}\n链接3分钟有效，请勿转发；手机扫码需能访问这台电脑。`);
 
       return;
     }

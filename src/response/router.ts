@@ -1,5 +1,6 @@
 import { routeRules } from '@src/constants/kuro';
 import { defineRouter, lazy } from 'alemonjs';
+import { processingLazy } from '@src/model/processing';
 
 export default defineRouter([
   {
@@ -8,39 +9,39 @@ export default defineRouter([
     children: [
       {
         regular: routeRules.help,
-        handler: lazy(() => import('@src/response/help'))
+        handler: processingLazy(() => import('@src/response/help'))
       },
       {
         regular: routeRules.login,
-        handler: lazy(() => import('@src/response/login'))
+        handler: processingLazy(() => import('@src/response/login'), '正在准备登录，请稍候…')
       },
       {
         regular: routeRules.token,
-        handler: lazy(() => import('@src/response/token'))
+        handler: processingLazy(() => import('@src/response/token'))
       },
       {
         regular: routeRules.bind,
-        handler: lazy(() => import('@src/response/user'))
+        handler: processingLazy(() => import('@src/response/user'))
       },
       {
         regular: routeRules.stamina,
-        handler: lazy(() => import('@src/response/stamina'))
+        handler: processingLazy(() => import('@src/response/stamina'))
       },
       {
         regular: routeRules.chardetail,
-        handler: lazy(() => import('@src/response/chardetail'))
+        handler: processingLazy(() => import('@src/response/chardetail'))
       },
       {
         regular: routeRules.explore,
-        handler: lazy(() => import('@src/response/explore'))
+        handler: processingLazy(() => import('@src/response/explore'))
       },
       {
         regular: routeRules.sign,
-        handler: lazy(() => import('@src/response/sign'))
+        handler: processingLazy(() => import('@src/response/sign'))
       },
       {
         regular: routeRules.tower,
-        handler: lazy(() => import('@src/response/tower'))
+        handler: processingLazy(() => import('@src/response/tower'))
       },
       // 暂停：全息战略尚未完成独立数据结构适配。
       // {
@@ -59,15 +60,15 @@ export default defineRouter([
       // },
       {
         regular: routeRules.charlist,
-        handler: lazy(() => import('@src/response/charlist'))
+        handler: processingLazy(() => import('@src/response/charlist'))
       },
       {
         regular: routeRules.coin,
-        handler: lazy(() => import('@src/response/coin'))
+        handler: processingLazy(() => import('@src/response/coin'))
       },
       {
         regular: routeRules.announce,
-        handler: lazy(() => import('@src/response/announce'))
+        handler: processingLazy(() => import('@src/response/announce'))
       },
       // 暂停：兑换码仅靠网页正则猜测，不能保证有效。
       // {
@@ -86,11 +87,11 @@ export default defineRouter([
       // },
       {
         regular: routeRules.calabash,
-        handler: lazy(() => import('@src/response/calabash'))
+        handler: processingLazy(() => import('@src/response/calabash'))
       },
       {
         regular: routeRules.period,
-        handler: lazy(() => import('@src/response/period'))
+        handler: processingLazy(() => import('@src/response/period'))
       },
       // 暂停：活动周期由固定日期推算，尚未对齐实时数据。
       // {
@@ -99,11 +100,11 @@ export default defineRouter([
       // },
       {
         regular: routeRules.pool,
-        handler: lazy(() => import('@src/response/pool'))
+        handler: processingLazy(() => import('@src/response/pool'))
       },
       {
         regular: routeRules.refresh,
-        handler: lazy(() => import('@src/response/refresh'))
+        handler: processingLazy(() => import('@src/response/refresh'))
       }
       // 暂停：培养目标和技能起点写死，尚未支持实际养成参数。
       // {

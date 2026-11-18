@@ -49,7 +49,7 @@ const stubs = {
     export const useMessage = () => [{ send: async ({ format }) => {
       globalThis.__kuroSecurityTest.sent.push(format.text);
     } }];`,
-  jsxp: 'export const renderComponentIsHtmlToBuffer = async () => false;',
+  jsxp: 'export const renderComponentIsHtmlToBuffer = async () => { globalThis.__kuroSecurityTest.onRender?.(); return false; };',
   signCard: 'export default function Card() {}',
   loginCard: 'export default function Card() {} export const generateQrDataUrl = async () => "";'
 };
@@ -122,6 +122,7 @@ await test('credential ownership, deletion and disclosure regressions', async t 
     state.redis = redis;
     state.onRequest = null;
     state.respond = null;
+    state.onRender = null;
     state.config = { 'alemonjs-kuro': { login: { port: 0, host: '127.0.0.1', publicUrl: 'http://127.0.0.1:0' } } };
   });
 
@@ -267,6 +268,37 @@ await test('credential ownership, deletion and disclosure regressions', async t 
     assert.doesNotThrow(() => new Script(script));
     assert.ok(!LOGIN_PAGE.includes(secret));
     assert.ok(LOGIN_PAGE.includes('getValidate'));
+  });
+
+  await t.test('missing publicUrl refuses to issue an inaccessible container login link', async () => {
+    delete state.config['alemonjs-kuro'].login.publicUrl;
+    await assert.rejects(
+      createLoginSession(alice, async () => {}),
+      /publicUrl.*公网/
+    );
+    state.config['alemonjs-kuro'].login.publicUrl = 'not-a-url';
+    await assert.rejects(
+      createLoginSession(alice, async () => {}),
+      /完整的 http\/https/
+    );
+  });
+
+  await t.test('private login sends its link before rendering the QR image', async () => {
+    let rendered = false;
+    state.onRender = () => {
+      rendered = true;
+      assert.equal(sent.length, 1);
+      assert.match(sent[0], /http:\/\/127\.0\.0\.1:\d+\/kuro\/login\/[a-f0-9]{48}/);
+    };
+    await loginHandler(event('#mc登录'));
+    assert.equal(rendered, true);
+    assert.equal(sent.length, 1, 'a failed image must not hide or duplicate the working login link');
+  });
+
+  await t.test('explicit public origin is preserved instead of using a local interface', async () => {
+    state.config['alemonjs-kuro'].login.publicUrl = 'https://login.example.com';
+    const url = await createLoginSession(alice, async () => {});
+    assert.equal(new URL(url).origin, 'https://login.example.com');
   });
 
   await t.test('real HTTP login saves credentials to the session owner and activates the UID', async () => {

@@ -18,10 +18,14 @@ alemonjs-kuro:
   markdown:
     enabled: false # true：可点击 Markdown 帮助；false：图片帮助
   login:
+    # 安装插件后，按机器人运行环境配置登录页的访问地址。
+    # 本机 / 云服务器 / Docker / 域名详细步骤见 README「登录页部署」。
     host: '0.0.0.0'
     port: 8130
-    # 默认自动选择本机局域网地址。手机无法访问时，指定可访问的 IP 或域名：
-    # publicUrl: 'http://192.168.1.100:8130'
+    # 必填：用户浏览器能访问的地址，不能填写 Docker 容器内网 IP。
+    # 云服务器示例：https://login.example.com（反向代理到 8130）
+    # 直连公网 IP 时还需映射 Docker 端口并放行服务器安全组/防火墙。
+    publicUrl: 'http://192.168.1.100:8130' # 局域网调试示例，部署时改为实际地址
 
 # Markdown 帮助需要 QQ 自定义 Markdown 权限，并将 markdownToText 改为 false。
 # 已有宿主未自动启用插件时，再合并以下配置：
