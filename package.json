@@ -1,6 +1,6 @@
 {
   "name": "alemonjs-kuro",
-  "version": "0.0.17",
+  "version": "0.0.18",
   "description": "mhy-mod",
   "author": "ningmengchongshui",
   "type": "module",
@@ -8,6 +8,47 @@
   "exports": {
     ".": "./lib/index.js",
     "./package": "./package.json"
+  },
+  "alemonjs": {
+    "config": [
+      {
+        "name": "login",
+        "type": "object",
+        "description": "网页登录服务（用于 #mc登录）",
+        "config": [
+          {
+            "name": "publicUrl",
+            "type": "string",
+            "description": "使用网页登录时填写浏览器可访问的 HTTP(S) 地址。只填写协议、主机和可选端口。"
+          },
+          {
+            "name": "host",
+            "type": "string",
+            "default": "0.0.0.0",
+            "description": "登录服务监听地址。仅在本机打开登录页时可填 127.0.0.1。"
+          },
+          {
+            "name": "port",
+            "type": "number",
+            "default": 8130,
+            "description": "登录服务监听端口。填写 0 时由系统分配端口。"
+          }
+        ]
+      },
+      {
+        "name": "markdown",
+        "type": "object",
+        "description": "QQ 可点击 Markdown 帮助",
+        "config": [
+          {
+            "name": "enabled",
+            "type": "boolean",
+            "default": false,
+            "description": "关闭时发送图片帮助。开启需要 QQ 自定义 Markdown 权限，并在 QQ 平台配置中关闭 markdownToText。"
+          }
+        ]
+      }
+    ]
   },
   "scripts": {
     "app": "node index.js",
@@ -65,5 +106,5 @@
     "type": "git",
     "url": "https://github.com/xiuxianjs/alemonjs-kuro.git"
   },
-  "gitHead": "ba61a67a3834a5147d6c8c4772396a68ebf87c88"
+  "gitHead": "79961ead432be2f186b3966a8299c4a5f1c2a899"
 }
