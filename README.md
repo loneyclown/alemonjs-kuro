@@ -161,6 +161,59 @@ qq-bot:
 
 Markdown 发送失败时回退图片；其他平台继续使用图片帮助。将 `enabled` 改回 `false` 即恢复图片模式。
 
+## Expose 插件能力
+
+插件启用后会自动注册 AlemonJS Expose，供同一运行实例中的社区插件发现和调用，无需指定调用插件或配置白名单。
+
+- 协议：`kuro.waves`
+- 默认提供者：`alemonjs-kuro`（以宿主实际加载的应用名为准）
+- 契约版本：`1`
+- 展示名称：`鸣潮助手`；入门指令：`#mc帮助`
+
+| 动作          | 输入                      | 返回内容                               |
+| ------------- | ------------------------- | -------------------------------------- |
+| `help`        | `null`                    | 当前开放指令及私聊标记；无需用户上下文 |
+| `accounts`    | `{}`                      | 当前聊天用户的绑定账号列表与激活账号   |
+| `base`        | `{}`                      | 当前账号基础信息                       |
+| `daily`       | `{}`                      | 资源、电台、周常与活动摘要             |
+| `roles`       | `{}`                      | 当前账号角色列表与练度                 |
+| `character`   | `{ "character": "今汐" }` | 指定角色属性、武器、技能和声骸词条     |
+| `exploration` | `{}`                      | 地区、子区域及收集项目进度             |
+| `tower`       | `{}`                      | 逆境深塔难度、区域与楼层星数           |
+
+`base`、`daily`、`roles`、`character`、`exploration`、`tower` 可额外传入 9 位字符串 `uid`，但仅能查询当前用户本人已绑定且拥有凭据的账号；不传则使用当前激活账号。`accounts` 的 `activeUid` 为空字符串时表示没有可用的激活账号。
+
+在调用插件的消息或交互处理链中执行，例如：
+
+```ts
+import { Expose } from 'alemonjs';
+
+export async function readMyDaily() {
+  const client = Expose.create();
+  const provider = client.list('kuro.waves').find(item => item.name === 'alemonjs-kuro');
+
+  if (!provider || provider.version !== '1') {
+    throw new Error('鸣潮助手未加载或契约版本不匹配');
+  }
+
+  return client.call(
+    'kuro.waves',
+    provider.name,
+    'daily',
+    {},
+    {
+      timeoutMs: 30000
+    }
+  );
+}
+```
+
+完整输入、输出契约可通过 `Expose.create().schema()` 获取。查询返回结构化 JSON，不发送聊天消息或启动截图。框架结果 `ok: true` 后，还需要检查业务结果的 `status`：`ok`、`not_bound`、`not_logged_in` 或 `error`；成功时数据位于 `result.data.data`。
+
+账号身份来自框架当前事件的 `UserKey`，不接受调用方传入的 `UserKey`、Token 或其他凭据。账号动作要求真实的应用调用上下文及聊天用户上下文；后台任务没有聊天用户时返回 `FORBIDDEN`，不会猜测账号。帮助和能力发现仍可在无用户上下文时使用。
+
+所有动作均标记为 `effect: 'read'`，有输入输出运行时校验，不产生写动作监听通知。超时、取消或卸载后会停止等待，并在后续请求前检查取消状态；已经发出的底层请求仍沿用现有 HTTP 超时。接口不开放登录、短信、凭据、绑定/解绑、签到或发送消息等操作。
+
 ## 调试与检查
 
 ```sh
@@ -173,6 +226,7 @@ yarn run test:help     # 帮助入口及 Markdown
 yarn run test:panel    # 角色面板及名字匹配
 yarn run test:stamina  # 体力便笺
 yarn run test:explore  # 探索度
+yarn run test:expose   # Expose 注册、契约、账号隔离、超时与卸载
 ```
 
 卡片预览地址：`http://localhost:8127/wuwa-help`。其他预览路由定义在 `jsxp.config.tsx`；预览使用示例数据，不能替代 QQ 联调。查看框架日志及终端异常时，不要转发带有账号凭据或登录链接的内容。
