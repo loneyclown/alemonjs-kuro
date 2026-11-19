@@ -7,6 +7,7 @@ import HELP_BACKGROUND from '@src/assets/img/help/rover-background.png';
 import COMMAND_ICONS from '@src/assets/img/help/command-icons.png';
 import ICON_EXPLORE from '@src/assets/img/help/icons/查询探索度.png';
 import ICON_TOWER from '@src/assets/img/help/icons/深塔.png';
+import ICON_MATRIX from '@src/assets/img/help/icons/矩阵.png';
 import ICON_PERIOD from '@src/assets/img/help/icons/星声.png';
 import ICON_SIGN from '@src/assets/img/help/icons/签到日历.png';
 import ICON_COIN from '@src/assets/img/help/icons/库洛币.png';
@@ -74,6 +75,7 @@ export const MORE_HELP_DATA: HelpCategory[] = [
     title: '补充指令',
     items: [
       { rule: 'calabash', name: '数据坞', command: '#mc数据坞', icon: ICON_CALABASH },
+      { rule: 'matrix', name: '终焉矩阵', command: '#mc矩阵', icon: ICON_MATRIX },
       { rule: 'sign', name: '每日签到', command: '#mc签到', icon: ICON_SIGN },
       { rule: 'token', name: '添加凭据', command: '#mc添加token <Token>,<DID>', input: '#mc添加token ', icon: ICON_ADD_TOKEN, private: true },
       { rule: 'token', name: '删除凭据', command: '#mc删除token 123456789', input: '#mc删除token ', icon: ICON_DEL_TOKEN, private: true }
@@ -85,6 +87,8 @@ export const MORE_HELP_DATA: HelpCategory[] = [
       { rule: 'tower', name: '深塔 · 超载区', command: '#mc深塔 超载区', icon: ICON_TOWER },
       { rule: 'tower', name: '深塔 · 实验区', command: '#mc深塔 实验区', icon: ICON_TOWER },
       { rule: 'tower', name: '深塔 · 稳定区', command: '#mc深塔 稳定区', icon: ICON_TOWER },
+      { rule: 'matrix', name: '奇点扩张', command: '#mc奇点扩张', icon: ICON_MATRIX },
+      { rule: 'matrix', name: '稳态协议', command: '#mc稳态协议', icon: ICON_MATRIX },
       { rule: 'period', name: '历史月报（月份）', command: '#mc星声 10月', input: '#mc星声 ', icon: ICON_PERIOD },
       { rule: 'calabash', name: '数据坞（页码）', command: '#mc数据坞 2', input: '#mc数据坞 ', icon: ICON_CALABASH },
       { rule: 'announce', name: '活动速递', command: '#mc公告 活动', icon: COMMAND_ICONS, sprite: '88.9% 11.1%' },

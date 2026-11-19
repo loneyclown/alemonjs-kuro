@@ -1,5 +1,6 @@
-import ChallengeCard from '@src/img/views/ChallengeCard';
-import { apiBaseInfo, apiMatrixDetail, apiMineV2, getCookie } from '@src/model/api';
+import { routeRules } from '@src/constants/kuro';
+import MatrixCard from '@src/img/views/MatrixCard';
+import { apiMatrixDetail, getCookie } from '@src/model/api';
 import { getActiveUid } from '@src/model/db';
 import { createEvent, EventsEnum, Format, useMessage } from 'alemonjs';
 import { renderComponentIsHtmlToBuffer } from 'jsxp';
@@ -11,16 +12,20 @@ export default async (e: EventsEnum) => {
   });
   const [message] = useMessage(event);
   const userId = event.UserKey;
+  const reply = (text: string) => {
+    const format = Format.create();
+    const md = Format.createMarkdown();
 
-  const format = Format.create();
-  const md = Format.createMarkdown();
+    md.addText(text);
+    format.addMarkdown(md);
+
+    return message.send({ format });
+  };
 
   const uid = await getActiveUid(userId);
 
   if (!uid) {
-    md.addText('[鸣潮] 请先绑定特征码: #mc绑定123456789');
-    format.addMarkdown(md);
-    void message.send({ format });
+    await reply('[鸣潮] 请私聊发送 #mc登录 绑定游戏账号');
 
     return;
   }
@@ -28,45 +33,36 @@ export default async (e: EventsEnum) => {
   const ckResult = await getCookie(uid, userId);
 
   if (!ckResult) {
-    md.addText('[鸣潮] 未添加Token或Token已失效\n请使用 #mc登录 手机号 验证码 重新登录');
-    format.addMarkdown(md);
-    void message.send({ format });
+    await reply('[鸣潮] 未找到有效凭据，请私聊发送 #mc登录');
 
     return;
   }
 
-  const { cookie } = ckResult;
+  const resp = await apiMatrixDetail(uid, ckResult.cookie, userId);
 
-  const [resp, baseResp, mineResp] = await Promise.all([apiMatrixDetail(uid, cookie, userId), apiBaseInfo(uid, cookie, userId), apiMineV2(cookie)]);
+  if (!resp.success) {
+    await reply('[鸣潮] 库街区矩阵查询失败，请稍后重试，或私聊发送 #mc登录 更新凭据');
 
-  if (!resp.success || !resp.data) {
-    md.addText(`[鸣潮] 终焉矩阵查询失败: ${resp.msg || '未知错误'}`);
-    format.addMarkdown(md);
-    void message.send({ format });
+    return;
+  }
+  if (!resp.data) {
+    await reply('[鸣潮] 库街区暂未返回终焉矩阵数据');
 
     return;
   }
 
-  if (!baseResp.success || !baseResp.data) {
-    md.addText(`[鸣潮] 基础信息查询失败: ${baseResp.msg || '未知错误'}`);
-    format.addMarkdown(md);
-    void message.send({ format });
-
-    return;
-  }
-
-  const img = await renderComponentIsHtmlToBuffer(ChallengeCard, {
-    data: { uid, base: baseResp.data, challenge: resp.data, title: '终焉矩阵', icon: '⚡', headUrl: mineResp.data?.mine?.headUrl }
-  });
+  const command = routeRules.matrix.exec(event.MessageText.trim())?.[1];
+  const modeId = command === '奇点扩张' ? 1 : command === '稳态协议' ? 0 : undefined;
+  const img = await renderComponentIsHtmlToBuffer(MatrixCard, { data: { uid, matrix: resp.data, modeId } });
 
   if (typeof img === 'boolean') {
-    md.addText('[鸣潮] 终焉矩阵卡片渲染失败');
-    format.addMarkdown(md);
-    void message.send({ format });
+    await reply('[鸣潮] 终焉矩阵卡片渲染失败');
 
     return;
   }
 
+  const format = Format.create();
+
   format.addImage(img);
-  void message.send({ format });
+  await message.send({ format });
 };

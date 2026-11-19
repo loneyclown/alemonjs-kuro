@@ -100,7 +100,17 @@ test('more help fills parameter commands for editing and never sends sample UID 
     }
   }
   assert.ok(entries.some(button => button.options.data === '#mc帮助'));
-  for (const command of ['#mc签到', '#mc深塔 超载区', '#mc深塔 实验区', '#mc深塔 稳定区', '#mc公告 活动', '#mc公告 资讯']) {
+  for (const command of [
+    '#mc签到',
+    '#mc深塔 超载区',
+    '#mc深塔 实验区',
+    '#mc深塔 稳定区',
+    '#mc公告 活动',
+    '#mc公告 资讯',
+    '#mc矩阵',
+    '#mc奇点扩张',
+    '#mc稳态协议'
+  ]) {
     assert.equal(entries.find(button => button.options.data === command)?.options.autoEnter, true, command);
   }
   for (const input of ['#mc星声 ', '#mc数据坞 ', '#mc公告 ', '#mc公告 活动 ', '#mc公告 资讯 ']) {

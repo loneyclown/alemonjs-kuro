@@ -53,11 +53,10 @@ export default defineRouter([
       //   regular: routeRules.slash,
       //   handler: lazy(() => import('@src/response/slash'))
       // },
-      // 暂停：终焉矩阵尚未完成独立数据结构适配。
-      // {
-      //   regular: routeRules.matrix,
-      //   handler: lazy(() => import('@src/response/matrix'))
-      // },
+      {
+        regular: routeRules.matrix,
+        handler: processingLazy(() => import('@src/response/matrix'))
+      },
       {
         regular: routeRules.charlist,
         handler: processingLazy(() => import('@src/response/charlist'))

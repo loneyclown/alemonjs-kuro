@@ -29,7 +29,6 @@ test('incomplete features are absent from both help and active routes', () => {
   for (const [rule, command] of Object.entries({
     challenge: '#mc全息战略',
     slash: '#mc冥海',
-    matrix: '#mc矩阵',
     code: '#mc兑换码',
     gacha: '#mc抽卡记录',
     echoList: '#mc声骸列表',
