@@ -162,7 +162,37 @@ export interface TowerResp {
 }
 export type ChallengeResp = TowerResp;
 export type SlashResp = TowerResp;
-export type MatrixResp = TowerResp;
+export interface MatrixResp {
+    isUnlock?: boolean;
+    endTime?: number | null;
+    reward?: number | null;
+    totalReward?: number | null;
+    modeDetails?: (MatrixMode | null)[] | null;
+}
+export interface MatrixMode {
+    modeId: number;
+    isUnlock?: boolean;
+    hasRecord?: boolean;
+    score?: number | null;
+    passBoss?: number | null;
+    bossCount?: number | null;
+    teams?: (MatrixTeam | null)[] | null;
+}
+export interface MatrixTeam {
+    round?: number | null;
+    score?: number | null;
+    passBoss?: number | null;
+    bossCount?: number | null;
+    roleIcons?: (string | null)[] | null;
+    roleList?: ({
+        iconUrl?: string;
+        roleId: number;
+    } | null)[] | null;
+    buffs?: ({
+        buffName?: string;
+        buffIcon?: string;
+    } | null)[] | null;
+}
 export interface WeaponInfo {
     weaponId: number;
     weaponName: string;

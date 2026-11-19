@@ -1,4 +1,4 @@
-import type { AccountBaseInfo, AnnDetailResp, AnnListResp, BatchRoleCostResp, CalabashResp, DailyData, ExploreResp, GachaLogItem, KuroApiResp, KuroRole, MineV2Resp, MoreActivityResp, OnlineRole, OwnedRoleInfoResp, PeriodDetailResp, PeriodListResp, RoleDetailResp, RoleListResp, SignInitResp, TowerResp, WikiHomeResp } from './types';
+import type { AccountBaseInfo, AnnDetailResp, AnnListResp, BatchRoleCostResp, CalabashResp, DailyData, ExploreResp, GachaLogItem, KuroApiResp, KuroRole, MatrixResp, MineV2Resp, MoreActivityResp, OnlineRole, OwnedRoleInfoResp, PeriodDetailResp, PeriodListResp, RoleDetailResp, RoleListResp, SignInitResp, TowerResp, WikiHomeResp } from './types';
 export declare function apiLogin(mobile: string, code: string, did: string): Promise<KuroApiResp<{
     token: string;
 }>>;
@@ -18,7 +18,7 @@ export declare function apiSignIn(uid: string, token: string, owner: string, req
 export declare function apiTowerDetail(uid: string, token: string, userId: string): Promise<KuroApiResp<TowerResp>>;
 export declare function apiChallengeDetail(uid: string, token: string, userId: string): Promise<KuroApiResp<TowerResp>>;
 export declare function apiSlashDetail(uid: string, token: string, userId: string): Promise<KuroApiResp<TowerResp>>;
-export declare function apiMatrixDetail(uid: string, token: string, userId: string): Promise<KuroApiResp<TowerResp>>;
+export declare function apiMatrixDetail(uid: string, token: string, userId: string): Promise<KuroApiResp<MatrixResp>>;
 export declare function apiRoleDetail(uid: string, token: string, userId: string, roleId: number): Promise<KuroApiResp<RoleDetailResp>>;
 export declare function apiCalabashData(uid: string, token: string, userId: string): Promise<KuroApiResp<CalabashResp>>;
 export declare function apiMineV2(token: string): Promise<KuroApiResp<MineV2Resp>>;
