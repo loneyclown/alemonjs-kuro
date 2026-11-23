@@ -1,6 +1,6 @@
 {
   "name": "alemonjs-kuro",
-  "version": "0.0.19",
+  "version": "0.0.20",
   "description": "mhy-mod",
   "author": "ningmengchongshui",
   "type": "module",
@@ -106,5 +106,5 @@
     "type": "git",
     "url": "https://github.com/xiuxianjs/alemonjs-kuro.git"
   },
-  "gitHead": "b18e29f64b1378fcfbc046f450f862a18a71b6bf"
+  "gitHead": "fdc2bd1bc31de7cb5ad06c8d399b73446d4d36de"
 }
