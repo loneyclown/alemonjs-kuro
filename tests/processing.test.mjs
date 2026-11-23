@@ -63,7 +63,7 @@ test('router wrapper includes lazy loading in its wait and preserves handler ide
     const result = await app.runHandler(handler, event, 'alemonjs-kuro');
     assert.equal(result.value, true);
     assert.equal(result.messages.length, 1);
-    assert.match(result.messages[0].text, /正在查询/);
+    assert.equal(result.messages[0].text, '[鸣潮] 正在处理，请稍候…');
   } finally {
     await app.dispose();
   }

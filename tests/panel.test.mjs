@@ -87,6 +87,19 @@ test('missing final data stays unknown; raw echo values are clearly distinguishe
   assert.ok(!empty.includes('150.0%') && !empty.includes('100.0%'), 'never fabricate baseline stats');
 });
 
+test('echo main and sub stats highlight only the API-recommended rows', () => {
+  const echo = {
+    ...detail.phantomData.equipPhantomList[0],
+    mainProps: [{ ...prop('生命', '22.8%'), valid: true }, { ...prop('生命', '2280'), valid: false }],
+    subProps: [{ ...prop('共鸣效率', '9.2%'), valid: true }, prop('暴击', '9.3%')]
+  };
+  const html = render({ ...detail, phantomData: { equipPhantomList: [echo] } });
+  assert.ok(html.includes('class="character-echo-prop main recommended"><span>生命</span><strong>22.8%</strong>'));
+  assert.ok(html.includes('class="character-echo-prop main"><span>生命</span><strong>2280</strong>'));
+  assert.ok(html.includes('class="character-echo-prop recommended"><span>共鸣效率</span><strong>9.2%</strong>'));
+  assert.ok(html.includes('class="character-echo-prop"><span>暴击</span><strong>9.3%</strong>'));
+});
+
 test('null equipment slots are ignored without losing equipped echoes or miscounting Cost', () => {
   const slots = [null, detail.phantomData.equipPhantomList[0], null, { phantomProp: null }, detail.phantomData.equipPhantomList[3]];
   const html = render({ ...detail, phantomData: { equipPhantomList: slots } });

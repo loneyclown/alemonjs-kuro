@@ -373,7 +373,9 @@ padding:4px 2px}
 sans-serif;
 white-space:nowrap;
 line-height:1.6}
-.character-echo-prop.main{color:#8b622b}
+.character-echo-prop.recommended{background:linear-gradient(90deg,#eadcbc,#f8f3e790)}
+.character-echo-prop.main.recommended{background:#eadcbc;
+color:#79521c}
 .character-echo-divider{border-top:1px solid #cacbd6;
 margin:7px 0}
 .character-echo-cost{margin-left:auto;
@@ -567,7 +569,7 @@ export default function CharDetailCard({ data }: CharDetailCardProps) {
                     </div>
                     <div className='character-echo-set'>{echo.fetterDetail?.name ?? '套装信息未返回'}</div>
                     {echo.mainProps?.map((prop, j) => (
-                      <div className='character-echo-prop main' key={j}>
+                      <div className={`character-echo-prop main${prop.valid === true ? ' recommended' : ''}`} key={j}>
                         <span>{prop.attributeName}</span>
                         <strong>{prop.attributeValue}</strong>
                       </div>
@@ -575,7 +577,7 @@ export default function CharDetailCard({ data }: CharDetailCardProps) {
                     <div className='character-echo-divider' />
                     {echo.subProps?.length ? (
                       echo.subProps.map((prop, j) => (
-                        <div className='character-echo-prop' key={j}>
+                        <div className={`character-echo-prop${prop.valid === true ? ' recommended' : ''}`} key={j}>
                           <span>{prop.attributeName}</span>
                           <strong>{prop.attributeValue}</strong>
                         </div>

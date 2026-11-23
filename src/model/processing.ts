@@ -15,7 +15,7 @@ export async function withProcessingFeedback<T>(work: () => Promise<T>, notify: 
   }
 }
 
-export function processingLazy(loader: () => Promise<{ default: (event: EventsEnum) => unknown }>, text = '正在查询数据并生成图片，请稍候…') {
+export function processingLazy(loader: () => Promise<{ default: (event: EventsEnum) => unknown }>, text = '正在处理，请稍候…') {
   return () => {
     return Promise.resolve(async (e: EventsEnum) => {
       const event = createEvent({
